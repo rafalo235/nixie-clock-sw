@@ -9,6 +9,9 @@ all : freertos build
 hex : all
 	$(OBJCOPY) -O ihex build/nixie-clock-sw.elf build/nixie-clock-sw.hex
 
+debug : all
+	$(DEBUGER) build/nixie-clock-sw.elf -x .gdbscript
+
 freertos :
 	@echo "Building FreeRTOS"
 
