@@ -1,4 +1,5 @@
-#include "stm32f103xb.h"
+
+#include "pwm/pwm.h"
 
 void SystemInit(void);
 
@@ -12,6 +13,6 @@ int main(void)
 
 void SystemInit(void)
 {
-	__asm__("nop");
+	Pwm_Initialize();
 }
 
