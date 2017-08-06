@@ -1,10 +1,14 @@
 
 #include "pwm/pwm.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 void SystemInit(void);
 
-int main(void)
+void main(void)
 {
+	vTaskStartScheduler();
+
 	while (1)
 	{
 		__asm__("nop");

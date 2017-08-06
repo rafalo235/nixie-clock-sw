@@ -68,6 +68,7 @@ __HeapLimit:
 	.section .isr_vector
 	.align	2
 	.globl	__isr_vector
+	.equ  BootRAM, 0xF108F85F
 __isr_vector:
 	.long	__StackTop            /* Top of Stack */
 	.long	Reset_Handler         /* Reset Handler */
@@ -87,7 +88,58 @@ __isr_vector:
 	.long	SysTick_Handler       /* SysTick Handler */
 
 	/* External interrupts */
-	.long	Default_Handler
+	.long	WWDG_IRQHandler
+	.long	PVD_IRQHandler
+	.long	TAMPER_IRQHandler
+	.long	RTC_IRQHandler
+	.long	FLASH_IRQHandler
+	.long	RCC_IRQHandler
+	.long	EXTI0_IRQHandler
+	.long	EXTI1_IRQHandler
+	.long	EXTI2_IRQHandler
+	.long	EXTI3_IRQHandler
+	.long	EXTI4_IRQHandler
+	.long	DMA1_Channel1_IRQHandler
+	.long	DMA1_Channel2_IRQHandler
+	.long	DMA1_Channel3_IRQHandler
+	.long	DMA1_Channel4_IRQHandler
+	.long	DMA1_Channel5_IRQHandler
+	.long	DMA1_Channel6_IRQHandler
+	.long	DMA1_Channel7_IRQHandler
+	.long	ADC1_2_IRQHandler
+	.long	USB_HP_CAN1_TX_IRQHandler
+	.long	USB_LP_CAN1_RX0_IRQHandler
+	.long	CAN1_RX1_IRQHandler
+	.long	CAN1_SCE_IRQHandler
+	.long	EXTI9_5_IRQHandler
+	.long	TIM1_BRK_IRQHandler
+	.long	TIM1_UP_IRQHandler
+	.long	TIM1_TRG_COM_IRQHandler
+	.long	TIM1_CC_IRQHandler
+	.long	TIM2_IRQHandler
+	.long	TIM3_IRQHandler
+	.long	TIM4_IRQHandler
+	.long	I2C1_EV_IRQHandler
+	.long	I2C1_ER_IRQHandler
+	.long	I2C2_EV_IRQHandler
+	.long	I2C2_ER_IRQHandler
+	.long	SPI1_IRQHandler
+	.long	SPI2_IRQHandler
+	.long	USART1_IRQHandler
+	.long	USART2_IRQHandler
+	.long	USART3_IRQHandler
+	.long	EXTI15_10_IRQHandler
+	.long	RTC_Alarm_IRQHandler
+	.long	USBWakeUp_IRQHandler
+	.long	0
+	.long	0
+	.long	0
+	.long	0
+	.long	0
+	.long	0
+	.long	0
+	.long	BootRAM          /* @0x108. This is for boot in RAM mode for
+                  STM32F10x Medium Density devices. */
 
 	.size	__isr_vector, . - __isr_vector
 
@@ -104,41 +156,6 @@ Reset_Handler:
  *  data to implement than the latter.
  *  Macro __STARTUP_COPY_MULTIPLE is used to choose between two schemes.  */
 
-#if 0
-/*__STARTUP_COPY_MULTIPLE */
-/*  Multiple sections scheme.
- *
- *  Between symbol address __copy_table_start__ and __copy_table_end__,
- *  there are array of triplets, each of which specify:
- *    offset 0: LMA of start of a section to copy from
- *    offset 4: VMA of start of a section to copy to
- *    offset 8: size of the section to copy. Must be multiply of 4
- *
- *  All addresses must be aligned to 4 bytes boundary.
- *
-	ldr	r4, =__copy_table_start__
-	ldr	r5, =__copy_table_end__
-
-.L_loop0:
-	cmp	r4, r5
-	bge	.L_loop0_done
-	ldr	r1, [r4]
-	ldr	r2, [r4, #4]
-	ldr	r3, [r4, #8]
-
-.L_loop0_0:
-	subs	r3, #4
-	ittt	ge
-	ldrge	r0, [r1, r3]
-	strge	r0, [r2, r3]
-	bge	.L_loop0_0
-
-	adds	r4, #12
-	b	.L_loop0
-
-.L_loop0_done:
-*/
-#else
 /*  Single section scheme.
  *
  *  The ranges of copy from/to are specified by following symbols
@@ -158,7 +175,6 @@ Reset_Handler:
 	ldrlt	r0, [r1], #4
 	strlt	r0, [r2], #4
 	blt	.L_loop1
-#endif /*__STARTUP_COPY_MULTIPLE */
 
 /*  This part of work usually is done in C library startup code. Otherwise,
  *  define this macro to enable it in this startup.
@@ -170,35 +186,7 @@ Reset_Handler:
  *  Define macro __STARTUP_CLEAR_BSS_MULTIPLE to choose the former.
  *  Otherwise efine macro __STARTUP_CLEAR_BSS to choose the later.
  */
-#ifdef __STARTUP_CLEAR_BSS_MULTIPLE
-/*  Multiple sections scheme.
- *
- *  Between symbol address __copy_table_start__ and __copy_table_end__,
- *  there are array of tuples specifying:
- *    offset 0: Start of a BSS section
- *    offset 4: Size of this BSS section. Must be multiply of 4
- *
-	ldr	r3, =__zero_table_start__
-	ldr	r4, =__zero_table_end__
 
-.L_loop2:
-	cmp	r3, r4
-	bge	.L_loop2_done
-	ldr	r1, [r3]
-	ldr	r2, [r3, #4]
-	movs	r0, 0
-
-.L_loop2_0:
-	subs	r2, #4
-	itt	ge
-	strge	r0, [r1, r2]
-	bge	.L_loop2_0
-
-	adds	r3, #8
-	b	.L_loop2
-.L_loop2_done:
-*/
-#elif defined (__STARTUP_CLEAR_BSS)
 /*  Single BSS section scheme.
  *
  *  The BSS section is specified by following symbols
@@ -216,11 +204,8 @@ Reset_Handler:
 	itt	lt
 	strlt	r0, [r1], #4
 	blt	.L_loop3
-#endif /* __STARTUP_CLEAR_BSS_MULTIPLE || __STARTUP_CLEAR_BSS */
 
-#ifndef __NO_SYSTEM_INIT
 	bl	SystemInit
-#endif
 
 #ifndef __START
 #define __START _start
@@ -255,6 +240,48 @@ Default_Handler:
 	def_irq_handler	DebugMon_Handler
 	def_irq_handler	PendSV_Handler
 	def_irq_handler	SysTick_Handler
-	def_irq_handler	DEF_IRQHandler
+	def_irq_handler	WWDG_IRQHandler
+	def_irq_handler	PVD_IRQHandler
+	def_irq_handler	TAMPER_IRQHandler
+	def_irq_handler	RTC_IRQHandler
+	def_irq_handler	FLASH_IRQHandler
+	def_irq_handler	RCC_IRQHandler
+	def_irq_handler	EXTI0_IRQHandler
+	def_irq_handler	EXTI1_IRQHandler
+	def_irq_handler	EXTI2_IRQHandler
+	def_irq_handler	EXTI3_IRQHandler
+	def_irq_handler	EXTI4_IRQHandler
+	def_irq_handler	DMA1_Channel1_IRQHandler
+	def_irq_handler	DMA1_Channel2_IRQHandler
+	def_irq_handler	DMA1_Channel3_IRQHandler
+	def_irq_handler	DMA1_Channel4_IRQHandler
+	def_irq_handler	DMA1_Channel5_IRQHandler
+	def_irq_handler	DMA1_Channel6_IRQHandler
+	def_irq_handler	DMA1_Channel7_IRQHandler
+	def_irq_handler	ADC1_2_IRQHandler
+	def_irq_handler	USB_HP_CAN1_TX_IRQHandler
+	def_irq_handler	USB_LP_CAN1_RX0_IRQHandler
+	def_irq_handler	CAN1_RX1_IRQHandler
+	def_irq_handler	CAN1_SCE_IRQHandler
+	def_irq_handler	EXTI9_5_IRQHandler
+	def_irq_handler	TIM1_BRK_IRQHandler
+	def_irq_handler	TIM1_UP_IRQHandler
+	def_irq_handler	TIM1_TRG_COM_IRQHandler
+	def_irq_handler	TIM1_CC_IRQHandler
+	def_irq_handler	TIM2_IRQHandler
+	def_irq_handler	TIM3_IRQHandler
+	def_irq_handler	TIM4_IRQHandler
+	def_irq_handler	I2C1_EV_IRQHandler
+	def_irq_handler	I2C1_ER_IRQHandler
+	def_irq_handler	I2C2_EV_IRQHandler
+	def_irq_handler	I2C2_ER_IRQHandler
+	def_irq_handler	SPI1_IRQHandler
+	def_irq_handler	SPI2_IRQHandler
+	def_irq_handler	USART1_IRQHandler
+	def_irq_handler	USART2_IRQHandler
+	def_irq_handler	USART3_IRQHandler
+	def_irq_handler	EXTI15_10_IRQHandler
+	def_irq_handler	RTC_Alarm_IRQHandler
+	def_irq_handler	USBWakeUp_IRQHandler
 
 	.end

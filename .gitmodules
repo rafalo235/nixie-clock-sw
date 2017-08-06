@@ -1,0 +1,3 @@
+[submodule "third-party/freertos"]
+	path = third-party/freertos
+	url = https://github.com/jameswalmsley/FreeRTOS.git
