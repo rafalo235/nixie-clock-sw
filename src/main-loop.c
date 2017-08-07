@@ -2,6 +2,8 @@
 #include "pwm/pwm.h"
 #include "drivers/i2c/i2c.h"
 #include "drivers/rtc/rtc.h"
+#include "time/time.h"
+#include "utils/coding.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -17,12 +19,19 @@ void main(void)
 	{
 		if (prev != tmp)
 		{
-			minutes = tmp % 60;
-			minutes = SWAP_N_BITS(minutes, 4);
-			hours = SWAP_N_BITS(hours, 4);
+			tTime_DateTime t;
+			t = Time_GetUTCTime(tmp, &t);
+
+			t.minute = Utils_BinToBcd(t.minute);
+			t.hour = Utils_BinToBcd(t.hour);
+
+			minutes = SWAP_N_BITS(t.minute, 4);
+			hours = SWAP_N_BITS(t.hour, 4);
 
 			I2C_Write(0x70, &minutes, 1);
 			I2C_Write(0x72, &hours, 1);
+
+			prev = tmp;
 		}
 	}
 

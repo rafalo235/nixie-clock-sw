@@ -43,7 +43,7 @@ static void InitializeClock(void)
 	TIM2->CCER |= TIM_CCER_CC3E;
 	TIM2->PSC = 8;
 	TIM2->ARR = 40;
-	TIM2->CCR3 = 38;
+	TIM2->CCR3 = 39;
 
 	/* Enable clock */
 	TIM2->CR1 = TIM_CR1_CEN;

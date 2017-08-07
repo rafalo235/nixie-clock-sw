@@ -16,6 +16,10 @@ void Rtc_Initialize(void)
 
 static void InitializeClock(void)
 {
+	/* 32767 + 1 Hz -> 1 s  */
+#define PRESCALER_VALUE		32767
+	RCC->APB1ENR |= RCC_APB1ENR_BKPEN | RCC_APB1ENR_PWREN;
+
 	if (RCC->BDCR !=
 			(RCC_BDCR_LSEON | RCC_BDCR_LSERDY |
 			RCC_BDCR_RTCSEL_LSE | RCC_BDCR_RTCEN))
@@ -28,6 +32,17 @@ static void InitializeClock(void)
 
 		RCC->BDCR = (RCC->BDCR & ~(RCC_BDCR_RTCSEL)) |
 				RCC_BDCR_RTCSEL_LSE | RCC_BDCR_RTCEN;
+
+		/* Poll until RTC registers are synchronized */
+		while ((RTC->CRL & RTC_CRL_RSF) != RTC_CRL_RSF) { }
+		/* Poll until RTC operations are ongoing */
+		while ((RTC->CRL & RTC_CRL_RTOFF) != RTC_CRL_RTOFF) { }
+
+#if 0
+		/* Enable interrupts */
+		RTC->CRH |= RTC_CRH_SECIE;
+#endif
+		RTC->PRLL = PRESCALER_VALUE;
 
 		/* Enable write-protection */
 		PWR->CR &= ~(PWR_CR_DBP);
