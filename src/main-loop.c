@@ -4,6 +4,7 @@
 #include "drivers/rtc/rtc.h"
 #include "time/time.h"
 #include "utils/coding.h"
+#include "drivers/gpio/gpio.h"
 #include "FreeRTOS.h"
 #include "task.h"
 
@@ -49,5 +50,6 @@ void SystemInit(void)
 	Pwm_Initialize();
 	I2C_Initialize();
 	Rtc_Initialize();
+	Gpio_Initialize();
 }
 
