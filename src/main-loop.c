@@ -1,41 +1,19 @@
 
+#include "control-task/control-task.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include <stdlib.h>
 #include "pwm/pwm.h"
 #include "drivers/i2c/i2c.h"
 #include "drivers/rtc/rtc.h"
-#include "time/time.h"
-#include "utils/coding.h"
 #include "drivers/gpio/gpio.h"
-#include "FreeRTOS.h"
-#include "task.h"
 
 void SystemInit(void);
 
 void main(void)
 {
-	uint32_t tmp = 0, prev = 0;
-	uint8_t hours = 0, minutes = 0;
-#define SWAP_N_BITS(x,n)	(((x) << (n)) | ((x) >> (n)))
-
-	while (Rtc_Read(&tmp) == RTC_SUCCESS)
-	{
-		if (prev != tmp)
-		{
-			tTime_DateTime t;
-			t = Time_GetUTCTime(tmp, &t);
-
-			t.minute = Utils_BinToBcd(t.minute);
-			t.hour = Utils_BinToBcd(t.hour);
-
-			minutes = SWAP_N_BITS(t.minute, 4);
-			hours = SWAP_N_BITS(t.hour, 4);
-
-			I2C_Write(0x70, &minutes, 1);
-			I2C_Write(0x72, &hours, 1);
-
-			prev = tmp;
-		}
-	}
-
+	/* TODO static task since v9.0.0 */
+	xTaskCreate(Control_Task, "ControlTask", 256, NULL, 1, NULL);
 
 	vTaskStartScheduler();
 
