@@ -8,6 +8,7 @@
 #include "stm32f103xb.h"
 
 static void InitializeClock(void);
+static void InitializeInterrupts(void);
 
 void Rtc_Initialize(void)
 {
@@ -38,13 +39,19 @@ static void InitializeClock(void)
 		/* Poll until RTC operations are ongoing */
 		while ((RTC->CRL & RTC_CRL_RTOFF) != RTC_CRL_RTOFF) { }
 
-#if 0
-		/* Enable interrupts */
-		RTC->CRH |= RTC_CRH_SECIE;
-#endif
 		RTC->PRLL = PRESCALER_VALUE;
 
 		/* Enable write-protection */
 		PWR->CR &= ~(PWR_CR_DBP);
 	}
+
+	/* Enable interrupts */
+	InitializeInterrupts();
+	RTC->CRH |= RTC_CRH_SECIE;
+}
+
+static void InitializeInterrupts(void)
+{
+	NVIC_SetPriority(RTC_IRQn, 5);
+	NVIC_EnableIRQ(RTC_IRQn);
 }

@@ -7,6 +7,7 @@
 #include "drivers/i2c/i2c.h"
 #include "drivers/rtc/rtc.h"
 #include "drivers/gpio/gpio.h"
+#include "stm32f103xb.h"
 
 void SystemInit(void);
 
@@ -25,7 +26,14 @@ void main(void)
 
 void SystemInit(void)
 {
+	/* Initialized first - do not move it! */
 	Pwm_Initialize();
+
+	/* No sub-priorities - FreeRTOS requirement */
+	NVIC_SetPriorityGrouping(0);
+	/* Queue initialization must be performed before
+	 * RTC and GPIO external interrupts */
+	Control_InitializeQueue();
 	I2C_Initialize();
 	Rtc_Initialize();
 	Gpio_Initialize();

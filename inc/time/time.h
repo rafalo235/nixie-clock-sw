@@ -19,6 +19,8 @@ typedef struct Time_DateTime {
 	uint8_t second;
 } tTime_DateTime;
 
+void RTC_IRQHandler(void);
+
 void Time_SetEpoch(const tTime_DateTime *);
 tTime_DateTime Time_GetEpoch(void);
 

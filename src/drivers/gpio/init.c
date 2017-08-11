@@ -39,6 +39,4 @@ static void InitializeInterrupts(void)
 	NVIC_EnableIRQ(EXTI1_IRQn);
 	NVIC_EnableIRQ(EXTI2_IRQn);
 	NVIC_EnableIRQ(EXTI3_IRQn);
-
-	__enable_irq();
 }
