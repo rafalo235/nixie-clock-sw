@@ -18,10 +18,7 @@ void RTC_IRQHandler(void)
 	BaseType_t higherTaskPriority = pdFALSE;
 
 	/* Clear pending interrupt */
-	//EXTI->PR = EXTI_PR_PR17;
 	RTC->CRL &= ~RTC_CRL_SECF;
-	//NVIC_ClearPendingIRQ(RTC_IRQn);
-
 
 	if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
 	{
