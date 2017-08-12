@@ -16,8 +16,8 @@ void EXTI1_IRQHandler(void)
 
 	EXTI->PR = EXTI_PR_PR1;
 
-	if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue) &&
-			(GPIOA->IDR & GPIO_IDR_IDR2) != GPIO_IDR_IDR2)
+	if ((GPIOA->IDR & GPIO_IDR_IDR2) == GPIO_IDR_IDR2 &&
+			pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
 	{
 		xQueueSendToBackFromISR(
 				gControlQueue, &action, &higherTaskPriority);
@@ -33,8 +33,8 @@ void EXTI2_IRQHandler(void)
 
 	EXTI->PR = EXTI_PR_PR2;
 
-	if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue) &&
-			(GPIOA->IDR & GPIO_IDR_IDR1) != GPIO_IDR_IDR1)
+	if ((GPIOA->IDR & GPIO_IDR_IDR1) == GPIO_IDR_IDR1 &&
+			pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
 	{
 		xQueueSendToBackFromISR(
 				gControlQueue, &action, &higherTaskPriority);
