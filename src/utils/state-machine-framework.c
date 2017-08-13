@@ -6,8 +6,9 @@
  */
 #include "utils/state-machine-framework.h"
 
-void Utils_ProcessStateMachine(tUtils_StateMachine *sm, tUtils_Signal sig)
+void Utils_ProcessStateMachine(void *ptr, tUtils_Signal sig)
 {
+	tUtilsStateMachine *sm = ptr;
 	if (sm->current != sm->next)
 	{
 		sm->next(sm, UTILS_ENTER_STATE);

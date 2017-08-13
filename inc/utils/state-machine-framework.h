@@ -8,8 +8,10 @@
 #ifndef INC_UTILS_STATE_MACHINE_FRAMEWORK_H_
 #define INC_UTILS_STATE_MACHINE_FRAMEWORK_H_
 
+#define STATE_CHANGE(x, state)	((x).sm.next = state)
+
 /* Forward declaration */
-struct Utils_StateMachine;
+struct UtilsStateMachine;
 
 typedef enum Utils_Signal
 {
@@ -18,15 +20,14 @@ typedef enum Utils_Signal
 	UTILS_USER_SIGNAL = 2
 } tUtils_Signal;
 
-typedef void (*tUtils_State)(
-		struct Utils_StateMachine *, tUtils_Signal);
+typedef void (*tUtilsState)(void *, tUtils_Signal);
 
-typedef struct Utils_StateMachine
+typedef struct UtilsStateMachine
 {
-	tUtils_State current;
-	tUtils_State next;
-} tUtils_StateMachine;
+	tUtilsState current;
+	tUtilsState next;
+} tUtilsStateMachine;
 
-void Utils_ProcessStateMachine(tUtils_StateMachine *, tUtils_Signal);
+void Utils_ProcessStateMachine(void *, tUtils_Signal);
 
 #endif /* INC_UTILS_STATE_MACHINE_FRAMEWORK_H_ */

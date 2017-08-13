@@ -20,6 +20,12 @@ typedef enum ControlAction
 	CONTROL_ACTION_SECOND_TICK
 } tControlAction;
 
+typedef struct ControlContext
+{
+	tUtilsStateMachine sm;
+	int32_t position;
+} tControlContext;
+
 extern QueueHandle_t gControlQueue;
 
 void Control_InitializeQueue(void);

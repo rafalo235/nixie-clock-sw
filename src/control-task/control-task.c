@@ -14,14 +14,9 @@
 #include "display/display.h"
 #include "stm32f103xb.h"
 
-void IdleState(struct Utils_StateMachine *sm, tUtils_Signal sig);
+void IdleState(void *sm, tUtils_Signal sig);
 
 QueueHandle_t gControlQueue;
-
-static tUtils_StateMachine sStateMachine =
-{
-		&IdleState, &IdleState
-};
 
 void Control_InitializeQueue(void)
 {
@@ -30,6 +25,11 @@ void Control_InitializeQueue(void)
 
 void Control_Task(void *parameters)
 {
+	tControlContext controlContext =
+	{
+			{ &IdleState, &IdleState },
+			1
+	};
 	tControlAction sig;
 	(void)parameters;
 
@@ -41,13 +41,15 @@ void Control_Task(void *parameters)
 				gControlQueue, &sig, portMAX_DELAY))
 		{
 			Utils_ProcessStateMachine(
-					&sStateMachine, sig);
+					&controlContext, sig);
 		}
 	}
 }
 
-void IdleState(struct Utils_StateMachine *sm, tUtils_Signal sig)
+void IdleState(void *sm, tUtils_Signal sig)
 {
+	tControlContext *context = sm;
+
 	switch (sig)
 	{
 	case CONTROL_ACTION_SECOND_TICK :
@@ -59,7 +61,44 @@ void IdleState(struct Utils_StateMachine *sm, tUtils_Signal sig)
 			tTime_DateTime t;
 
 			t = Time_GetUTCTime(tmp, NULL);
-			Display_Print(t.hour, t.minute);
+			if (0 == context->position)
+			{
+				Display_Print(t.minute, t.second);
+			}
+			else if (1 == context->position)
+			{
+				Display_Print(t.hour, t.minute);
+			}
+			else if (2 == context->position)
+			{
+				Display_Print(t.day, t.hour);
+			}
+			else if (3 == context->position)
+			{
+				Display_Print(t.month, t.day);
+			}
+			else if (4 == context->position)
+			{
+				Display_Print((uint8_t)(t.year / 100), (uint8_t)t.year);
+			}
+		}
+		break;
+	}
+	case CONTROL_ACTION_INCREMENT :
+	{
+		++(context->position);
+		if (context->position > 4)
+		{
+			context->position = 4;
+		}
+		break;
+	}
+	case CONTROL_ACTION_DECREMENT :
+	{
+		--(context->position);
+		if (context->position < 0)
+		{
+			context->position = 0;
 		}
 		break;
 	}
