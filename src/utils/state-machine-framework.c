@@ -18,6 +18,5 @@ void Utils_ProcessStateMachine(void *ptr, tUtils_Signal sig)
 	if (sm->current != sm->next)
 	{
 		sm->current(sm, UTILS_LEAVE_STATE);
-		sm->current = sm->next;
 	}
 }

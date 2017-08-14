@@ -44,7 +44,7 @@ void EXTI1_IRQHandler(void)
 	else if (ENCODER_PENDING_DECREMENT == sState
 			&& IS_RISING_EDGE(1) && IS_LOW(2))
 	{
-		tControlAction action = CONTROL_ACTION_DECREMENT;
+		const tControlAction action = CONTROL_ACTION_DECREMENT;
 		sState = ENCODER_IDLE;
 
 		if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
@@ -58,7 +58,7 @@ void EXTI1_IRQHandler(void)
 	else if (ENCODER_PENDING_INCREMENT == sState
 			&& IS_RISING_EDGE(1) && IS_HIGH(2))
 	{
-		tControlAction action = CONTROL_ACTION_INCREMENT;
+		const tControlAction action = CONTROL_ACTION_INCREMENT;
 		sState = ENCODER_IDLE;
 
 		if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
@@ -75,33 +75,16 @@ void EXTI1_IRQHandler(void)
 	}
 }
 
-
-void EXTI2_IRQHandler(void)
-{
-	const tControlAction action = CONTROL_ACTION_INCREMENT;
-	BaseType_t higherTaskPriority = pdFALSE;
-
-	EXTI->PR = EXTI_PR_PR2;
-
-	if ((GPIOA->IDR & GPIO_IDR_IDR1) == GPIO_IDR_IDR1 &&
-			pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
-	{
-		xQueueSendToBackFromISR(
-				gControlQueue, &action, &higherTaskPriority);
-		portYIELD_FROM_ISR(higherTaskPriority);
-	}
-}
-
-
 void EXTI3_IRQHandler(void)
 {
 	const tControlAction action = CONTROL_ACTION_PRESS;
-	BaseType_t higherTaskPriority = pdFALSE;
 
 	EXTI->PR = EXTI_PR_PR3;
 
 	if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
 	{
+		BaseType_t higherTaskPriority = pdFALSE;
+
 		xQueueSendToBackFromISR(
 				gControlQueue, &action, &higherTaskPriority);
 		portYIELD_FROM_ISR(higherTaskPriority);

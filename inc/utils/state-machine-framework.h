@@ -8,7 +8,7 @@
 #ifndef INC_UTILS_STATE_MACHINE_FRAMEWORK_H_
 #define INC_UTILS_STATE_MACHINE_FRAMEWORK_H_
 
-#define STATE_CHANGE(x, state)	((x).sm.next = state)
+#define STATE_CHANGE(x, state)	((x)->sm.next = state)
 
 /* Forward declaration */
 struct UtilsStateMachine;

@@ -24,6 +24,7 @@ typedef struct ControlContext
 {
 	tUtilsStateMachine sm;
 	int32_t position;
+	uint32_t timeToSet;
 } tControlContext;
 
 extern QueueHandle_t gControlQueue;
