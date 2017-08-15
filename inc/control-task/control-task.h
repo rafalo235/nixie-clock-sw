@@ -32,4 +32,8 @@ extern QueueHandle_t gControlQueue;
 void Control_InitializeQueue(void);
 void Control_Task(void *parameters);
 
+void DisplayWithPosition(uint32_t sec, int32_t position);
+uint32_t IncrementWithPosition(uint32_t sec, int32_t position);
+uint32_t DecrementWithPosition(uint32_t sec, int32_t position);
+
 #endif /* INC_CONTROL_TASK_CONTROL_TASK_H_ */

@@ -9,17 +9,10 @@
 #include "task.h"
 #include <stdint.h>
 #include <stdlib.h>
-#include "drivers/rtc/rtc.h"
 #include "time/time.h"
 #include "display/display.h"
 #include "stm32f103xb.h"
-
-void IdleState(void *sm, tUtils_Signal sig);
-void SetTimeState(void *sm, tUtils_Signal sig);
-
-static void DisplayWithPosition(uint32_t sec, int32_t position);
-static uint32_t IncrementWithPosition(uint32_t sec, int32_t position);
-static uint32_t DecrementWithPosition(uint32_t sec, int32_t position);
+#include "control-task/states/states.h"
 
 QueueHandle_t gControlQueue;
 
@@ -51,106 +44,7 @@ void Control_Task(void *parameters)
 	}
 }
 
-void IdleState(void *sm, tUtils_Signal sig)
-{
-	tControlContext *context = sm;
-	uint32_t tmp = 0;
-
-	switch (sig)
-	{
-	case CONTROL_ACTION_SECOND_TICK :
-	{
-		if (RTC_SUCCESS == Rtc_Read(&tmp))
-		{
-			DisplayWithPosition(tmp, context->position);
-		}
-		break;
-	}
-	case CONTROL_ACTION_INCREMENT :
-	{
-		++(context->position);
-		if (context->position > 4)
-		{
-			context->position = 4;
-		}
-
-		if (RTC_SUCCESS == Rtc_Read(&tmp))
-		{
-			DisplayWithPosition(tmp, context->position);
-		}
-		break;
-	}
-	case CONTROL_ACTION_DECREMENT :
-	{
-		--(context->position);
-		if (context->position < 0)
-		{
-			context->position = 0;
-		}
-
-		if (RTC_SUCCESS == Rtc_Read(&tmp))
-		{
-			DisplayWithPosition(tmp, context->position);
-		}
-		break;
-	}
-	case CONTROL_ACTION_PRESS :
-	{
-
-		STATE_CHANGE(context, &SetTimeState);
-		break;
-	}
-	default :
-		/* Ignore other signals */
-		break;
-	}
-}
-
-void SetTimeState(void *sm, tUtils_Signal sig)
-{
-	tControlContext *context = sm;
-
-	switch (sig)
-	{
-	case UTILS_ENTER_STATE :
-	{
-		context->timeToSet = 0;
-		Rtc_Read(&(context->timeToSet));
-		DisplayWithPosition(context->timeToSet, context->position);
-		break;
-	}
-	case CONTROL_ACTION_INCREMENT :
-	{
-		context->timeToSet =
-				IncrementWithPosition(context->timeToSet, context->position);
-		DisplayWithPosition(context->timeToSet, context->position);
-		break;
-	}
-	case CONTROL_ACTION_DECREMENT :
-	{
-		context->timeToSet =
-				DecrementWithPosition(context->timeToSet, context->position);
-		DisplayWithPosition(context->timeToSet, context->position);
-		break;
-	}
-	case CONTROL_ACTION_PRESS :
-	{
-		STATE_CHANGE(context, &IdleState);
-		break;
-	}
-	case UTILS_LEAVE_STATE :
-	{
-		/* TODO set time */
-		break;
-	}
-	default :
-		/* Ignore other signals */
-		break;
-	}
-
-}
-
-static void DisplayWithPosition(uint32_t sec, int32_t position)
+void DisplayWithPosition(uint32_t sec, int32_t position)
 {
 	tTime_DateTime t;
 
@@ -178,7 +72,7 @@ static void DisplayWithPosition(uint32_t sec, int32_t position)
 
 }
 
-static uint32_t IncrementWithPosition(uint32_t sec, int32_t position)
+uint32_t IncrementWithPosition(uint32_t sec, int32_t position)
 {
 	uint32_t t = sec;
 	if (0 == position)
@@ -203,7 +97,7 @@ static uint32_t IncrementWithPosition(uint32_t sec, int32_t position)
 	}
 }
 
-static uint32_t DecrementWithPosition(uint32_t sec, int32_t position)
+uint32_t DecrementWithPosition(uint32_t sec, int32_t position)
 {
 	uint32_t t = sec;
 	if (0 == position)
