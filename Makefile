@@ -2,6 +2,7 @@
 # Set compilation flags, debug options etc.
 include ./Makefile.conf
 ##
+.PHONY: test
 
 SRC_FILES := $(shell find src -name "*.c")
 FREERTOS_FILES := $(FREERTOS_SRC)/tasks.c \
@@ -36,6 +37,10 @@ $(OBJ)/%.o : third-party/%.c
 	@echo "CC $< -> $@"
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	
+test :
+	@mkdir -p bin/test
+	gcc -I./inc src/time/epoch.c src/time/utc.c test/time/conversion.c -o bin/test/conversion-test
 	
 clean :
 	rm -r $(OBJ) $(BIN)

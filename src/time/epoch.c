@@ -16,7 +16,7 @@ void Time_SetEpoch(const tTime_DateTime *epoch)
 	sEpoch = *epoch;
 }
 
-tTime_DateTime Time_GetEpoch(void)
+const tTime_DateTime* Time_GetEpoch(void)
 {
-	return sEpoch;
+	return &sEpoch;
 }

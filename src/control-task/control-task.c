@@ -48,7 +48,7 @@ void DisplayWithPosition(uint32_t sec, int32_t position)
 {
 	tTime_DateTime t;
 
-	t = Time_GetUTCTime(sec, NULL);
+	t = Time_GetUTCTime(sec, Time_GetEpoch());
 	if (0 == position)
 	{
 		Display_Print(t.minute, t.second);
@@ -59,11 +59,11 @@ void DisplayWithPosition(uint32_t sec, int32_t position)
 	}
 	else if (2 == position)
 	{
-		Display_Print(t.day, t.hour);
+		Display_Print(t.day + 1, t.hour);
 	}
 	else if (3 == position)
 	{
-		Display_Print(t.month, t.day);
+		Display_Print(t.month + 1, t.day + 1);
 	}
 	else if (4 == position)
 	{

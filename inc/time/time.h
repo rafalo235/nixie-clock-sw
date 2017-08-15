@@ -10,6 +10,12 @@
 
 #include <stdint.h>
 
+#define HOURS_PER_DAY	(24u)
+#define MINUTES_PER_HOUR	(60u)
+#define SECONDS_PER_MINUTE	(60u)
+#define SECONDS_PER_HOUR	(3600u)
+#define SECONDS_PER_DAY		(86400u)
+
 typedef struct Time_DateTime {
 	uint16_t year;
 	uint8_t month;
@@ -22,7 +28,7 @@ typedef struct Time_DateTime {
 void RTC_IRQHandler(void);
 
 void Time_SetEpoch(const tTime_DateTime *);
-tTime_DateTime Time_GetEpoch(void);
+const tTime_DateTime* Time_GetEpoch(void);
 
 tTime_DateTime Time_GetUTCTime(
 		uint32_t timestamp, const tTime_DateTime *epoch);
