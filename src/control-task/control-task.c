@@ -59,15 +59,15 @@ void DisplayWithPosition(uint32_t sec, int32_t position)
 	}
 	else if (2 == position)
 	{
-		Display_Print(t.day + 1, t.hour);
+		Display_Print(t.day, t.hour);
 	}
 	else if (3 == position)
 	{
-		Display_Print(t.month + 1, t.day + 1);
+		Display_Print(t.month + 1, t.day);
 	}
 	else if (4 == position)
 	{
-		Display_Print((uint8_t)(t.year / 100), (uint8_t)t.year);
+		Display_Print((uint8_t)(t.year / 100), (uint8_t)(t.year % 100));
 	}
 
 }
