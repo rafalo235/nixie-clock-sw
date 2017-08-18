@@ -21,12 +21,13 @@ static void InitializeClock(void)
 #define PRESCALER_VALUE		32767
 	RCC->APB1ENR |= RCC_APB1ENR_BKPEN | RCC_APB1ENR_PWREN;
 
+	/* Disable write-protection */
+	PWR->CR |= PWR_CR_DBP;
+
 	if (RCC->BDCR !=
 			(RCC_BDCR_LSEON | RCC_BDCR_LSERDY |
 			RCC_BDCR_RTCSEL_LSE | RCC_BDCR_RTCEN))
 	{
-		/* Disable write-protection */
-		PWR->CR |= PWR_CR_DBP;
 
 		RCC->BDCR |= RCC_BDCR_LSEON;
 		while ((RCC->BDCR & RCC_BDCR_LSERDY) != RCC_BDCR_LSERDY) { }
@@ -36,18 +37,21 @@ static void InitializeClock(void)
 
 		/* Poll until RTC registers are synchronized */
 		while ((RTC->CRL & RTC_CRL_RSF) != RTC_CRL_RSF) { }
+
 		/* Poll until RTC operations are ongoing */
 		while ((RTC->CRL & RTC_CRL_RTOFF) != RTC_CRL_RTOFF) { }
 
 		RTC->PRLL = PRESCALER_VALUE;
-
-		/* Enable write-protection */
-		PWR->CR &= ~(PWR_CR_DBP);
 	}
 
 	/* Enable interrupts */
 	InitializeInterrupts();
 	RTC->CRH |= RTC_CRH_SECIE;
+
+	while ((RTC->CRL & RTC_CRL_RTOFF) != RTC_CRL_RTOFF) { }
+
+	/* Enable write-protection */
+	PWR->CR &= ~(PWR_CR_DBP);
 }
 
 static void InitializeInterrupts(void)
