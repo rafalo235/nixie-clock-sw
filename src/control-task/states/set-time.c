@@ -43,7 +43,7 @@ void SetTimeState(void *sm, tUtils_Signal sig)
 	}
 	case UTILS_LEAVE_STATE :
 	{
-		/* TODO set time */
+		Rtc_Write(context->timeToSet);
 		break;
 	}
 	default :
