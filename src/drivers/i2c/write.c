@@ -8,12 +8,39 @@
 #include "drivers/i2c/i2c.h"
 #include "stm32f103xb.h"
 #include <stdlib.h>
+#include "FreeRTOS.h"
+#include "task.h"
+#include "drivers/i2c/internal/buffer.h"
 
 static tI2C_Result CheckArguments(uint8_t address, uint8_t data[], uint16_t length);
 static tI2C_Result CreateStartCondition(void);
 static tI2C_Result WriteAddress(uint8_t address);
 static tI2C_Result WriteByte(uint8_t data);
 static tI2C_Result CreateStopCondition(void);
+
+tI2C_Result I2C_WriteISR(uint8_t address, uint8_t data[], uint16_t length)
+{
+	uint32_t result;
+
+	/* TODO call synchronization with mutexes */
+
+	gI2CAddressBuffer = address;
+	gI2CBuffer = data;
+	gI2CBufferLength = (uint8_t)length;
+	gI2CCallingTask = xTaskGetCurrentTaskHandle();
+
+	I2C1->CR1 |= I2C_CR1_START;
+
+	/* Block till end of processing */
+	xTaskNotifyWait(0xFFFFFFFFu, 0xFFFFFFFFu, &result, portMAX_DELAY);
+
+	/* Wait for stop condition - fixme */
+	while ((I2C1->SR2 & I2C_SR2_BUSY) == I2C_SR2_BUSY) { }
+
+	/* TODO call synchronization with mutexes */
+
+	return (tI2C_Result)result;
+}
 
 tI2C_Result I2C_Write(uint8_t address, uint8_t data[], uint16_t length)
 {
@@ -34,7 +61,6 @@ tI2C_Result I2C_Write(uint8_t address, uint8_t data[], uint16_t length)
 		return result;
 	}
 
-	/* Write address */
 	while (length--)
 	{
 		if ((result = WriteByte(*data)) != I2C_SUCCESS)

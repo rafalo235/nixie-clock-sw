@@ -10,11 +10,13 @@
 
 static void InitializePins(void);
 static void InitializeController(void);
+static void InitializeInterrupts(void);
 
 void I2C_Initialize(void)
 {
 	InitializePins();
 	InitializeController();
+	InitializeInterrupts();
 }
 
 static void InitializePins(void)
@@ -49,10 +51,16 @@ static void InitializeController(void)
 	I2C1->CR1 = 0;
 
 	/* APB2 8 MHz clock */
-	I2C1->CR2 = I2C_CR2_FREQ_3;
+	I2C1->CR2 = I2C_CR2_FREQ_3 | I2C_CR2_ITEVTEN;
 	I2C1->OAR1 = OWN_ADDRESS;
 	I2C1->CCR = FREQUENCY_PRESCALER;
 	I2C1->TRISE = TRISE_VALUE;
 
 	I2C1->CR1 = I2C_CR1_PE;
+}
+
+static void InitializeInterrupts(void)
+{
+	NVIC_SetPriority(I2C1_EV_IRQn, 5);
+	NVIC_EnableIRQ(I2C1_EV_IRQn);
 }

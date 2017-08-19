@@ -19,7 +19,7 @@ void Display_Print(uint8_t number1, uint8_t number2)
 	number2 = SWAP_N_BITS(number2, 4);
 	number1 = SWAP_N_BITS(number1, 4);
 
-	I2C_Write(0x70, &number2, 1);
-	I2C_Write(0x72, &number1, 1);
+	I2C_WriteISR(0x70, &number2, 1);
+	I2C_WriteISR(0x72, &number1, 1);
 
 }
