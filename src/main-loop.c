@@ -1,5 +1,6 @@
 
 #include "control-task/control-task.h"
+#include "connection-task/connection-task.h"
 #include "FreeRTOS.h"
 #include "task.h"
 #include <stdlib.h>
@@ -7,6 +8,7 @@
 #include "drivers/i2c/i2c.h"
 #include "drivers/rtc/rtc.h"
 #include "drivers/gpio/gpio.h"
+#include "drivers/usart/usart.h"
 #include "stm32f103xb.h"
 
 void SystemInit(void);
@@ -15,6 +17,7 @@ void main(void)
 {
 	/* TODO static task since v9.0.0 */
 	xTaskCreate(Control_Task, "ControlTask", 256, NULL, 1, NULL);
+	xTaskCreate(Connection_Task, "ConnectionTask", 256, NULL, 1, NULL);
 
 	vTaskStartScheduler();
 
@@ -37,5 +40,6 @@ void SystemInit(void)
 	I2C_Initialize();
 	Rtc_Initialize();
 	Gpio_Initialize();
+	Usart_Initialize();
 }
 
