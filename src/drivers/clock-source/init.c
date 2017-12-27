@@ -15,7 +15,6 @@ static void ConfigurePll(void);
 void Pll_Initialize(void)
 {
 	InitializeHsi();
-	InitializePll();
 	ConfigurePll();
 }
 
@@ -45,6 +44,8 @@ static void ConfigurePll(void)
 	/* Clock multiplied by 9 (36 MHz) */
 	RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_PLLMULL) |
 			RCC_CFGR_PLLMULL9;
+
+	InitializePll();
 
 	/* Set PLL as clock source */
 	RCC->CFGR = (RCC->CFGR & ~RCC_CFGR_SW) |

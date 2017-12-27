@@ -33,8 +33,9 @@ static void InitializeController(void)
 	RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
 
 	USART1->CR1 = USART_CR1_UE;
-	/* Default - 1 stop bit */
-	USART1->BRR = 0x4E2;
+	/* Default - 1 stop bit
+	 * 19,5 BRR */
+	USART1->BRR = 0x138;
 
 	/* move just before transmitting receiving */
 	USART1->CR1 |= USART_CR1_TE | USART_CR1_RE;

@@ -15,7 +15,7 @@ void Connection_Task(void *parameters)
 
 	while (1)
 	{
-		Usart_Write("AT+REG?", 7);
+		Usart_Write("AT+REG?\r\n", 9);
 		vTaskDelay(pdMS_TO_TICKS(1000));
 	}
 
