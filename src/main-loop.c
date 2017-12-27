@@ -9,6 +9,7 @@
 #include "drivers/rtc/rtc.h"
 #include "drivers/gpio/gpio.h"
 #include "drivers/usart/usart.h"
+#include "drivers/clock-source/clock-source.h"
 #include "stm32f103xb.h"
 
 void SystemInit(void);
@@ -30,7 +31,8 @@ void main(void)
 void SystemInit(void)
 {
 	/* Initialized first - do not move it! */
-	Pwm_Initialize();
+	Pwm_InitializeOffState();
+	Pll_Initialize();
 
 	/* No sub-priorities - FreeRTOS requirement */
 	NVIC_SetPriorityGrouping(0);
@@ -41,5 +43,6 @@ void SystemInit(void)
 	Rtc_Initialize();
 	Gpio_Initialize();
 	Usart_Initialize();
+	Pwm_Initialize();
 }
 
