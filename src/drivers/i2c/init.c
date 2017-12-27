@@ -38,20 +38,20 @@ static void InitializePins(void)
 static void InitializeController(void)
 {
 #define OWN_ADDRESS		0xFE
-	/* 8 MHz / 40 = 200 000 Hz (Thigh = Tlow)
+	/* 36 MHz / 40 = 200 000 Hz (Thigh = Tlow)
 	 * 200 000 Hz / 2 = 100 000 Hz = T */
-#define FREQUENCY_PRESCALER	40
+#define FREQUENCY_PRESCALER	160
 	/* Maximum allowed rise time for Slow mode = 1000ns
-	 * Tclk = 125 ns
-	 * 1000ns / 125 ns = 8
-	 * TRISE = 8 + 1 */
-#define TRISE_VALUE	9
+	 * Tclk = 27,7 ns
+	 * 1000ns / 27,7 ns = 36
+	 * TRISE = 36 + 1 */
+#define TRISE_VALUE	37
 	RCC->APB1ENR |= RCC_APB1ENR_I2C1EN;
 
 	I2C1->CR1 = 0;
 
-	/* APB2 8 MHz clock */
-	I2C1->CR2 = I2C_CR2_FREQ_3 | I2C_CR2_ITEVTEN;
+	/* APB2 36 MHz clock */
+	I2C1->CR2 = 36 | I2C_CR2_ITEVTEN;
 	I2C1->OAR1 = OWN_ADDRESS;
 	I2C1->CCR = FREQUENCY_PRESCALER;
 	I2C1->TRISE = TRISE_VALUE;
