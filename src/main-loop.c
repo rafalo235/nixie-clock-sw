@@ -17,8 +17,8 @@ void SystemInit(void);
 void main(void)
 {
 	/* TODO static task since v9.0.0 */
-	xTaskCreate(Control_Task, "ControlTask", 256, NULL, 1, NULL);
-	xTaskCreate(Connection_Task, "ConnectionTask", 256, NULL, 1, NULL);
+	xTaskCreate(Control_Task, "ControlTask", 128, NULL, 1, NULL);
+	xTaskCreate(Connection_Task, "ConnectionTask", 128, NULL, 1, NULL);
 
 	vTaskStartScheduler();
 
