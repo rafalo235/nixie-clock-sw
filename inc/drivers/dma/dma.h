@@ -41,4 +41,7 @@ void
 Dma_StartTransfer(struct Dma *dma,
 		  void *from, void *to, uint16_t count);
 
+uint16_t
+Dma_GetRemainingBytes(struct Dma *dma);
+
 #endif /* INC_DRIVERS_DMA_DMA_H_ */

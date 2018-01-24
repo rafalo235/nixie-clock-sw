@@ -12,11 +12,18 @@
 
 void Connection_Task(void *parameters)
 {
+  uint8_t buffer[16];
+  uint16_t result;
+  while (1)
+  {
 
-	while (1)
-	{
-		Usart_Write("AT+REG?\r\n", 9);
-		vTaskDelay(pdMS_TO_TICKS(1000));
-	}
+    Usart_Read(buffer, 16, &result);
+
+    if (result > 0)
+      {
+	Usart_Write(buffer, result);
+      }
+    vTaskDelay(pdMS_TO_TICKS(100));
+  }
 
 }

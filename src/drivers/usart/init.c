@@ -19,7 +19,11 @@ struct Dma gTxDma =
 	Usart1_OnTransmissionError,
 	3
     };
-static struct Dma sRxDma;
+struct Dma gRxDma =
+{
+	DMA1, DMA1_Channel5,
+	NULL, NULL, NULL, 4
+};
 
 static void InitializePins(void);
 static void InitializeController(void);
@@ -32,6 +36,11 @@ void Usart_Initialize(void)
   InitializePins();
   InitializeDma();
   InitializeController();
+
+  /* Start continuous read to circullar buffer */
+  Dma_StartTransfer(&gRxDma, (void*)&(USART1->DR),
+		    gRxDmaBuffer,
+		    USART_RX_DMA_BUFFER_LENGTH);
 }
 
 static void InitializePins(void)
@@ -53,7 +62,7 @@ static void InitializeController(void)
    * 19,5 BRR */
   USART1->BRR = 0x138;
 
-  USART1->CR3 |= USART_CR3_DMAT;
+  USART1->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
 
   /* move just before transmitting receiving */
   USART1->CR1 |= USART_CR1_TE | USART_CR1_RE | USART_CR1_TCIE;
@@ -71,9 +80,15 @@ static void InitializeTxQueue(void)
 
 static void InitializeDma(void)
 {
+  /* Transmitter */
   Dma_Initialize(&gTxDma, DMA_CCR_MINC |
 		 DMA_CCR_DIR | DMA_CCR_TCIE |
 		 DMA_CCR_TEIE);
   NVIC_SetPriority(DMA1_Channel4_IRQn, 5);
   NVIC_EnableIRQ(DMA1_Channel4_IRQn);
+
+  /* Receiver */
+  Dma_Initialize(&gRxDma, DMA_CCR_MINC |
+		 DMA_CCR_CIRC);
+  NVIC_SetPriority(DMA1_Channel5_IRQn, 5);
 }
