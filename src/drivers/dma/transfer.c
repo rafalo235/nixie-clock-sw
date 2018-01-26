@@ -9,7 +9,7 @@
 
 void
 Dma_StartTransfer(struct Dma *dma,
-		  void *from, void *to, uint16_t count)
+		  const void *from, void *to, uint16_t count)
 {
   if ((dma->dmaChannelReg->CCR & DMA_CCR_DIR) == DMA_CCR_DIR)
     {

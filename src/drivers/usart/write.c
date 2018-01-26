@@ -17,30 +17,13 @@ uint16_t gTxToSend = 0;
 uint16_t gTxCurrentTransferLength;
 
 static uint16_t GetEmptySpace(void);
+static void QueueForTransfer(const uint8_t *data,
+			     uint16_t length,
+			     uint8_t copy);
 
-void Usart_Write(uint8_t* data, uint16_t length)
+void Usart_Write(const uint8_t* data, uint16_t length)
 {
-
-  if (gIsTransmissionStarted)
-    {
-      struct TxData m;
-      m.ptr = data;
-      gTxCurrentTransferLength = m.length = length;
-      xQueueSendToBack(txQueue, &m, portMAX_DELAY);
-    }
-  else
-    {
-      /* TODO synchronization */
-      gIsTransmissionStarted = 1;
-      gTxCurrentTransferLength = length;
-
-      /* Clearing TC by writing 0 to it */
-      USART1->SR = 0;
-
-      Dma_StartTransfer(&gTxDma, data,
-			(void*)&(USART1->DR),
-			length);
-    }
+  QueueForTransfer(data, length, 0);
 }
 
 uint16_t Usart_WriteCopy(const uint8_t *data,
@@ -53,7 +36,7 @@ uint16_t Usart_WriteCopy(const uint8_t *data,
   if (0 < length)
     {
       memcpy(&gTxBuffer[gTxEmpty], data, length);
-      Usart_Write(&gTxBuffer[gTxEmpty], length);
+      QueueForTransfer(&gTxBuffer[gTxEmpty], length, 1);
       gTxEmpty += length;
       gTxEmpty %= USART_TX_BUFFER_LENGTH;
     }
@@ -79,4 +62,40 @@ static uint16_t GetEmptySpace(void)
       result = USART_TX_BUFFER_LENGTH;
     }
   return result;
+}
+
+static void QueueForTransfer(const uint8_t *data,
+			     uint16_t length,
+			     uint8_t copy)
+{
+
+  if (gIsTransmissionStarted)
+    {
+      struct TxData m;
+      m.ptr = data;
+      m.length = length;
+      m.copy = copy;
+      xQueueSendToBack(txQueue, &m, portMAX_DELAY);
+    }
+  else
+    {
+      /* TODO synchronization */
+      gIsTransmissionStarted = 1;
+      if (copy)
+	{
+	  gTxCurrentTransferLength = length;
+	}
+      else
+	{
+	  gTxCurrentTransferLength = 0;
+	}
+
+      /* Clearing TC by writing 0 to it */
+      USART1->SR = 0;
+
+      Dma_StartTransfer(&gTxDma, data,
+			(void*)&(USART1->DR),
+			length);
+    }
+
 }

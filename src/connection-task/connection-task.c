@@ -14,6 +14,7 @@ void Connection_Task(void *parameters)
 {
   uint8_t buffer[16];
   uint16_t result;
+  int i = 0;
   while (1)
   {
 
@@ -26,7 +27,12 @@ void Connection_Task(void *parameters)
 	result -= coppied;
       }
 
-    vTaskDelay(pdMS_TO_TICKS(100));
+    if (((i++) % 1000) == 0)
+      {
+	Usart_Write("1234567890", 10);
+      }
+
+    vTaskDelay(pdMS_TO_TICKS(1));
   }
 
 }

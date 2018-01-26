@@ -13,8 +13,8 @@
 #include "queue.h"
 #include "drivers/dma/dma.h"
 
-#define USART_RX_DMA_BUFFER_LENGTH (32)
-#define USART_TX_BUFFER_LENGTH	(32)
+#define USART_RX_DMA_BUFFER_LENGTH (128)
+#define USART_TX_BUFFER_LENGTH	(128)
 
 typedef enum UsartResult
 {
@@ -24,8 +24,9 @@ typedef enum UsartResult
 
 struct TxData
 {
-  uint8_t *ptr;
+  const uint8_t *ptr;
   uint16_t length;
+  uint8_t copy;
 };
 
 extern QueueHandle_t txQueue;
@@ -38,7 +39,7 @@ extern uint16_t gTxToSend;
 extern uint16_t gTxCurrentTransferLength;
 
 void Usart_Initialize(void);
-void Usart_Write(uint8_t* data, uint16_t length);
+void Usart_Write(const uint8_t* data, uint16_t length);
 uint16_t Usart_WriteCopy(const uint8_t *data,
 			 uint16_t length);
 tUsartResult Usart_Read(uint8_t *data, uint16_t length, uint16_t *result);

@@ -22,10 +22,20 @@ void USART1_IRQHandler(void)
       /* Clearing TC by writing 0 to it */
       USART1->SR = 0;
 
+      gTxToSend += gTxCurrentTransferLength;
+      gTxToSend %= USART_TX_BUFFER_LENGTH;
+
       result = xQueueReceiveFromISR(txQueue, &data, 0);
       if (pdPASS == result)
 	{
-	  gTxCurrentTransferLength = data.length;
+	  if (data.copy)
+	    {
+	      gTxCurrentTransferLength = data.length;
+	    }
+	  else
+	    {
+	      gTxCurrentTransferLength = 0;
+	    }
 	  Dma_StartTransfer(&gTxDma, data.ptr,
 			    (void*)&(USART1->DR),
 			    data.length);
@@ -34,6 +44,7 @@ void USART1_IRQHandler(void)
 	{
 	  /* TODO synchronization */
 	  gIsTransmissionStarted = 0;
+	  gTxCurrentTransferLength = 0;
 	}
 
       NVIC_DisableIRQ(USART1_IRQn);
@@ -42,8 +53,6 @@ void USART1_IRQHandler(void)
 
 void Usart1_OnTransmissionComplete(void)
 {
-  gTxToSend += gTxCurrentTransferLength;
-  gTxToSend %= USART_TX_BUFFER_LENGTH;
   Dma_Disable(&gTxDma);
   NVIC_EnableIRQ(USART1_IRQn);
 }

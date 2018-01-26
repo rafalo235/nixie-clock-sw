@@ -39,7 +39,7 @@ Dma_Disable(struct Dma *dma);
 
 void
 Dma_StartTransfer(struct Dma *dma,
-		  void *from, void *to, uint16_t count);
+		  const void *from, void *to, uint16_t count);
 
 uint16_t
 Dma_GetRemainingBytes(struct Dma *dma);
