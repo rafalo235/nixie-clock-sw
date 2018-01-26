@@ -25,6 +25,7 @@ void USART1_IRQHandler(void)
       result = xQueueReceiveFromISR(txQueue, &data, 0);
       if (pdPASS == result)
 	{
+	  gTxCurrentTransferLength = data.length;
 	  Dma_StartTransfer(&gTxDma, data.ptr,
 			    (void*)&(USART1->DR),
 			    data.length);
@@ -41,6 +42,8 @@ void USART1_IRQHandler(void)
 
 void Usart1_OnTransmissionComplete(void)
 {
+  gTxToSend += gTxCurrentTransferLength;
+  gTxToSend %= USART_TX_BUFFER_LENGTH;
   Dma_Disable(&gTxDma);
   NVIC_EnableIRQ(USART1_IRQn);
 }

@@ -19,10 +19,13 @@ void Connection_Task(void *parameters)
 
     Usart_Read(buffer, 16, &result);
 
-    if (result > 0)
+    while (0 < result)
       {
-	Usart_Write(buffer, result);
+	uint16_t coppied =
+	    Usart_WriteCopy(buffer, result);
+	result -= coppied;
       }
+
     vTaskDelay(pdMS_TO_TICKS(100));
   }
 
