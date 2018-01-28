@@ -13,8 +13,8 @@
 #include "queue.h"
 #include "drivers/dma/dma.h"
 
-#define USART_RX_DMA_BUFFER_LENGTH (128)
-#define USART_TX_BUFFER_LENGTH	(128)
+#define USART_RX_DMA_BUFFER_LENGTH (1024)
+#define USART_TX_BUFFER_LENGTH	(1024)
 
 typedef enum UsartResult
 {
