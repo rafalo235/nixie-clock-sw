@@ -24,6 +24,8 @@
    ----------------------------------------------------------------------
  */
 #include "esp8266_ll.h"
+#include "stm32f103xb.h"
+#include "drivers/usart/usart.h"
 
 /******************************************************************************/
 /******************************************************************************/
@@ -44,6 +46,12 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
             /************************************/
             /*  Device specific initialization  */
             /************************************/
+            /* Output 2 MHz push-pull */
+            RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+            GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) |
+                GPIO_CRH_MODE11_1;
+            /* Set standby high */
+            GPIOA->BSRR = GPIO_BSRR_BS11;
 
             
             if (result) {
@@ -53,9 +61,16 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
         }
         case ESP_LL_Control_Send: {
             ESP_LL_Send_t* send = (ESP_LL_Send_t *)param;   /* Get send parameters */
+            const uint8_t *ptr = send->Data;
+            uint16_t count = send->Count;
             
             /* Send actual data to UART, implement function to send data */
-        	//send(send->Data, send->Count);
+            while (0 < count)
+              {
+                uint16_t res = Usart_WriteCopy(ptr, count);
+                ptr += res;
+                count -= res;
+              }
             
             if (result) {
                 *(uint8_t *)result = 0;             /* Successfully send */
@@ -65,9 +80,9 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
         case ESP_LL_Control_SetReset: {             /* Set reset value */
             uint8_t state = *(uint8_t *)param;      /* Get state packed in uint8_t variable */
             if (state == ESP_RESET_SET) {           /* Check state value */
-
+                GPIOA->BSRR = GPIO_BSRR_BR11;
             } else {
-
+                GPIOA->BSRR = GPIO_BSRR_BS11;
             }
             return 1;                               /* Command has been processed */
         }
@@ -115,6 +130,23 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
     }
 }
 
+void Receiver_Task(void *parameters)
+{
+#define RX_BUF_LEN	256
+  uint8_t ch[RX_BUF_LEN];
+  uint16_t res;
+  while (1)
+  {
+      Usart_Read(ch, RX_BUF_LEN, &res);
+      if (res)
+	{
+	  ESP_DataReceived(ch, res);
+	}
+      vTaskDelay(pdMS_TO_TICKS(1));
+  }
+
+}
+
 /* UART receive interrupt handler */
 void USART_RX_INTERRUPT_HANDLER_FUNCTION_NAME(void) {
 	uint8_t ch;
@@ -122,5 +154,5 @@ void USART_RX_INTERRUPT_HANDLER_FUNCTION_NAME(void) {
 	
 	
 	/* Send received character to ESP stack */
-	ESP_DataReceived(&ch, 1);
+
 }

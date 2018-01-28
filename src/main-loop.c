@@ -11,6 +11,7 @@
 #include "drivers/usart/usart.h"
 #include "drivers/clock-source/clock-source.h"
 #include "stm32f103xb.h"
+#include "esp8266_ll.h"
 
 void SystemInit(void);
 
@@ -19,6 +20,7 @@ void main(void)
 	/* TODO static task since v9.0.0 */
 	xTaskCreate(Control_Task, "ControlTask", 512, NULL, 1, NULL);
 	xTaskCreate(Connection_Task, "ConnectionTask", 512, NULL, 1, NULL);
+	xTaskCreate(Receiver_Task, "ReceiverTask", 512, NULL, 1, NULL);
 
 	vTaskStartScheduler();
 
