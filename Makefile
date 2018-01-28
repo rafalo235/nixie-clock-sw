@@ -11,13 +11,14 @@ FREERTOS_FILES := $(FREERTOS_SRC)/tasks.c \
  $(FREERTOS_SRC)/portable/GCC/ARM_CM3/port.c \
  $(FREERTOS_SRC)/portable/MemMang/heap_1.c
 ESP8266_AT_LIB_FILES := $(ESP8266_AT_LIB_SRC)/buffer.c \
- $(ESP8266_AT_LIB_SRC)/esp8266.c \
- $(ESP8266_AT_LIB_SRC)/esp8266_ll_template.c
+ $(ESP8266_AT_LIB_SRC)/esp8266.c
 OBJ_FILES := $(patsubst %.c,%.o,$(patsubst src/%,obj/%,$(SRC_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(FREERTOS_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(ESP8266_AT_LIB_FILES)))
 
 INC := -I./inc \
+ -I./inc/port/esp8266-at-lib \
+ -I./inc/port/freertos \
  -I./third-party/freertos/FreeRTOS/Source/include \
  -I./third-party/freertos/FreeRTOS/Source/portable/GCC/ARM_CM3 \
  -I./third-party/esp8266-at-lib/00-ESP8266_LIBRARY
