@@ -130,23 +130,6 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
     }
 }
 
-void Receiver_Task(void *parameters)
-{
-#define RX_BUF_LEN	256
-  uint8_t ch[RX_BUF_LEN];
-  uint16_t res;
-  while (1)
-  {
-      Usart_Read(ch, RX_BUF_LEN, &res);
-      if (res)
-	{
-	  ESP_DataReceived(ch, res);
-	}
-      vTaskDelay(pdMS_TO_TICKS(1));
-  }
-
-}
-
 /* UART receive interrupt handler */
 void USART_RX_INTERRUPT_HANDLER_FUNCTION_NAME(void) {
 	uint8_t ch;

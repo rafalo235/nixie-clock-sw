@@ -21,6 +21,7 @@ void main(void)
 	xTaskCreate(Control_Task, "ControlTask", 512, NULL, 1, NULL);
 	xTaskCreate(Connection_Task, "ConnectionTask", 512, NULL, 1, NULL);
 	xTaskCreate(Receiver_Task, "ReceiverTask", 512, NULL, 1, NULL);
+	xTaskCreate(Update_Task, "UpdateTask", 512, NULL, 1, NULL);
 
 	vTaskStartScheduler();
 
