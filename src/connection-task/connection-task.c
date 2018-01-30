@@ -18,10 +18,17 @@ void Connection_Task(void *parameters)
   ESP_AP_t aps[16];
   uint16_t res;
 
-  ESP_Init(&sEsp, 115200, EspCallback);
-  ESP_STA_ListAccessPoints(&sEsp, aps, 16, &res, 1);
+  if (espOK != ESP_Init(&sEsp, 115200, EspCallback))
+    {
+      asm volatile ("nop");
+    }
 
-  while (1) { }
+  while (1)
+    {
+      ESP_ProcessCallbacks(&sEsp);
+      vTaskDelay (pdMS_TO_TICKS (1));
+      //ESP_STA_ListAccessPoints(&sEsp, aps, 16, &res, 1);
+    }
 
 }
 
