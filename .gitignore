@@ -2,3 +2,4 @@ bin/
 obj/
 .cproject
 .project
+*.map

@@ -147,7 +147,7 @@
  * 
  *         When this feature is enabled, you HAVE TO do processing (ESP_Update) in interrupt.
  */
-#define ESP_ASYNC                           0
+#define ESP_ASYNC                           1
 
 /**
  * \brief   Enables (1) or disables (0) CTS pin on ESP8266 and software RTS pin on microcontroller

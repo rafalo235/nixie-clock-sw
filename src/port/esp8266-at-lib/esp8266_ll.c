@@ -38,6 +38,52 @@
 osMutexId id;
 #endif /* ESP_RTOS */
 
+uint8_t ESP_LL_Init(ESP_LL_t* LL) {
+  /* Init USART */
+  RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+  GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) |
+      GPIO_CRH_MODE11_1;
+  /* Set standby high */
+  GPIOA->BSRR = GPIO_BSRR_BS11;
+
+  /* We were successful */
+  return 0;
+}
+
+uint8_t ESP_LL_SendData(ESP_LL_t* LL, const uint8_t* data, uint16_t count) {
+  /* Send data */
+  const uint8_t *ptr = data;
+
+  /* Send actual data to UART, implement function to send data */
+  while (0 < count)
+    {
+      uint16_t res = Usart_WriteCopy(ptr, count);
+      ptr += res;
+      count -= res;
+    }
+  /* We were successful */
+  return 0;
+}
+
+uint8_t ESP_LL_SetReset(ESP_LL_t* LL, uint8_t state) {
+    /* Set pin according to status */
+    if (state == ESP_RESET_SET) {
+    //    GPIOA->BSRR = GPIO_BSRR_BR11;
+    } else {
+    //    GPIOA->BSRR = GPIO_BSRR_BS11;
+    }
+
+    /* We are OK */
+    return 0;
+}
+
+uint8_t ESP_LL_SetRTS(ESP_LL_t* LL, uint8_t state) {
+    /* We are OK */
+    return 0;
+}
+
+extern const char * SendAndReceive(const char *data, uint16_t length);
+
 uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
     switch (ctrl) {
         case ESP_LL_Control_Init: {                 /* Initialize low-level part of communication */
@@ -52,6 +98,8 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
                 GPIO_CRH_MODE11_1;
             /* Set standby high */
             GPIOA->BSRR = GPIO_BSRR_BS11;
+
+            SendAndReceive("AT+RST\r\n", 8);
 
             
             if (result) {
@@ -80,9 +128,9 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
         case ESP_LL_Control_SetReset: {             /* Set reset value */
             uint8_t state = *(uint8_t *)param;      /* Get state packed in uint8_t variable */
             if (state == ESP_RESET_SET) {           /* Check state value */
-                GPIOA->BSRR = GPIO_BSRR_BR11;
+            //    GPIOA->BSRR = GPIO_BSRR_BR11;
             } else {
-                GPIOA->BSRR = GPIO_BSRR_BS11;
+            //    GPIOA->BSRR = GPIO_BSRR_BS11;
             }
             return 1;                               /* Command has been processed */
         }
