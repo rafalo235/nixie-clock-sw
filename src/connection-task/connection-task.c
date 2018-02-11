@@ -118,24 +118,6 @@ void Connection_Task(void *parameters)
 
 }
 
-
-void Receiver_Task(void *parameters)
-{
-  while (1)
-    {
-      ESP_UpdateTime (&sEsp, 1);
-      vTaskDelay (pdMS_TO_TICKS (1));
-    }
-}
-
-void Update_Task(void *parameters)
-{
-  while (1)
-    {
-      ESP_Update(&sEsp);
-    }
-}
-
 uint32_t bw;
 const uint8_t responseData[] = ""
 "HTTP/1.1 200 OK\r\n"
@@ -195,4 +177,26 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
     }
 
     return 0;
+}
+
+void Update_Task(void *parameters)
+{
+  while (1)
+    {
+      ESP_Update(&sEsp);
+    }
+}
+
+void vApplicationTickHook( void )
+{
+  static uint16_t sCounter = pdMS_TO_TICKS (1);
+
+  if (sReceiverEnabled)
+    {
+      if (--sCounter == 0)
+	{
+	  ESP_UpdateTime (&sEsp, 1);
+	  sCounter = pdMS_TO_TICKS (1);
+	}
+    }
 }

@@ -17,18 +17,17 @@ void SystemInit(void);
 
 void main(void)
 {
-	/* TODO static task since v9.0.0 */
-	xTaskCreate(Control_Task, "ControlTask", 512, NULL, 1, NULL);
-	xTaskCreate(Connection_Task, "ConnectionTask", 512, NULL, 1, NULL);
-	xTaskCreate(Receiver_Task, "ReceiverTask", 256, NULL, 1, NULL);
-	xTaskCreate(Update_Task, "UpdateTask", 256, NULL, 1, NULL);
+  /* TODO static task since v9.0.0 */
+  xTaskCreate(Control_Task, "ControlTask", 512, NULL, 1, NULL);
+  xTaskCreate(Connection_Task, "ConnectionTask", 512, NULL, 1, NULL);
+  xTaskCreate(Update_Task, "UpdateTask", 256, NULL, 1, NULL);
 
-	vTaskStartScheduler();
+  vTaskStartScheduler ();
 
-	while (1)
-	{
-		__asm__("nop");
-	}
+  while (1)
+    {
+      __asm__("nop");
+    }
 }
 
 void SystemInit(void)

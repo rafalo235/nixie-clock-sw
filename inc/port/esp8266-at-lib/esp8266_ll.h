@@ -232,7 +232,6 @@ typedef struct _ESP_LL_t {
  */
 uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result);
 
-void Receiver_Task(void *parameters);
 void Update_Task(void *parameters);
     
 /**
