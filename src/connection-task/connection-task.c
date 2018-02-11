@@ -179,14 +179,6 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
     return 0;
 }
 
-void Update_Task(void *parameters)
-{
-  while (1)
-    {
-      ESP_Update(&sEsp);
-    }
-}
-
 void vApplicationTickHook( void )
 {
   static uint16_t sCounter = pdMS_TO_TICKS (1);
