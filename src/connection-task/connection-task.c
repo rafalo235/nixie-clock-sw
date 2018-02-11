@@ -102,12 +102,16 @@ void Connection_Task(void *parameters)
       asm volatile ("nop");
     }
 
+  if (espOK != (espResult = ESP_SERVER_Enable(&sEsp, 80, 0)))
+    {
+      asm volatile ("nop");
+    }
 
   while (1)
     {
       uint32_t tim;
-      //ESP_ProcessCallbacks(&sEsp);
-      //;
+      ESP_ProcessCallbacks(&sEsp);
+
       if (espOK != (espResult = ESP_Ping(&sEsp, "192.168.128.66", &tim, 1)))
         {
           asm volatile ("nop");
@@ -177,6 +181,14 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
     }
 
     return 0;
+}
+
+void Update_Task(void *param)
+{
+  while (1)
+    {
+      ESP_Update(&sEsp);
+    }
 }
 
 void vApplicationTickHook( void )
