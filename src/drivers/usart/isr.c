@@ -9,6 +9,10 @@
 #include "drivers/dma/dma.h"
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "esp8266.h"
+
+// fixme to remove
+uint8_t sReceiverEnabled = 0;
 
 void USART1_IRQHandler(void)
 {
@@ -46,15 +50,21 @@ void USART1_IRQHandler(void)
 	  gIsTransmissionStarted = 0;
 	  gTxCurrentTransferLength = 0;
 	}
-
-      NVIC_DisableIRQ(USART1_IRQn);
+    }
+  else if (((status & USART_SR_RXNE) == USART_SR_RXNE) ||
+      ((status & USART_SR_ORE) == USART_SR_ORE))
+    {
+      uint8_t c = USART1->DR;
+      if (sReceiverEnabled)
+	{
+	  ESP_DataReceived(&c, 1);
+	}
     }
 }
 
 void Usart1_OnTransmissionComplete(void)
 {
   Dma_Disable(&gTxDma);
-  NVIC_EnableIRQ(USART1_IRQn);
 }
 
 void Usart1_OnHalfTransmission(void)

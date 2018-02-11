@@ -16,28 +16,6 @@
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
 static volatile ESP_t sEsp;
-#define RECV_BUFFER_LENGTH	(1024)
-uint8_t inBuffer[RECV_BUFFER_LENGTH];
-
-const char * SendAndReceive(const char *data, uint16_t length)
-  {
-//    uint8_t inBuffer[16];
-    uint8_t *ptr = inBuffer;
-    uint16_t l = RECV_BUFFER_LENGTH;
-    uint16_t res;
-
-    memset(inBuffer, 0, RECV_BUFFER_LENGTH);
-
-    Usart_Write(data, length);
-    vTaskDelay(pdMS_TO_TICKS(5000));
-    while (l && (USART_OK == Usart_Read(ptr, l, &res)) && res)
-      {
-	ptr += res;
-	l -= res;
-      }
-    return inBuffer;
-
-  }
 
 void Connection_Task(void *parameters)
 {
@@ -130,7 +108,7 @@ void Connection_Task(void *parameters)
       uint32_t tim;
       //ESP_ProcessCallbacks(&sEsp);
       //;
-      if (espOK != (espResult = ESP_Ping(&sEsp, "192.168.128.65", &tim, 1)))
+      if (espOK != (espResult = ESP_Ping(&sEsp, "192.168.128.66", &tim, 1)))
         {
           asm volatile ("nop");
         }
@@ -143,16 +121,8 @@ void Connection_Task(void *parameters)
 
 void Receiver_Task(void *parameters)
 {
-#define RX_BUF_LEN	256
-  uint8_t ch[RX_BUF_LEN];
-  uint16_t res;
   while (1)
     {
-      Usart_Read (ch, RX_BUF_LEN, &res);
-      if (res)
-	{
-	  ESP_DataReceived (ch, res);
-	}
       ESP_UpdateTime (&sEsp, 1);
       vTaskDelay (pdMS_TO_TICKS (1));
     }

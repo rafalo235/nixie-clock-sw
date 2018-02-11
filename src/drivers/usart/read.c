@@ -8,6 +8,13 @@
 #include "drivers/usart/usart.h"
 #include <string.h>
 
+tUsartResult Usart_Read(uint8_t *data, uint16_t length, uint16_t *result)
+{
+  return USART_OK;
+}
+
+#if USART_BUFFERED_READ
+
 static uint16_t sReadPtr = 0;
 uint8_t gRxDmaBuffer[USART_RX_DMA_BUFFER_LENGTH];
 
@@ -41,3 +48,5 @@ tUsartResult Usart_Read(uint8_t *data, uint16_t length, uint16_t *result)
 
   return res;
 }
+
+#endif
