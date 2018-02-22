@@ -30,7 +30,7 @@ uint16_t Usart_WriteCopy(const uint8_t *data,
 			 uint16_t length)
 {
   /* Leave one byte to avoid overflow */
-  uint16_t space = GetEmptySpace() - 1;
+  uint16_t space = GetEmptySpace();
 
   length = space > length ? length : space;
   if (0 < length)
@@ -51,15 +51,11 @@ static uint16_t GetEmptySpace(void)
 
   if (gTxEmpty < toSend)
     {
-      result = toSend - gTxEmpty;
-    }
-  else if (gTxEmpty > toSend)
-    {
-      result = USART_TX_BUFFER_LENGTH - gTxEmpty;
+      result = toSend - gTxEmpty - 1;
     }
   else
     {
-      result = USART_TX_BUFFER_LENGTH;
+      result = USART_TX_BUFFER_LENGTH - gTxEmpty;
     }
   return result;
 }
