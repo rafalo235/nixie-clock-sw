@@ -11,11 +11,14 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stm32f103xb.h"
+#include "uchttpserver.h"
+#include "port/uchttpserver/port.h"
+#include "port/uchttpserver/resources.h"
 
 
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
-static volatile ESP_t sEsp;
+volatile ESP_t sEsp;
 
 void Connection_Task(void *parameters)
 {
@@ -112,11 +115,13 @@ void Connection_Task(void *parameters)
       uint32_t tim;
       ESP_ProcessCallbacks(&sEsp);
 
+#if 0
       if (espOK != (espResult = ESP_Ping(&sEsp, "192.168.128.66", &tim, 1)))
         {
           asm volatile ("nop");
         }
-      vTaskDelay (pdMS_TO_TICKS (1000));
+#endif
+      vTaskDelay (pdMS_TO_TICKS (10));
     }
 #endif
 
@@ -138,9 +143,15 @@ const uint8_t responseData[] = ""
 "</body>"
 "</html>";
 
+unsigned int Http_SendPort(
+    void * const  conn, const char * data, unsigned int length);
+
+tuCHttpServerState connection;
+
 int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
     ESP_CONN_t* conn;
     uint8_t* data;
+    static int initialized = 0;
 
     switch (evt) {                              /* Check events */
         case espEventIdle:
@@ -151,21 +162,27 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
         }
         case espEventConnClosed: {
             conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
+            initialized = 0;
             break;
         }
         case espEventDataReceived: {
-            conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
+
+	    conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
             data = (uint8_t *)params->CP2;      /* Get data */
 
-            /* Notify user about informations */
+            if (!initialized)
+              {
+                Http_InitializeConnection(
+            	&connection, &Http_SendPort,
+    		&resources, 1,
+    		conn);
+                initialized = 1;
+              }
 
-            if (ESP_IsReady(&sEsp) == espOK) {   /* Send data back when we have received all the data from device */
-                if (strstr((char *)data, "/favicon")) { /* When browser requests favicon image, ignore it! */
-                    ESP_CONN_Close(&sEsp, conn, 0);      /* Close connection directly on favicon request */
-                } else {
-                    ESP_CONN_Send(&sEsp, conn, responseData, sizeof(responseData), &bw, 0); /* Send data on other requests */
-                }
-            }
+            if (ESP_IsReady(&sEsp) == espOK)
+              {
+                Http_Input(&connection, data, strlen(data));
+              }
             break;
         }
         case espEventDataSent:
