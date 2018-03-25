@@ -62,19 +62,19 @@ src/resources/generated/html/%.c : src/resources/html/%.html
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
 	@mkdir -p $(patsubst src/%,inc/%,$(@D))
-	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst src/%,inc/%,$@) -o $@ $<
+	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst %.c,%.h,$(patsubst src/%,inc/%,$@)) -o $@ $<
 	
 src/resources/generated/js/%.c : src/resources/js/%.js
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
 	@mkdir -p $(patsubst src/%,inc/%,$(@D))
-	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst src/%,inc/%,$@) -o $@ $<
+	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst %.c,%.h,$(patsubst src/%,inc/%,$@)) -o $@ $<
 	
 src/resources/generated/css/%.c : src/resources/css/%.css
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
 	@mkdir -p $(patsubst src/%,inc/%,$(@D))
-	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst src/%,inc/%,$@) -o $@ $<
+	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst %.c,%.h,$(patsubst src/%,inc/%,$@)) -o $@ $<
 	
 test :
 	@mkdir -p bin/test
