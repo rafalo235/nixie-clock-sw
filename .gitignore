@@ -1,6 +1,7 @@
 bin/
 obj/
 src/resources/generated/
+inc/resources/generated/
 .cproject
 .project
 *.map

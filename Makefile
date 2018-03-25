@@ -61,21 +61,24 @@ $(OBJ)/%.o : third-party/%.c
 src/resources/generated/html/%.c : src/resources/html/%.html
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
-	@bin2c -o $@ $<
+	@mkdir -p $(patsubst src/%,inc/%,$(@D))
+	@bin2c -d $(patsubst src/%,inc/%,$@) -o $@ $<
 	
 src/resources/generated/js/%.c : src/resources/js/%.js
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
-	@bin2c -o $@ $<
+	@mkdir -p $(patsubst src/%,inc/%,$(@D))
+	@bin2c -d $(patsubst src/%,inc/%,$@) -o $@ $<
 	
 src/resources/generated/css/%.c : src/resources/css/%.css
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
-	@bin2c -o $@ $<
+	@mkdir -p $(patsubst src/%,inc/%,$(@D))
+	@bin2c -d $(patsubst src/%,inc/%,$@) -o $@ $<
 	
 test :
 	@mkdir -p bin/test
 	gcc -I./inc src/time/epoch.c src/time/utc.c test/time/conversion.c -o bin/test/conversion-test
 	
 clean :
-	rm -r $(OBJ) $(BIN) src/resources/generated
+	rm -r $(OBJ) $(BIN) src/resources/generated inc/resources/generated
