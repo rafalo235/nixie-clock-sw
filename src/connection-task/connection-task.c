@@ -174,7 +174,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
               {
                 Http_InitializeConnection(
             	&connection, &Http_SendPort,
-    		&resources, 1,
+    		&resources, 4,
     		conn);
                 initialized = 1;
               }

@@ -6,35 +6,12 @@
  */
 
 #include "port/uchttpserver/resources.h"
-
-static tHttpStatusCode IndexCallback(void * const);
+#include "resources/pages.h"
 
 const tResourceEntry resources[] =
     {
-	{ STRING_WITH_LENGTH("/index.html"), &IndexCallback }
+	{ STRING_WITH_LENGTH("/connect.html"), &IndexCallback },
+	{ STRING_WITH_LENGTH("/index.html"), &IndexCallback },
+	{ STRING_WITH_LENGTH("/script.js"), &ScriptCallback },
+	{ STRING_WITH_LENGTH("/style.css"), &StyleCallback }
     };
-
-static tHttpStatusCode IndexCallback(void * const conn)
-{
-  tuCHttpServerState * const sm = conn;
-  const char * helloWorld = "Hello world";
-  const void * const * parameters = { (const void *)&helloWorld };
-
-  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
-  Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
-  Http_HelperSendHeaderLine(sm, "Connection", "close");
-  Http_HelperSendCRLF(sm);
-  Http_HelperSendMessageBodyParametered(sm,
-    "<html>"
-    "<head>"
-    "<meta http-equiv=\"Refresh\" content=\"1\" />"
-    "</head>"
-    "<body>"
-    "<h1>Welcome to uCHttpServer!</h1>"
-    "%s from uCHttpServer!"
-    "</body>"
-    "</html>", parameters);
-  Http_HelperFlush(sm);
-
-  return HTTP_STATUS_OK;
-}
