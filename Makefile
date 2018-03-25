@@ -4,6 +4,15 @@ include ./Makefile.conf
 ##
 .PHONY: test
 
+##
+# Convert resource files to C
+##
+RESOURCE_FILES := $(shell find src -name "*.html" -o -name "*.js" -o -name "*.css")
+RESOURCE_C_FILES := $(patsubst %.css, %.c,\
+$(patsubst %.js,%.c,\
+$(patsubst %.html,%.c,\
+$(patsubst src/resources/%,src/resources/generated/%,$(RESOURCE_FILES)))))
+
 SRC_FILES := $(shell find src -name "*.c")
 FREERTOS_FILES := $(FREERTOS_SRC)/tasks.c \
  $(FREERTOS_SRC)/queue.c \
@@ -31,6 +40,8 @@ all : $(OBJ_FILES)
 	@echo "LD $(BIN)/nixie-clock-sw.elf"
 	@$(CC) $(LDFLAGS) $(OBJ_FILES) startup.s -o $(BIN)/$(APP).elf
 
+resources : $(RESOURCE_C_FILES)
+
 hex : all
 	$(OBJCOPY) -O ihex $(BIN)/$(APP).elf $(BIN)/$(APP).hex
 
@@ -47,9 +58,24 @@ $(OBJ)/%.o : third-party/%.c
 	@mkdir -p $(@D)
 	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 	
+src/resources/generated/html/%.c : src/resources/html/%.html
+	@echo "BIN2C $< -> $@"
+	@mkdir -p $(@D)
+	@bin2c -o $@ $<
+	
+src/resources/generated/js/%.c : src/resources/js/%.js
+	@echo "BIN2C $< -> $@"
+	@mkdir -p $(@D)
+	@bin2c -o $@ $<
+	
+src/resources/generated/css/%.c : src/resources/css/%.css
+	@echo "BIN2C $< -> $@"
+	@mkdir -p $(@D)
+	@bin2c -o $@ $<
+	
 test :
 	@mkdir -p bin/test
 	gcc -I./inc src/time/epoch.c src/time/utc.c test/time/conversion.c -o bin/test/conversion-test
 	
 clean :
-	rm -r $(OBJ) $(BIN)
+	rm -r $(OBJ) $(BIN) src/resources/generated
