@@ -15,7 +15,7 @@ tHttpStatusCode StyleCallback(void * const conn)
   /* Send header */
   Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
   Http_HelperSendHeaderLine(sm, "Content-Type", "text/css");
-  Http_HelperSendHeaderLine(sm, "Connection", "close");
+  //Http_HelperSendHeaderLine(sm, "Connection", "close");
   Http_HelperSendCRLF(sm);
 
   Http_HelperSend(sm, style_css, style_css_size);

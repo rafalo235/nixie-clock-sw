@@ -14,8 +14,8 @@ void Page_SendButton(
 {
   tuCHttpServerState * const sm = conn;
   const void * parameters[] = {
-      (const void *)&callback,
-      (const void *)&display
+      (const void *)callback,
+      (const void *)display
   };
   Http_HelperSendParametered(sm, button_html, button_html_size, parameters);
 }
