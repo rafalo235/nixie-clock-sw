@@ -19,6 +19,7 @@ tHttpStatusCode StyleCallback(void * const conn)
   Http_HelperSendCRLF(sm);
 
   Http_HelperSend(sm, style_css, style_css_size);
+  Http_HelperFlush(sm);
 
   return HTTP_STATUS_OK;
 }
