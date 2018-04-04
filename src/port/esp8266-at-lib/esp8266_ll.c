@@ -73,6 +73,10 @@ uint8_t ESP_LL_Callback(ESP_LL_Control_t ctrl, void* param, void* result) {
                 uint16_t res = Usart_WriteCopy(ptr, count);
                 ptr += res;
                 count -= res;
+                if (0 == res)
+                  {
+                    vTaskDelay(pdMS_TO_TICKS(1));
+                  }
               }
             
             if (result) {

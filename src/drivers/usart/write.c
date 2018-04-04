@@ -47,15 +47,33 @@ uint16_t Usart_WriteCopy(const uint8_t *data,
 static uint16_t GetEmptySpace(void)
 {
   uint16_t result = 0;
-  uint16_t toSend = gTxToSend; //fixme synchronize
+  uint16_t toSend;
+  uint8_t started;
+
+  __disable_irq();
+  started = gIsTransmissionStarted;
+  toSend = gTxToSend;
+  __enable_irq();
 
   if (gTxEmpty < toSend)
     {
       result = toSend - gTxEmpty - 1;
     }
-  else
+  else if (gTxEmpty > toSend)
     {
       result = USART_TX_BUFFER_LENGTH - gTxEmpty;
+    }
+  else /* if equal */
+    {
+      if (started)
+	{
+	  result = 0;
+	}
+      else
+	{
+	  /* Everything is sent */
+	  result = USART_TX_BUFFER_LENGTH - gTxEmpty;
+	}
     }
   return result;
 }
@@ -64,6 +82,7 @@ static void QueueForTransfer(const uint8_t *data,
 			     uint16_t length,
 			     uint8_t copy)
 {
+  __disable_irq();
 
   if (gIsTransmissionStarted)
     {
@@ -71,6 +90,9 @@ static void QueueForTransfer(const uint8_t *data,
       m.ptr = data;
       m.length = length;
       m.copy = copy;
+
+      __enable_irq();
+
       xQueueSendToBack(txQueue, &m, portMAX_DELAY);
     }
   else
@@ -92,6 +114,8 @@ static void QueueForTransfer(const uint8_t *data,
       Dma_StartTransfer(&gTxDma, data,
 			(void*)&(USART1->DR),
 			length);
+
+      __enable_irq();
     }
 
 }
