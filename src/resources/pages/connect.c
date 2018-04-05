@@ -9,7 +9,27 @@
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
 
+static void GetConnectCallback(void * const conn);
+static void PostConnectCallback(void * const conn);
+
 tHttpStatusCode ConnectCallback(void * const conn)
+{
+  tuCHttpServerState * const sm = conn;
+  tHttpMethod method = Http_HelperGetMethod(sm);
+
+  if (HTTP_GET == method)
+    {
+      GetConnectCallback(conn);
+    }
+  else if (HTTP_POST == method)
+    {
+      PostConnectCallback(conn);
+    }
+
+  return HTTP_STATUS_OK;
+}
+
+static void GetConnectCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
 
@@ -51,5 +71,9 @@ tHttpStatusCode ConnectCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
 
-  return HTTP_STATUS_OK;
+}
+
+static void PostConnectCallback(void * const conn)
+{
+
 }
