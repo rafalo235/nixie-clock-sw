@@ -33,7 +33,7 @@ function loadIndex()
 function refreshConnect()
 {	
 	var xhr = new XMLHttpRequest();
-    xhr.open('GET', 'aps.json', true);
+    xhr.open('GET', 'accesspoints.json', true);
     xhr.responseType = 'json';
     xhr.onload = function() {
 		var status = xhr.status;

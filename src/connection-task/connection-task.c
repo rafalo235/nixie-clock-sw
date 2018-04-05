@@ -58,8 +58,6 @@ void Connection_Task(void *parameters)
 
 #else
 
-  ESP_AP_t aps[16];
-  uint16_t res;
   ESP_Result_t espResult;
 
   if (espOK != (espResult = ESP_Init(&sEsp, 115200, EspCallback)))
@@ -93,14 +91,12 @@ void Connection_Task(void *parameters)
     }
 #endif
 
-
-
-  if (espOK != (espResult = ESP_STA_ListAccessPoints(&sEsp, aps, 16, &res, 1)))
+  if (espOK != (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
     {
       asm volatile ("nop");
     }
 
-  if (espOK != (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
+  if (espOK != (espResult = ESP_SetHostName(&sEsp, "nixie", 1)))
     {
       asm volatile ("nop");
     }
@@ -174,7 +170,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
               {
                 Http_InitializeConnection(
             	&connection, &Http_SendPort,
-    		&resources, 5,
+    		&resources, 6,
     		conn);
                 initialized = 1;
               }
