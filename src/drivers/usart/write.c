@@ -57,7 +57,7 @@ static uint16_t GetEmptySpace(void)
 
   if (gTxEmpty < toSend)
     {
-      result = toSend - gTxEmpty - 1;
+      result = toSend - gTxEmpty;
     }
   else if (gTxEmpty > toSend)
     {
