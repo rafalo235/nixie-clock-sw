@@ -8,6 +8,9 @@
 #include "resources/pages.h"
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
+#include "esp8266.h"
+
+extern volatile ESP_t sEsp;
 
 static void GetConnectCallback(void * const conn);
 static void PostConnectCallback(void * const conn);
@@ -53,19 +56,10 @@ static void GetConnectCallback(void * const conn)
   Page_SendButton(conn, "Connect", "sendConnect()");
   Page_SendButton(conn, "Back", "loadIndex()");
 
-  Http_HelperSendMessageBody(sm,
-       "<div id=\"passwordpopup\" class=\"modal\">"
-	 "<div class=\"modal-content\">"
-	   "<p>Enter password</p>"
-	  "<input type=\"password\" id=\"apn_password\" />"
-	  "<div class='button popup-button' onclick='displayError(\"Not implemented yet\")'><p>OK</p></div>"
-	 "</div>"
-       "</div>"
-       "<div id=\"error-popup\" class=\"modal\">"
-	 "<div class=\"modal-content\">"
-	   "<p id=\"error-message\">Error occured</p>"
-	 "</div>"
-       "</div>");
+  Page_SendPasswordPopup(
+      conn, "passwordpopup", "apn_password",
+      "displayError(\"Not implemented yet\")");
+  Page_SendErrorPopup(conn, "error-popup", "Error occured");
 
   Http_HelperSendMessageBody(sm, "</body>");
   Http_HelperSendMessageBody(sm, "</html>");
@@ -75,5 +69,20 @@ static void GetConnectCallback(void * const conn)
 
 static void PostConnectCallback(void * const conn)
 {
+  tuCHttpServerState * const sm = conn;
+  ESP_Result_t espResult;
+  tHttpStatusCode status;
 
+  if (espOK == (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
+    {
+
+    }
+
+  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
+  Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
+  //Http_HelperSendHeaderLine(sm, "Connection", "close");
+  Http_HelperSendCRLF(sm);
+
+  Http_HelperSendMessageBody(sm, "Connected!");
+  Http_HelperFlush(sm);
 }

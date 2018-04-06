@@ -7,6 +7,8 @@
 
 #include "resources/common.h"
 #include "resources/generated/html/button.h"
+#include "resources/generated/html/passwordpopup.h"
+#include "resources/generated/html/errorpopup.h"
 #include "uchttpserver.h"
 
 void Page_SendButton(
@@ -18,6 +20,32 @@ void Page_SendButton(
       (const void *)display
   };
   Http_HelperSendParametered(sm, button_html, button_html_size, parameters);
+}
+
+void Page_SendPasswordPopup(
+    void * const conn, const char * modalid,
+    const char * id, const char * onclick)
+{
+  tuCHttpServerState * const sm = conn;
+  const void * parameters[] = {
+      (const void *)modalid,
+      (const void *)id,
+      (const void *)onclick
+  };
+  Http_HelperSendParametered(
+      sm, passwordpopup_html, passwordpopup_html_size, parameters);
+}
+
+void Page_SendErrorPopup(
+    void * const conn, const char * modalid, const char * message)
+{
+  tuCHttpServerState * const sm = conn;
+  const void * parameters[] = {
+      (const void *)modalid,
+      (const void *)message
+  };
+  Http_HelperSendParametered(
+      sm, errorpopup_html, errorpopup_html_size, parameters);
 }
 
 

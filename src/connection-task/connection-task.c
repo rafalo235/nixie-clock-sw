@@ -15,7 +15,6 @@
 #include "port/uchttpserver/port.h"
 #include "port/uchttpserver/resources.h"
 
-
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
 volatile ESP_t sEsp;
@@ -90,11 +89,6 @@ void Connection_Task(void *parameters)
 
     }
 #endif
-
-  if (espOK != (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
-    {
-      asm volatile ("nop");
-    }
 
   if (espOK != (espResult = ESP_SetHostName(&sEsp, "nixie", 1)))
     {

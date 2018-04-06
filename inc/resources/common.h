@@ -10,6 +10,11 @@
 
 void Page_SendButton(
     void * const conn, const char * display, const char * callback);
+void Page_SendPasswordPopup(
+    void * const conn, const char * modalid,
+    const char * id, const char * onclick);
+void Page_SendErrorPopup(
+    void * const conn, const char * modalid, const char * message);
 
 void Json_OpenObject(void * const conn);
 void Json_CloseObject(void * const conn);
