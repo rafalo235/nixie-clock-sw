@@ -69,6 +69,45 @@ function displayError(textMessage)
 	message.innerHTML = textMessage;
 }
 
+function onConnectOk()
+{
+	alert("OK");
+}
+
+function onConnectError()
+{
+	alert("ERROR");
+}
+
+function connect()
+{
+	var passwd = document.getElementById("apn_password").value;
+	var e = document.getElementById("apslist");
+	var apn = e.options[e.selectedIndex].value;
+
+	sendPost("connect.html", "apn=" + apn + "&passwd=" + passwd,
+		onConnectOk, onConnectError);
+}
+
+function sendPost(url, params, onOk, onError)
+{
+	var http = new XMLHttpRequest();
+	http.open("POST", url, true);
+	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.onreadystatechange = function() 
+	{
+    	if(http.readyState == 4 && http.status == 200) 
+    	{
+        	onOk();
+    	}
+    	else
+    	{
+    		onError();
+    	}
+	};
+	http.send(params);
+}
+
 window.onclick = function(event) {
 	var modal = document.getElementById("passwordpopup");
 	var errorModal = document.getElementById("error-popup");

@@ -58,7 +58,7 @@ static void GetConnectCallback(void * const conn)
 
   Page_SendPasswordPopup(
       conn, "passwordpopup", "apn_password",
-      "displayError(\"Not implemented yet\")");
+      "connect()");
   Page_SendErrorPopup(conn, "error-popup", "Error occured");
 
   Http_HelperSendMessageBody(sm, "</body>");
@@ -72,17 +72,30 @@ static void PostConnectCallback(void * const conn)
   tuCHttpServerState * const sm = conn;
   ESP_Result_t espResult;
   tHttpStatusCode status;
+  const char * apName = Http_HelperGetParameter(sm, "apn");
+  const char * password = Http_HelperGetParameter(sm, "passwd");
 
-  if (espOK == (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
+  if (NULL != apName && NULL != password)
     {
-
+#if 0
+      if (espOK == (espResult = ESP_STA_Connect(
+          &sEsp, apName, password, NULL, 0, 1)))
+        {
+	  status = HTTP_STATUS_OK;
+        }
+      else
+	{
+	  status = HTTP_STATUS_NOT_FOUND; /* fixme */
+	}
+#endif
+    }
+  else
+    {
+      status = HTTP_STATUS_NOT_FOUND; /* fixme */
     }
 
-  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
+  Http_HelperSendStatusLine(sm, status);
   Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
-  //Http_HelperSendHeaderLine(sm, "Connection", "close");
   Http_HelperSendCRLF(sm);
-
-  Http_HelperSendMessageBody(sm, "Connected!");
   Http_HelperFlush(sm);
 }
