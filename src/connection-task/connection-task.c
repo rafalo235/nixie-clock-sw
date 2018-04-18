@@ -64,6 +64,12 @@ void Connection_Task(void *parameters)
       asm volatile ("nop");
     }
 
+  if (espOK == (espResult = ESP_STA_Connect(
+	&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
+    {
+      asm volatile ("nop");
+    }
+
 #if 0
   /* Set access point */
   sEsp.APConf.Hidden = 0;                  /* Allow AP to be seen in network */

@@ -77,6 +77,8 @@ static void PostConnectCallback(void * const conn)
 
   if (NULL != apName && NULL != password)
     {
+      status = HTTP_STATUS_OK;
+
 #if 0
       if (espOK == (espResult = ESP_STA_Connect(
           &sEsp, apName, password, NULL, 0, 1)))
@@ -97,5 +99,11 @@ static void PostConnectCallback(void * const conn)
   Http_HelperSendStatusLine(sm, status);
   Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
   Http_HelperSendCRLF(sm);
+
+  if (NULL != apName && NULL != password)
+    {
+      Http_HelperSendMessageBody(sm, apName);
+      Http_HelperSendMessageBody(sm, password);
+    }
   Http_HelperFlush(sm);
 }
