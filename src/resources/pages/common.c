@@ -11,6 +11,18 @@
 #include "resources/generated/html/errorpopup.h"
 #include "uchttpserver.h"
 
+static int sIsConnected = 0;
+
+int Connection_IsConnected(void)
+{
+  return sIsConnected;
+}
+
+void Connection_SetConnected(int connected)
+{
+  sIsConnected = connected;
+}
+
 void Page_SendButton(
     void * const conn, const char * display, const char * callback)
 {

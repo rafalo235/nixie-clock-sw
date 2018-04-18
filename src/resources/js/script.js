@@ -19,10 +19,19 @@ function fillSelect(id, arr)
 	}
 }
 
+function loadStatus()
+{
+	location.href = "status.html";
+}
 
 function loadConnect()
 {
 	location.href = "connect.html";
+}
+
+function loadDisconnect()
+{
+	location.href = "disconnect.html";
 }
 
 function loadIndex()

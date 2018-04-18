@@ -16,6 +16,7 @@ extern tHttpStatusCode DisconnectCallback(void * const conn);
 extern tHttpStatusCode FaviconCallback(void * const conn);
 extern tHttpStatusCode IndexCallback(void * const conn);
 extern tHttpStatusCode ScriptCallback(void * const conn);
+extern tHttpStatusCode StatusCallback(void * const conn);
 extern tHttpStatusCode StyleCallback(void * const conn);
 
 #endif /* INC_GENERATED_PAGES_H_ */

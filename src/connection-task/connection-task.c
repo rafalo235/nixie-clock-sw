@@ -14,6 +14,7 @@
 #include "uchttpserver.h"
 #include "port/uchttpserver/port.h"
 #include "port/uchttpserver/resources.h"
+#include "resources/common.h"
 
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
@@ -67,7 +68,11 @@ void Connection_Task(void *parameters)
   if (espOK == (espResult = ESP_STA_Connect(
 	&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
     {
-      asm volatile ("nop");
+      Connection_SetConnected(1);
+    }
+  else
+    {
+      Connection_SetConnected(0);
     }
 
 #if 0
@@ -170,7 +175,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
               {
                 Http_InitializeConnection(
             	&connection, &Http_SendPort,
-    		&resources, 6,
+    		&resources, 8,
     		conn);
                 initialized = 1;
               }

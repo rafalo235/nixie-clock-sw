@@ -79,17 +79,17 @@ static void PostConnectCallback(void * const conn)
     {
       status = HTTP_STATUS_OK;
 
-#if 0
       if (espOK == (espResult = ESP_STA_Connect(
           &sEsp, apName, password, NULL, 0, 1)))
         {
 	  status = HTTP_STATUS_OK;
+	  Connection_SetConnected(1);
         }
       else
 	{
 	  status = HTTP_STATUS_NOT_FOUND; /* fixme */
+	  Connection_SetConnected(0);
 	}
-#endif
     }
   else
     {

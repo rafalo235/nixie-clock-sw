@@ -8,6 +8,9 @@
 #ifndef INC_RESOURCES_COMMON_H_
 #define INC_RESOURCES_COMMON_H_
 
+int Connection_IsConnected(void);
+void Connection_SetConnected(int connected);
+
 void Page_SendButton(
     void * const conn, const char * display, const char * callback);
 void Page_SendPasswordPopup(

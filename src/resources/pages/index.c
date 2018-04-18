@@ -24,7 +24,14 @@ tHttpStatusCode IndexCallback(void * const conn)
   Http_HelperSend(sm, header_html, header_html_size);
   Http_HelperSendMessageBody(sm, "<body>");
 
-  Page_SendButton(conn, "Connect to AP", "loadConnect()");
+  if (Connection_IsConnected())
+    {
+      Page_SendButton(conn, "Connection Status", "loadStatus()");
+    }
+  else
+    {
+      Page_SendButton(conn, "Connect to AP", "loadConnect()");
+    }
   Page_SendButton(conn, "Set NTP Setting", "loadConnect()");
   Page_SendButton(conn, "Synchronize", "loadConnect()");
   Page_SendButton(conn, "Set Time", "loadConnect()");
