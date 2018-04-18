@@ -25,7 +25,7 @@ tHttpStatusCode DisconnectCallback(void * const conn)
     }
   else
     {
-      Http_HelperSendStatusLine(sm, HTTP_BAD_REQUEST);
+      Http_HelperSendStatusLine(sm, HTTP_FORBIDDEN);
     }
   Http_HelperSendCRLF(sm);
 
