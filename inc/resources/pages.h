@@ -12,6 +12,7 @@
 
 extern tHttpStatusCode AccessPointsCallback(void * const conn);
 extern tHttpStatusCode ConnectCallback(void * const conn);
+extern tHttpStatusCode DisconnectCallback(void * const conn);
 extern tHttpStatusCode FaviconCallback(void * const conn);
 extern tHttpStatusCode IndexCallback(void * const conn);
 extern tHttpStatusCode ScriptCallback(void * const conn);

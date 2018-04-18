@@ -12,6 +12,7 @@ const tResourceEntry resources[] =
     {
 	{ STRING_WITH_LENGTH("/accesspoints.json"), &AccessPointsCallback },
 	{ STRING_WITH_LENGTH("/connect.html"), &ConnectCallback },
+	{ STRING_WITH_LENGTH("/diconnect.html"), &DisconnectCallback },
 	{ STRING_WITH_LENGTH("/favicon.ico"), &FaviconCallback },
 	{ STRING_WITH_LENGTH("/index.html"), &IndexCallback },
 	{ STRING_WITH_LENGTH("/script.js"), &ScriptCallback },
