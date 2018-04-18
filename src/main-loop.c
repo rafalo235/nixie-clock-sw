@@ -48,3 +48,7 @@ void SystemInit(void)
 	Pwm_Initialize();
 }
 
+void vApplicationStackOverflowHook( TaskHandle_t xTask, char *pcTaskName )
+{
+  asm volatile ("nop");
+}
