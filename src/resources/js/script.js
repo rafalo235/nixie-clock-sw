@@ -101,9 +101,19 @@ function connect()
 function sendPost(url, params, onOk, onError)
 {
 	var http = new XMLHttpRequest();
-	http.open("POST", url, true);
+	http.open('POST', url, false);
 	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	http.onreadystatechange = function() 
+	http.send(params);
+	if(req.status == 200)
+	{
+  		onOk();
+	}
+	else
+	{
+		onError();
+	}
+	
+	/*http.onreadystatechange = function() 
 	{
     	if(http.readyState == 4 && http.status == 200) 
     	{
@@ -114,7 +124,7 @@ function sendPost(url, params, onOk, onError)
     		onError();
     	}
 	};
-	http.send(params);
+	http.send(params);*/
 }
 
 window.onclick = function(event) {

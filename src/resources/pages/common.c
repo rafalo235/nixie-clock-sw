@@ -9,6 +9,7 @@
 #include "resources/generated/html/button.h"
 #include "resources/generated/html/passwordpopup.h"
 #include "resources/generated/html/errorpopup.h"
+#include "resources/generated/html/infoelement.h"
 #include "uchttpserver.h"
 
 static int sIsConnected = 0;
@@ -21,6 +22,17 @@ int Connection_IsConnected(void)
 void Connection_SetConnected(int connected)
 {
   sIsConnected = connected;
+}
+
+void Page_SendInfoElement(
+    void * const conn, const char * label, const char * value)
+{
+  tuCHttpServerState * const sm = conn;
+  const void * parameters[] = {
+      (const void *)label,
+      (const void *)value
+  };
+  Http_HelperSendParametered(sm, infoelement_html, infoelement_html_size, parameters);
 }
 
 void Page_SendButton(

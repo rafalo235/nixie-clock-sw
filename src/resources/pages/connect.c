@@ -100,10 +100,8 @@ static void PostConnectCallback(void * const conn)
   Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
   Http_HelperSendCRLF(sm);
 
-  if (NULL != apName && NULL != password)
-    {
-      Http_HelperSendMessageBody(sm, apName);
-      Http_HelperSendMessageBody(sm, password);
-    }
+  Http_HelperSendMessageBody(sm, "<html>");
+  Http_HelperSendMessageBody(sm, "</html>");
+
   Http_HelperFlush(sm);
 }

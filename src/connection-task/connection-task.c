@@ -64,7 +64,7 @@ void Connection_Task(void *parameters)
     {
       asm volatile ("nop");
     }
-
+#if 0
   if (espOK == (espResult = ESP_STA_Connect(
 	&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
     {
@@ -74,6 +74,7 @@ void Connection_Task(void *parameters)
     {
       Connection_SetConnected(0);
     }
+#endif
 
 #if 0
   /* Set access point */

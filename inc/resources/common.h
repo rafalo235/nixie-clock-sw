@@ -11,6 +11,9 @@
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 
+void Page_SendInfoElement(
+    void * const conn, const char * label, const char * value);
+
 void Page_SendButton(
     void * const conn, const char * display, const char * callback);
 void Page_SendPasswordPopup(
