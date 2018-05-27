@@ -24,9 +24,9 @@ tHttpStatusCode StatusCallback(void * const conn)
   ESP_Result_t result = ESP_STA_GetConnected(&sEsp, &connected, 1);
 
 
-  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
-  Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
-  Http_HelperSendCRLF(sm);
+  Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
+  Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
+  Http_HelperSendHeader(sm);
 
   Http_HelperSendMessageBody(sm, "<html>");
   Http_HelperSend(sm, header_html, header_html_size);

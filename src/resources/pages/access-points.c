@@ -26,9 +26,9 @@ tHttpStatusCode AccessPointsCallback(void * const conn)
     }
 
   /* Send header */
-  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
-  Http_HelperSendHeaderLine(sm, "Content-Type", "application/json");
-  Http_HelperSendCRLF(sm);
+  Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
+  Http_HelperSetResponseHeader(sm, "Content-Type", "application/json");
+  Http_HelperSendHeader(sm);
 
   /* Create and send content */
   Json_OpenObject(conn);

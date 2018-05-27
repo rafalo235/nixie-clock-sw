@@ -14,10 +14,10 @@ tHttpStatusCode IndexCallback(void * const conn)
   tuCHttpServerState * const sm = conn;
 
   /* Send header */
-  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
-  Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
+  Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
+  Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
   //Http_HelperSendHeaderLine(sm, "Connection", "close");
-  Http_HelperSendCRLF(sm);
+  Http_HelperSendHeader(sm);
 
   /* Create and send content */
   Http_HelperSendMessageBody(sm, "<html>");

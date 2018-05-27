@@ -30,6 +30,7 @@ OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(UCHTTPSERVER_FI
 INC := -I./inc \
  -I./inc/port/esp8266-at-lib \
  -I./inc/port/freertos \
+ -I./inc/port/uchttpserver \
  -I./third-party/freertos/FreeRTOS/Source/include \
  -I./third-party/freertos/FreeRTOS/Source/portable/GCC/ARM_CM3 \
  -I./third-party/esp8266-at-lib/00-ESP8266_LIBRARY \

@@ -15,6 +15,7 @@
 #include "port/uchttpserver/port.h"
 #include "port/uchttpserver/resources.h"
 #include "resources/common.h"
+#include "resources/pages.h"
 
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
@@ -175,7 +176,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
             if (!initialized)
               {
                 Http_InitializeConnection(
-            	&connection, &Http_SendPort,
+            	&connection, &Http_SendPort, &OnError,
     		&resources, 8,
     		conn);
                 initialized = 1;

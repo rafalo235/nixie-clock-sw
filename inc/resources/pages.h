@@ -19,4 +19,8 @@ extern tHttpStatusCode ScriptCallback(void * const conn);
 extern tHttpStatusCode StatusCallback(void * const conn);
 extern tHttpStatusCode StyleCallback(void * const conn);
 
+extern void OnError(
+    void *const conn,
+    const tErrorInfo *errorInfo);
+
 #endif /* INC_GENERATED_PAGES_H_ */

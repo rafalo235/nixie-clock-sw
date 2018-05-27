@@ -37,10 +37,10 @@ static void GetConnectCallback(void * const conn)
   tuCHttpServerState * const sm = conn;
 
   /* Send header */
-  Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
-  Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
+  Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
+  Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
   //Http_HelperSendHeaderLine(sm, "Connection", "close");
-  Http_HelperSendCRLF(sm);
+  Http_HelperSendHeader(sm);
 
   /* Create and send content */
   Http_HelperSendMessageBody(sm, "<html>");
@@ -96,9 +96,9 @@ static void PostConnectCallback(void * const conn)
       status = HTTP_STATUS_NOT_FOUND; /* fixme */
     }
 
-  Http_HelperSendStatusLine(sm, status);
-  Http_HelperSendHeaderLine(sm, "Content-Type", "text/html");
-  Http_HelperSendCRLF(sm);
+  Http_HelperSetResponseStatus(sm, status);
+  Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
+  Http_HelperSendHeader(sm);
 
   Http_HelperSendMessageBody(sm, "<html>");
   Http_HelperSendMessageBody(sm, "</html>");

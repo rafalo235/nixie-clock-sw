@@ -19,14 +19,14 @@ tHttpStatusCode DisconnectCallback(void * const conn)
 
   if (espOK == (result = ESP_STA_Disconnect(&sEsp, 1)))
     {
-      Http_HelperSendStatusLine(sm, HTTP_STATUS_OK);
+      Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
       Connection_SetConnected(0);
     }
   else
     {
-      Http_HelperSendStatusLine(sm, HTTP_FORBIDDEN);
+      Http_HelperSetResponseStatus(sm, HTTP_FORBIDDEN);
     }
-  Http_HelperSendCRLF(sm);
+  Http_HelperSendHeader(sm);
 
   return HTTP_STATUS_OK;
 }
