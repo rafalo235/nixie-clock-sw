@@ -28,5 +28,7 @@ tHttpStatusCode DisconnectCallback(void * const conn)
     }
   Http_HelperSendHeader(sm);
 
+  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
+
   return HTTP_STATUS_OK;
 }

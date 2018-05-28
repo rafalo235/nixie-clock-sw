@@ -87,5 +87,7 @@ tHttpStatusCode StatusCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
 
+  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
+
   return HTTP_STATUS_OK;
 }

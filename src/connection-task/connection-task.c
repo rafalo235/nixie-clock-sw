@@ -130,77 +130,113 @@ void Connection_Task(void *parameters)
 
 }
 
-uint32_t bw;
-const uint8_t responseData[] = ""
-"HTTP/1.1 200 OK\r\n"
-"Content-Type: text/html\r\n"
-"Connection: close\r\n"
-"\r\n"
-"<html>"
-"<head>"
-"<meta http-equiv=\"Refresh\" content=\"1\" />"
-"</head>"
-"<body>"
-"<h1>Welcome to web server produced by ESP8266 Wi-Fi module!</h1>"
-"This website will constantly update itself every 1 second!"
-"</body>"
-"</html>";
-
 unsigned int Http_SendPort(
     void * const  conn, const char * data, unsigned int length);
 
-tuCHttpServerState connection;
+#define NUM_CONNECTIONS 5
 
-int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params) {
-    ESP_CONN_t* conn;
-    uint8_t* data;
-    static int initialized = 0;
+tuCHttpServerState connection[NUM_CONNECTIONS];
+int connectionNumber[NUM_CONNECTIONS] = { -1, -1, -1, -1, -1 };
 
-    switch (evt) {                              /* Check events */
-        case espEventIdle:
-            break;
-        case espEventConnActive: {
-            conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
-            break;
-        }
-        case espEventConnClosed: {
-            conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
-            initialized = 0;
-            break;
-        }
-        case espEventDataReceived: {
+static tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
+{
+  tuCHttpServerState * result = NULL;
+  int i = 0;
 
-	    conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
-            data = (uint8_t *)params->CP2;      /* Get data */
-
-            if (!initialized)
-              {
-                Http_InitializeConnection(
-            	&connection, &Http_SendPort, &OnError,
-    		&resources, 8,
-    		conn);
-                initialized = 1;
-              }
-
-            if (ESP_IsReady(&sEsp) == espOK)
-              {
-                Http_Input(&connection, data, strlen(data));
-              }
-            break;
-        }
-        case espEventDataSent:
-            conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
-            ESP_CONN_Close(&sEsp, conn, 0);
-            break;
-        case espEventDataSentError:
-            conn = (ESP_CONN_t *)params->CP1;   /* Get connection for event */
-            ESP_CONN_Close(&sEsp, conn, 0);
-            break;
-        default:
-            break;
+  for (i = 0; i < NUM_CONNECTIONS; ++i)
+  {
+    if (connectionNumber[i] == conn)
+    {
+      result = &(connection[i]);
     }
+  }
+  if (NULL == result)
+  {
+    for (i = 0; i < NUM_CONNECTIONS; ++i)
+    {
+      if (connectionNumber[i] == (-1))
+      {
+        result = &(connection[i]);
+        connectionNumber[i] = conn;
 
-    return 0;
+        Http_InitializeConnection(
+            result, &Http_SendPort, &OnError,
+            &resources, 8, ctx);
+      }
+    }
+  }
+
+  return result;
+}
+
+static void ReleaseServer(int conn)
+{
+  int i = 0;
+
+  for (i = 0; i < NUM_CONNECTIONS; ++i)
+  {
+    if (connectionNumber[i] == conn)
+    {
+      connectionNumber[i] = -1;
+    }
+  }
+}
+
+int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
+{
+  ESP_CONN_t* conn;
+  uint8_t* data;
+  tuCHttpServerState * server;
+
+  switch (evt)
+  { /* Check events */
+  case espEventIdle:
+    break;
+  case espEventConnActive:
+  {
+    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
+
+    server = GetServer(conn, conn->Number);
+    if (NULL == server)
+    {
+      ESP_CONN_Close(&sEsp, conn, 1);
+    }
+    break;
+  }
+  case espEventConnClosed:
+  {
+    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
+    ReleaseServer(conn->Number);
+    break;
+  }
+  case espEventDataReceived:
+  {
+    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
+    data = (uint8_t *) params->CP2; /* Get data */
+
+    server = GetServer(conn, conn->Number);
+    if (NULL != server)
+    {
+      Http_Input(server, data, strlen(data));
+    }
+    else
+    {
+      ESP_CONN_Close(&sEsp, conn, 1);
+    }
+    break;
+  }
+  case espEventDataSent:
+    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
+    break;
+  case espEventDataSentError:
+    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
+    ESP_CONN_Close(&sEsp, conn, 1); /* fixme ? set connectionNumber */
+    break;
+  default:
+    break;
+  }
+
+  return 0;
 }
 
 void Update_Task(void *param)

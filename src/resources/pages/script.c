@@ -7,6 +7,9 @@
 
 #include "resources/pages.h"
 #include "resources/generated/js/script.h"
+#include "esp8266.h"
+
+extern volatile ESP_t sEsp;
 
 tHttpStatusCode ScriptCallback(void * const conn)
 {
@@ -20,6 +23,8 @@ tHttpStatusCode ScriptCallback(void * const conn)
 
   Http_HelperSend(sm, script_js, script_js_size);
   Http_HelperFlush(sm);
+
+  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
 
   return HTTP_STATUS_OK;
 }

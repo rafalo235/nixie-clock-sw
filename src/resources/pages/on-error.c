@@ -6,6 +6,9 @@
  */
 
 #include "resources/pages.h"
+#include "esp8266.h"
+
+extern volatile ESP_t sEsp;
 
 void OnError(
     void *const conn,
@@ -18,4 +21,6 @@ void OnError(
   //Http_HelperSendHeaderLine(sm, "Connection", "close");
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
+
+  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
 }

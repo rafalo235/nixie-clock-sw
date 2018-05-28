@@ -6,6 +6,9 @@
  */
 
 #include "resources/pages.h"
+#include "esp8266.h"
+
+extern volatile ESP_t sEsp;
 
 tHttpStatusCode FaviconCallback(void * const conn)
 {
@@ -15,6 +18,8 @@ tHttpStatusCode FaviconCallback(void * const conn)
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_NOT_FOUND);
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
+
+  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
 
   return HTTP_STATUS_OK;
 }

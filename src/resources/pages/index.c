@@ -8,6 +8,9 @@
 #include "resources/pages.h"
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
+#include "esp8266.h"
+
+extern volatile ESP_t sEsp;
 
 tHttpStatusCode IndexCallback(void * const conn)
 {
@@ -39,6 +42,8 @@ tHttpStatusCode IndexCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</body>");
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
+
+  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
 
   return HTTP_STATUS_OK;
 }
