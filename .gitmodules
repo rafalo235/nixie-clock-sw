@@ -1,6 +1,6 @@
 [submodule "third-party/freertos"]
 	path = third-party/freertos
-	url = https://github.com/jameswalmsley/FreeRTOS.git
+	url = https://github.com/cjlano/freertos.git
 [submodule "third-party/esp8266-at-lib"]
 	path = third-party/esp8266-at-lib
 	url = https://github.com/MaJerle/ESP8266_AT_Commands_parser.git
