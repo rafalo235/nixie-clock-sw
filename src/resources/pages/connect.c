@@ -10,7 +10,6 @@
 #include "resources/common.h"
 #include "esp8266.h"
 
-extern volatile ESP_t sEsp;
 
 static void GetConnectCallback(void * const conn);
 static void PostConnectCallback(void * const conn);
@@ -103,7 +102,7 @@ static void PostConnectCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "<html>");
   Http_HelperSendMessageBody(sm, "</html>");
 
-  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
-
   Http_HelperFlush(sm);
+
+  Disconnect(&sEsp, Http_HelperGetContext(conn));
 }

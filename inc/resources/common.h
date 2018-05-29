@@ -8,6 +8,16 @@
 #ifndef INC_RESOURCES_COMMON_H_
 #define INC_RESOURCES_COMMON_H_
 
+#include "esp8266.h"
+#include "uchttpserver.h"
+
+extern volatile ESP_t sEsp;
+
+tuCHttpServerState *
+GetServer(ESP_CONN_t * ctx, int conn);
+void ReleaseServer(int conn);
+void Disconnect(volatile ESP_t* ESP, ESP_CONN_t* conn);
+
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 

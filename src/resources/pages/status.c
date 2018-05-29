@@ -10,11 +10,8 @@
 #include "resources/pages.h"
 #include "resources/common.h"
 #include "resources/generated/html/header.h"
-#include "esp8266.h"
 
 #define LOCAL_BUFFER_SIZE	20
-
-extern volatile ESP_t sEsp;
 
 tHttpStatusCode StatusCallback(void * const conn)
 {
@@ -87,7 +84,7 @@ tHttpStatusCode StatusCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
 
-  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
+  Disconnect(&sEsp, Http_HelperGetContext(conn));
 
   return HTTP_STATUS_OK;
 }

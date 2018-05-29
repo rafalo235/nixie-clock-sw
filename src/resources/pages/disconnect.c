@@ -7,10 +7,6 @@
 
 #include "resources/pages.h"
 #include "resources/common.h"
-#include "esp8266.h"
-
-/* todo header */
-extern volatile ESP_t sEsp;
 
 tHttpStatusCode DisconnectCallback(void * const conn)
 {
@@ -28,7 +24,7 @@ tHttpStatusCode DisconnectCallback(void * const conn)
     }
   Http_HelperSendHeader(sm);
 
-  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
+  Disconnect(&sEsp, Http_HelperGetContext(conn));
 
   return HTTP_STATUS_OK;
 }

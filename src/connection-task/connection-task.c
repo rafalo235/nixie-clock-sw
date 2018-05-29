@@ -138,7 +138,7 @@ unsigned int Http_SendPort(
 tuCHttpServerState connection[NUM_CONNECTIONS];
 int connectionNumber[NUM_CONNECTIONS] = { -1, -1, -1, -1, -1 };
 
-static tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
+tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
 {
   tuCHttpServerState * result = NULL;
   int i = 0;
@@ -148,6 +148,7 @@ static tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
     if (connectionNumber[i] == conn)
     {
       result = &(connection[i]);
+      break;
     }
   }
   if (NULL == result)
@@ -162,6 +163,7 @@ static tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
         Http_InitializeConnection(
             result, &Http_SendPort, &OnError,
             &resources, 8, ctx);
+        break;
       }
     }
   }
@@ -169,7 +171,7 @@ static tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
   return result;
 }
 
-static void ReleaseServer(int conn)
+void ReleaseServer(int conn)
 {
   int i = 0;
 
@@ -178,6 +180,7 @@ static void ReleaseServer(int conn)
     if (connectionNumber[i] == conn)
     {
       connectionNumber[i] = -1;
+      break;
     }
   }
 }

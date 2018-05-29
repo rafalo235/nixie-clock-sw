@@ -7,9 +7,7 @@
 
 #include "resources/pages.h"
 #include "resources/generated/css/style.h"
-#include "esp8266.h"
-
-extern volatile ESP_t sEsp;
+#include "resources/common.h"
 
 tHttpStatusCode StyleCallback(void * const conn)
 {
@@ -24,7 +22,7 @@ tHttpStatusCode StyleCallback(void * const conn)
   Http_HelperSend(sm, style_css, style_css_size);
   Http_HelperFlush(sm);
 
-  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
+  Disconnect(&sEsp, Http_HelperGetContext(conn));
 
   return HTTP_STATUS_OK;
 }

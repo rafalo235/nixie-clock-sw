@@ -120,3 +120,9 @@ void Json_Separator(void * const conn)
   tuCHttpServerState * const sm = conn;
   Http_HelperSendMessageBody(conn, ",");
 }
+
+void Disconnect(volatile ESP_t* esp, ESP_CONN_t* conn)
+{
+  ESP_CONN_Close(esp, conn, 1);
+  ReleaseServer(conn->Number);
+}

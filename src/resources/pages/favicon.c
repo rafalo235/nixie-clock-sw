@@ -6,9 +6,7 @@
  */
 
 #include "resources/pages.h"
-#include "esp8266.h"
-
-extern volatile ESP_t sEsp;
+#include "resources/common.h"
 
 tHttpStatusCode FaviconCallback(void * const conn)
 {
@@ -19,7 +17,7 @@ tHttpStatusCode FaviconCallback(void * const conn)
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
 
-  ESP_CONN_Close(&sEsp, Http_HelperGetContext(conn), 1);
+  Disconnect(&sEsp, Http_HelperGetContext(conn));
 
   return HTTP_STATUS_OK;
 }
