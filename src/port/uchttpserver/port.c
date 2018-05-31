@@ -22,9 +22,9 @@ unsigned int Http_SendPort(
           &sEsp, Http_HelperGetContext((tuCHttpServerState*)conn),
           data, length, &bw, 1);
       if (espOK != result)
-	{
-	  break;
-	}
+      {
+        break;
+      }
 
       length -= bw;
       data += bw;

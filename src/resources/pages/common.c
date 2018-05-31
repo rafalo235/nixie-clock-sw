@@ -123,6 +123,8 @@ void Json_Separator(void * const conn)
 
 void Disconnect(volatile ESP_t* esp, ESP_CONN_t* conn)
 {
+#if 0
   ESP_CONN_Close(esp, conn, 1);
   ReleaseServer(conn->Number);
+#endif
 }

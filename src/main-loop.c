@@ -14,19 +14,23 @@
 #include "esp8266_ll.h"
 
 #define STACK_SIZE_CONTROL_TASK     (256)
-#define STACK_SIZE_CONNECTION_TASK  (256)
+#define STACK_SIZE_CONNECTION_TASK  (512)
 #define STACK_SIZE_UPDATE_TASK      (320)
 
 void SystemInit(void);
 
 static StaticTask_t sControlTaskControl;
 static StaticTask_t sConnectionTaskControl;
+#if 0
 static StaticTask_t sUpdateTaskControl;
+#endif
 static StaticTask_t sIdleTaskControl;
 
 static StackType_t sControlTaskStack[STACK_SIZE_CONTROL_TASK];
 static StackType_t sConnectionTaskStack[STACK_SIZE_CONNECTION_TASK];
+#if 0
 static StackType_t sUpdateTaskStack[STACK_SIZE_UPDATE_TASK];
+#endif
 static StackType_t sIdleTaskStack[configMINIMAL_STACK_SIZE];
 
 void main(void)
@@ -39,9 +43,11 @@ void main(void)
       STACK_SIZE_CONNECTION_TASK, NULL, 1, sConnectionTaskStack,
       &sConnectionTaskControl);
 
+#if 0
   xTaskCreateStatic(Update_Task, "UpdateTask",
       STACK_SIZE_UPDATE_TASK, NULL, 1, sUpdateTaskStack,
         &sUpdateTaskControl);
+#endif
 
   vTaskStartScheduler ();
 

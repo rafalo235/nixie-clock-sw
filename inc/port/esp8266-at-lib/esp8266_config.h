@@ -60,7 +60,7 @@
  *
  * \note    When possible, buffer should be at least 256 bytes.
  */
-#define ESP_BUFFER_SIZE                     256
+#define ESP_BUFFER_SIZE                     1024
 
 /**
  * \brief   Enables (1) or disables (0) single connection mode
@@ -147,7 +147,7 @@
  * 
  *         When this feature is enabled, you HAVE TO do processing (ESP_Update) in interrupt.
  */
-#define ESP_ASYNC                           1
+#define ESP_ASYNC                           0
 
 /**
  * \brief   Enables (1) or disables (0) CTS pin on ESP8266 and software RTS pin on microcontroller

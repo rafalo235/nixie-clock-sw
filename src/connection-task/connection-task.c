@@ -21,6 +21,58 @@ int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
 volatile ESP_t sEsp;
 
+#define NUM_CONNECTIONS 5
+
+tuCHttpServerState connection[NUM_CONNECTIONS];
+int connectionNumber[NUM_CONNECTIONS] = { -1, -1, -1, -1, -1 };
+
+tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
+{
+  tuCHttpServerState * result = NULL;
+  int i = 0;
+
+  for (i = 0; i < NUM_CONNECTIONS; ++i)
+  {
+    if (connectionNumber[i] == conn)
+    {
+      result = &(connection[i]);
+      break;
+    }
+  }
+  if (NULL == result)
+  {
+    for (i = 0; i < NUM_CONNECTIONS; ++i)
+    {
+      if (connectionNumber[i] == (-1))
+      {
+        result = &(connection[i]);
+        connectionNumber[i] = conn;
+
+        Http_InitializeConnection(
+            result, &Http_SendPort, &OnError,
+            &resources, 8, ctx);
+        break;
+      }
+    }
+  }
+
+  return result;
+}
+
+void ReleaseServer(int conn)
+{
+  int i = 0;
+
+  for (i = 0; i < NUM_CONNECTIONS; ++i)
+  {
+    if (connectionNumber[i] == conn)
+    {
+      connectionNumber[i] = -1;
+      break;
+    }
+  }
+}
+
 void Connection_Task(void *parameters)
 {
 
@@ -116,6 +168,7 @@ void Connection_Task(void *parameters)
   while (1)
     {
       uint32_t tim;
+      ESP_Update(&sEsp);
       ESP_ProcessCallbacks(&sEsp);
 
 #if 0
@@ -132,58 +185,6 @@ void Connection_Task(void *parameters)
 
 unsigned int Http_SendPort(
     void * const  conn, const char * data, unsigned int length);
-
-#define NUM_CONNECTIONS 5
-
-tuCHttpServerState connection[NUM_CONNECTIONS];
-int connectionNumber[NUM_CONNECTIONS] = { -1, -1, -1, -1, -1 };
-
-tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
-{
-  tuCHttpServerState * result = NULL;
-  int i = 0;
-
-  for (i = 0; i < NUM_CONNECTIONS; ++i)
-  {
-    if (connectionNumber[i] == conn)
-    {
-      result = &(connection[i]);
-      break;
-    }
-  }
-  if (NULL == result)
-  {
-    for (i = 0; i < NUM_CONNECTIONS; ++i)
-    {
-      if (connectionNumber[i] == (-1))
-      {
-        result = &(connection[i]);
-        connectionNumber[i] = conn;
-
-        Http_InitializeConnection(
-            result, &Http_SendPort, &OnError,
-            &resources, 8, ctx);
-        break;
-      }
-    }
-  }
-
-  return result;
-}
-
-void ReleaseServer(int conn)
-{
-  int i = 0;
-
-  for (i = 0; i < NUM_CONNECTIONS; ++i)
-  {
-    if (connectionNumber[i] == conn)
-    {
-      connectionNumber[i] = -1;
-      break;
-    }
-  }
-}
 
 int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
 {
