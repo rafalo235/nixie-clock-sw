@@ -101,9 +101,9 @@ function connect()
 function sendPost(url, params, onOk, onError)
 {
 	var http = new XMLHttpRequest();
-	http.open('GET', url, false);
-	http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
-	http.send(params);
+	http.open('GET', url + "?" + params, false);
+	//http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	http.send(null);
 	if(req.status == 200)
 	{
   		onOk();
