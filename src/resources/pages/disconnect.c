@@ -11,18 +11,11 @@
 tHttpStatusCode DisconnectCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
-  ESP_Result_t result;
 
-  if (espOK == (result = ESP_STA_Disconnect(&sEsp, 1)))
-    {
-      Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
-      Connection_SetConnected(0);
-    }
-  else
-    {
-      Http_HelperSetResponseStatus(sm, HTTP_FORBIDDEN);
-    }
+  gDisconnectFlag = 1;
+  Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSendHeader(sm);
+  Http_HelperFlush(sm);
 
   Disconnect(&sEsp, Http_HelperGetContext(conn));
 

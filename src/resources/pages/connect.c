@@ -9,6 +9,7 @@
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
 #include "esp8266.h"
+#include <string.h>
 
 
 static void GetConnectCallback(void * const conn);
@@ -17,15 +18,17 @@ static void PostConnectCallback(void * const conn);
 tHttpStatusCode ConnectCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
-  tHttpMethod method = Http_HelperGetMethod(sm);
+  const char * apName = Http_HelperGetParameter(sm, "apn");
+  const char * password = Http_HelperGetParameter(sm, "passwd");
 
-  if (HTTP_GET == method)
-    {
-      GetConnectCallback(conn);
-    }
-  else if (HTTP_POST == method)
+  /* workaround due to limited parameter buffer */
+  if (NULL != apName && NULL != password)
     {
       PostConnectCallback(conn);
+    }
+  else
+    {
+      GetConnectCallback(conn);
     }
 
   return HTTP_STATUS_OK;
@@ -75,25 +78,17 @@ static void PostConnectCallback(void * const conn)
   const char * password = Http_HelperGetParameter(sm, "passwd");
 
   if (NULL != apName && NULL != password)
-    {
-      status = HTTP_STATUS_OK;
+  {
+    status = HTTP_STATUS_OK;
 
-      if (espOK == (espResult = ESP_STA_Connect(
-          &sEsp, apName, password, NULL, 0, 1)))
-        {
-	  status = HTTP_STATUS_OK;
-	  Connection_SetConnected(1);
-        }
-      else
-	{
-	  status = HTTP_STATUS_NOT_FOUND; /* fixme */
-	  Connection_SetConnected(0);
-	}
-    }
-  else
-    {
-      status = HTTP_STATUS_NOT_FOUND; /* fixme */
-    }
+    strncpy(gConnectApn, apName, 32);
+    strncpy(gConnectPassword, password, 32);
+    gConnectFlag = 1;
+
+  } else
+  {
+    status = HTTP_STATUS_NOT_FOUND; /* fixme */
+  }
 
   Http_HelperSetResponseStatus(sm, status);
   Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");

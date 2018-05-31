@@ -20,20 +20,26 @@
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
 
 volatile ESP_t sEsp;
+char gConnectApn[32];
+char gConnectPassword[32];
+int gConnectFlag = 0;
+int gDisconnectFlag = 0;
 
 #define NUM_CONNECTIONS 5
 
 tuCHttpServerState connection[NUM_CONNECTIONS];
-int connectionNumber[NUM_CONNECTIONS] = { -1, -1, -1, -1, -1 };
+ESP_CONN_t * connectionPcb[NUM_CONNECTIONS] = {
+    NULL, NULL, NULL, NULL, NULL
+};
 
-tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
+tuCHttpServerState * GetServer(ESP_CONN_t * ctx)
 {
   tuCHttpServerState * result = NULL;
   int i = 0;
 
   for (i = 0; i < NUM_CONNECTIONS; ++i)
   {
-    if (connectionNumber[i] == conn)
+    if (connectionPcb[i] == ctx)
     {
       result = &(connection[i]);
       break;
@@ -43,10 +49,10 @@ tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
   {
     for (i = 0; i < NUM_CONNECTIONS; ++i)
     {
-      if (connectionNumber[i] == (-1))
+      if (connectionPcb[i] == NULL)
       {
         result = &(connection[i]);
-        connectionNumber[i] = conn;
+        connectionPcb[i] = ctx;
 
         Http_InitializeConnection(
             result, &Http_SendPort, &OnError,
@@ -59,18 +65,33 @@ tuCHttpServerState * GetServer(ESP_CONN_t * ctx, int conn)
   return result;
 }
 
-void ReleaseServer(int conn)
+void ReleaseServer(ESP_CONN_t * ctx)
 {
   int i = 0;
 
   for (i = 0; i < NUM_CONNECTIONS; ++i)
   {
-    if (connectionNumber[i] == conn)
+    if (connectionPcb[i] == ctx)
     {
-      connectionNumber[i] = -1;
+      connectionPcb[i] = NULL;
       break;
     }
   }
+}
+
+void ReleaseAllAndDisconnect(void)
+{
+  int i;
+
+  for (i = 0; i < NUM_CONNECTIONS; ++i)
+  {
+    if (NULL != connectionPcb[i])
+    {
+      ESP_CONN_Close(&sEsp, connectionPcb[i], 1);
+      connectionPcb[i] = NULL;
+    }
+  }
+
 }
 
 void Connection_Task(void *parameters)
@@ -166,19 +187,49 @@ void Connection_Task(void *parameters)
     }
 
   while (1)
+  {
+    uint32_t tim;
+    ESP_Update(&sEsp);
+    ESP_ProcessCallbacks(&sEsp);
+
+    if (1 == gConnectFlag)
     {
-      uint32_t tim;
-      ESP_Update(&sEsp);
-      ESP_ProcessCallbacks(&sEsp);
+      if (0 == Connection_IsConnected())
+      {
+        ReleaseAllAndDisconnect();
+        if (espOK
+            == (espResult = ESP_STA_Connect(&sEsp, gConnectApn,
+                gConnectPassword, NULL, 0, 1)))
+        {
+          Connection_SetConnected(1);
+        } else
+        {
+          Connection_SetConnected(0);
+        }
+      }
+      gConnectFlag = 0;
+    } else if (1 == gDisconnectFlag)
+    {
+      ReleaseAllAndDisconnect();
+
+      if (1 == Connection_IsConnected())
+      {
+        if (espOK == (espResult = ESP_STA_Disconnect(&sEsp, 1)))
+        {
+          Connection_SetConnected(0);
+        }
+      }
+      gDisconnectFlag = 0;
+    }
 
 #if 0
-      if (espOK != (espResult = ESP_Ping(&sEsp, "192.168.128.66", &tim, 1)))
-        {
-          asm volatile ("nop");
-        }
-#endif
-      vTaskDelay (pdMS_TO_TICKS (10));
+    if (espOK != (espResult = ESP_Ping(&sEsp, "192.168.128.66", &tim, 1)))
+    {
+      asm volatile ("nop");
     }
+#endif
+    vTaskDelay(pdMS_TO_TICKS(10));
+  }
 #endif
 
 }
@@ -200,7 +251,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
   {
     conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
 
-    server = GetServer(conn, conn->Number);
+    server = GetServer(conn);
     if (NULL == server)
     {
       ESP_CONN_Close(&sEsp, conn, 1);
@@ -210,7 +261,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
   case espEventConnClosed:
   {
     conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
-    ReleaseServer(conn->Number);
+    ReleaseServer(conn);
     break;
   }
   case espEventDataReceived:
@@ -218,7 +269,7 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
     conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
     data = (uint8_t *) params->CP2; /* Get data */
 
-    server = GetServer(conn, conn->Number);
+    server = GetServer(conn);
     if (NULL != server)
     {
       Http_Input(server, data, strlen(data));
