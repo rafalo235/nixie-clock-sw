@@ -7,17 +7,19 @@
 
 #include "resources/pages.h"
 #include "resources/common.h"
+#include "resources/connection-routines.h"
+#include "resources/routine.h"
 
 tHttpStatusCode DisconnectCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
 
-  gDisconnectFlag = 1;
+  Routine_CallRoutine(
+      &gConnectionRoutine, &DisconnectFromAccessPoint, NULL);
+
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
-
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
 
   return HTTP_STATUS_OK;
 }

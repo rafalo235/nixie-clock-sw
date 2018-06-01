@@ -12,14 +12,10 @@
 #include "uchttpserver.h"
 
 extern volatile ESP_t sEsp;
-extern int gConnectFlag;
-extern int gDisconnectFlag;
-extern char gConnectApn[32];
-extern char gConnectPassword[32];
 
-tuCHttpServerState *
-GetServer(ESP_CONN_t * ctx);
+tuCHttpServerState * GetServer(ESP_CONN_t * ctx);
 void ReleaseServer(ESP_CONN_t * ctx);
+void ReleaseAllAndDisconnect(void);
 void Disconnect(volatile ESP_t* ESP, ESP_CONN_t* conn);
 
 int Connection_IsConnected(void);

@@ -8,9 +8,11 @@
 #include "resources/pages.h"
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
+#include "resources/connection-routines.h"
 #include "esp8266.h"
 #include <string.h>
 
+static tConnectionCredentials sCredentials;
 
 static void GetConnectCallback(void * const conn);
 static void PostConnectCallback(void * const conn);
@@ -81,9 +83,10 @@ static void PostConnectCallback(void * const conn)
   {
     status = HTTP_STATUS_OK;
 
-    strncpy(gConnectApn, apName, 32);
-    strncpy(gConnectPassword, password, 32);
-    gConnectFlag = 1;
+    strncpy(sCredentials.apn, apName, 32);
+    strncpy(sCredentials.password, password, 32);
+    Routine_CallRoutine(
+        &gConnectionRoutine, &ConnectToAccessPoint, &sCredentials);
 
   } else
   {
