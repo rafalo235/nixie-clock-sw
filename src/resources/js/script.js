@@ -100,7 +100,7 @@ function connect()
 	var apn = e.options[e.selectedIndex].value;
 
 	sendPost("connect.html", "apn=" + apn + "&passwd=" + passwd,
-		onConnectOk, onConnectError);
+		loadIndex, loadIndex);
 }
 
 function setupSNTP()
@@ -110,7 +110,7 @@ function setupSNTP()
 	var ntp3 = document.getElementById("ntp3").value;
 	sendPost("ntp.html", "ntp1=" + ntp1 + "&ntp2=" 
 		+ ntp2 + "&ntp3=" + ntp3,
-		onConnectOk, onConnectError);
+		loadIndex, loadIndex);
 }
 
 function sendPost(url, params, onOk, onError)
@@ -119,7 +119,7 @@ function sendPost(url, params, onOk, onError)
 	http.open('POST', url + "?" + params, false);
 	//http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.send(null);
-	if(req.status == 200)
+	if(http.status == 200)
 	{
   		onOk();
 	}
