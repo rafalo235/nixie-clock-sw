@@ -24,7 +24,11 @@ typedef enum ConnectionRoutinesResults
   /* Diconnection results */
   CONN_ROUTINE_WIFI_DISCONNECTED,
   CONN_ROUTINE_WIFI_NOT_CONNECTED,
-  CONN_ROUTINE_WIFI_DISCONNECTION_ERROR
+  CONN_ROUTINE_WIFI_DISCONNECTION_ERROR,
+
+  /* SNTP setup */
+  CONN_ROUTINE_SNTP_CONFIGURED,
+  CONN_ROUTINE_SNTP_CONFIG_ERROR
 } tConnectionRoutinesResults;
 
 typedef struct ConnectionCredentials
@@ -40,5 +44,7 @@ const char * ResolveResultMessage(tConnectionRoutinesResults result);
 int ConnectToAccessPoint(void * param);
 
 int DisconnectFromAccessPoint(void * param);
+
+int SetSNTPConfig(void * param);
 
 #endif /* INC_RESOURCES_CONNECTION_ROUTINES_H_ */

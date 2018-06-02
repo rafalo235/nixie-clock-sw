@@ -116,6 +116,8 @@ void Connection_Task(void *parameters)
   }
 #endif
 
+  SNTP_Initialize();
+
 #if 0
   /* Set access point */
   sEsp.APConf.Hidden = 0; /* Allow AP to be seen in network */
@@ -133,11 +135,6 @@ void Connection_Task(void *parameters)
 #endif
 
   if (espOK != (espResult = ESP_SERVER_Enable(&sEsp, 80, 0)))
-  {
-    asm volatile ("nop");
-  }
-
-  if (espOK != (espResult = ESP_SNTP_GetConfig(&sEsp, SNTP_GetConfig(), 1)))
   {
     asm volatile ("nop");
   }

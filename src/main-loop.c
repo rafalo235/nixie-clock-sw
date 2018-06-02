@@ -14,7 +14,7 @@
 #include "esp8266_ll.h"
 
 #define STACK_SIZE_CONTROL_TASK     (128)
-#define STACK_SIZE_CONNECTION_TASK  (1024)
+#define STACK_SIZE_CONNECTION_TASK  (896)
 
 void SystemInit(void);
 

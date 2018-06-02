@@ -11,6 +11,8 @@
 #include "esp8266.h"
 #include "uchttpserver.h"
 
+#define SNTP_ADDRESS_LEN  32
+
 extern volatile ESP_t sEsp;
 
 tuCHttpServerState * GetServer(ESP_CONN_t * ctx);
@@ -21,6 +23,7 @@ void Disconnect(volatile ESP_t* ESP, ESP_CONN_t* conn);
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 
+void SNTP_Initialize(void);
 ESP_SNTP_t * SNTP_GetConfig(void);
 
 void Page_SendInfoElement(

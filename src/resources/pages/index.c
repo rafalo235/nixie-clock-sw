@@ -14,10 +14,13 @@
 tHttpStatusCode IndexCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
+  tRoutineStatus status;
   tConnectionRoutinesResults routineResult;
   int res;
 
-  routineResult = Routine_GetRoutineResult(&gConnectionRoutine, &res);
+  status =
+      Routine_GetRoutineResult(&gConnectionRoutine, &res);
+  routineResult = (tConnectionRoutinesResults)res;
 
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
@@ -38,9 +41,23 @@ tHttpStatusCode IndexCallback(void * const conn)
     {
       Page_SendButton(conn, "Connect to AP", "loadConnect()");
     }
-  Page_SendButton(conn, "Set NTP Setting", "loadConnect()");
+  Page_SendButton(conn, "Set NTP Setting", "loadNtp()");
   Page_SendButton(conn, "Synchronize", "loadConnect()");
   Page_SendButton(conn, "Set Time", "loadConnect()");
+
+  if (ROUTINE_FINISHED == status)
+  {
+    Http_HelperSendMessageBody(sm,
+        "<style>\n"
+        ".modal {\n"
+        "display: block;"
+        "}\n"
+        "</style>"
+    );
+
+    Page_SendErrorPopup(conn, "error-popup",
+        ResolveResultMessage(routineResult));
+  }
 
   Http_HelperSendMessageBody(sm, "</body>");
   Http_HelperSendMessageBody(sm, "</html>");

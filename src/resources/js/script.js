@@ -39,6 +39,11 @@ function loadIndex()
 	location.href = "index.html";
 }
 
+function loadNtp()
+{
+	location.href = "ntp.html";
+}
+
 function refreshConnect()
 {	
 	var xhr = new XMLHttpRequest();
@@ -98,10 +103,20 @@ function connect()
 		onConnectOk, onConnectError);
 }
 
+function setupSNTP()
+{
+	var ntp1 = document.getElementById("ntp1").value;
+	var ntp2 = document.getElementById("ntp2").value;
+	var ntp3 = document.getElementById("ntp3").value;
+	sendPost("ntp.html", "ntp1=" + ntp1 + "&ntp2=" 
+		+ ntp2 + "&ntp3=" + ntp3,
+		onConnectOk, onConnectError);
+}
+
 function sendPost(url, params, onOk, onError)
 {
 	var http = new XMLHttpRequest();
-	http.open('GET', url + "?" + params, false);
+	http.open('POST', url + "?" + params, false);
 	//http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
 	http.send(null);
 	if(req.status == 200)

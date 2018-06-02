@@ -26,6 +26,19 @@ void Connection_SetConnected(int connected)
 }
 
 static ESP_SNTP_t sSNTPConfig;
+static char sSNTPAddress[3][SNTP_ADDRESS_LEN];
+
+void SNTP_Initialize(void)
+{
+  sSNTPConfig.Addr[0] = &(sSNTPAddress[0][0]);
+  sSNTPConfig.Addr[1] = &(sSNTPAddress[1][0]);
+  sSNTPConfig.Addr[2] = &(sSNTPAddress[2][0]);
+
+  if (espOK != ESP_SNTP_GetConfig(&sEsp, &sSNTPConfig, 1))
+  {
+    asm volatile ("nop");
+  }
+}
 
 ESP_SNTP_t * SNTP_GetConfig(void)
 {
