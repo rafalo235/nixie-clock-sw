@@ -6,6 +6,15 @@
  */
 
 #include "resources/routine.h"
+#include <stdlib.h>
+
+void Routine_Init(tRoutine * routine)
+{
+  routine->func = NULL;
+  routine->param = NULL;
+  routine->status = ROUTINE_NOT_CALLED;
+  routine->result = 0;
+}
 
 tRoutineStatus Routine_CallRoutine(
     tRoutine * routine, tRoutineFunction func, void *param)

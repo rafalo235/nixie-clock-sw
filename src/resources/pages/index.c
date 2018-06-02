@@ -8,10 +8,16 @@
 #include "resources/pages.h"
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
+#include "resources/routine.h"
+#include "resources/connection-routines.h"
 
 tHttpStatusCode IndexCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
+  tConnectionRoutinesResults routineResult;
+  int res;
+
+  routineResult = Routine_GetRoutineResult(&gConnectionRoutine, &res);
 
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);

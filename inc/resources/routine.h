@@ -26,6 +26,8 @@ typedef struct Routine
   tRoutineStatus status;
 } tRoutine;
 
+void Routine_Init(tRoutine * routine);
+
 tRoutineStatus Routine_CallRoutine(
     tRoutine * routine, tRoutineFunction func, void *param);
 

@@ -137,6 +137,8 @@ void Connection_Task(void *parameters)
     asm volatile ("nop");
   }
 
+  Routine_Init(&gConnectionRoutine);
+
   while (1)
   {
     uint32_t tim;
