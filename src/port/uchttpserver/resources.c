@@ -15,6 +15,7 @@ const tResourceEntry resources[] =
 	{ STRING_WITH_LENGTH("/disconnect.html"), &DisconnectCallback },
 	{ STRING_WITH_LENGTH("/favicon.ico"), &FaviconCallback },
 	{ STRING_WITH_LENGTH("/index.html"), &IndexCallback },
+	{ STRING_WITH_LENGTH("/ntp.html"), &NtpCallback },
 	{ STRING_WITH_LENGTH("/script.js"), &ScriptCallback },
 	{ STRING_WITH_LENGTH("/status.html"), &StatusCallback },
 	{ STRING_WITH_LENGTH("/style.css"), &StyleCallback }

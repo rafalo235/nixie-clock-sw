@@ -15,6 +15,7 @@ extern tHttpStatusCode ConnectCallback(void * const conn);
 extern tHttpStatusCode DisconnectCallback(void * const conn);
 extern tHttpStatusCode FaviconCallback(void * const conn);
 extern tHttpStatusCode IndexCallback(void * const conn);
+extern tHttpStatusCode NtpCallback(void * const conn);
 extern tHttpStatusCode ScriptCallback(void * const conn);
 extern tHttpStatusCode StatusCallback(void * const conn);
 extern tHttpStatusCode StyleCallback(void * const conn);

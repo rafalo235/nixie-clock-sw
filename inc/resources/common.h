@@ -21,9 +21,13 @@ void Disconnect(volatile ESP_t* ESP, ESP_CONN_t* conn);
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 
+ESP_SNTP_t * SNTP_GetConfig(void);
+
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value);
-
+void Page_SendInput(
+    void * const conn, const char * id,
+    const char * label, const char * value);
 void Page_SendButton(
     void * const conn, const char * display, const char * callback);
 void Page_SendPasswordPopup(

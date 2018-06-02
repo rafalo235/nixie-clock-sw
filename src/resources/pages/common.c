@@ -10,6 +10,7 @@
 #include "resources/generated/html/passwordpopup.h"
 #include "resources/generated/html/errorpopup.h"
 #include "resources/generated/html/infoelement.h"
+#include "resources/generated/html/input.h"
 #include "uchttpserver.h"
 
 static int sIsConnected = 0;
@@ -24,6 +25,13 @@ void Connection_SetConnected(int connected)
   sIsConnected = connected;
 }
 
+static ESP_SNTP_t sSNTPConfig;
+
+ESP_SNTP_t * SNTP_GetConfig(void)
+{
+  return &sSNTPConfig;
+}
+
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value)
 {
@@ -33,6 +41,19 @@ void Page_SendInfoElement(
       (const void *)value
   };
   Http_HelperSendParametered(sm, infoelement_html, infoelement_html_size, parameters);
+}
+
+void Page_SendInput(
+    void * const conn, const char * id,
+    const char * label, const char * value)
+{
+  tuCHttpServerState * const sm = conn;
+  const void * parameters[] = {
+      (const void *)label,
+      (const void *)id,
+      (const void *)value
+  };
+  Http_HelperSendParametered(sm, input_html, input_html_size, parameters);
 }
 
 void Page_SendButton(
