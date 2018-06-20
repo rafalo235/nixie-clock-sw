@@ -28,7 +28,9 @@ typedef enum ConnectionRoutinesResults
 
   /* SNTP setup */
   CONN_ROUTINE_SNTP_CONFIGURED,
-  CONN_ROUTINE_SNTP_CONFIG_ERROR
+  CONN_ROUTINE_SNTP_CONFIG_ERROR,
+  CONN_ROUTINE_SNTP_SYNCHRONIZATION_SUCCESSFUL,
+  CONN_ROUTINE_SNTP_SYNCHRONIZATION_ERROR,
 } tConnectionRoutinesResults;
 
 typedef struct ConnectionCredentials
@@ -46,5 +48,7 @@ int ConnectToAccessPoint(void * param);
 int DisconnectFromAccessPoint(void * param);
 
 int SetSNTPConfig(void * param);
+
+int SynchronizeRoutine(void * param);
 
 #endif /* INC_RESOURCES_CONNECTION_ROUTINES_H_ */

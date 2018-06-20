@@ -58,7 +58,7 @@ tuCHttpServerState * GetServer(ESP_CONN_t * ctx)
 
         Http_InitializeConnection(
             result, &Http_SendPort, &OnError,
-            &resources, 9, ctx);
+            &resources, 10, ctx);
         break;
       }
     }

@@ -97,6 +97,25 @@ int SetSNTPConfig(void * param)
   return (int)result;
 }
 
+int SynchronizeRoutine(void * param)
+{
+  tConnectionRoutinesResults result;
+  ESP_Result_t espResult;
+  ESP_DateTime_t dt;
+
+  espResult = ESP_SNTP_GetDateTime(&sEsp, &dt, 1);
+  if (espOK == espResult)
+  {
+    result = CONN_ROUTINE_SNTP_SYNCHRONIZATION_SUCCESSFUL;
+  }
+  else
+  {
+    result = CONN_ROUTINE_SNTP_SYNCHRONIZATION_ERROR;
+  }
+
+  return (int)result;
+}
+
 const char * ResolveResultMessage(
     tConnectionRoutinesResults result)
 {
@@ -130,6 +149,12 @@ const char * ResolveResultMessage(
     break;
   case CONN_ROUTINE_SNTP_CONFIG_ERROR :
     info = "Error occurred during SNTP configuration";
+    break;
+  case CONN_ROUTINE_SNTP_SYNCHRONIZATION_SUCCESSFUL :
+    info = "Synchronization successful";
+    break;
+  case CONN_ROUTINE_SNTP_SYNCHRONIZATION_ERROR :
+    info = "Error occurred during SNTP synchronization";
     break;
   default:
     info = "Unknown event occured";
