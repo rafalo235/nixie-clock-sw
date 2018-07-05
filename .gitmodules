@@ -4,3 +4,6 @@
 [submodule "third-party/uChttpserver"]
 	path = third-party/uChttpserver
 	url = https://github.com/rafalo235/uChttpserver.git
+[submodule "third-party/esp8266-at-lib"]
+	path = third-party/esp8266-at-lib
+	url = https://github.com/MaJerle/ESP_AT_Lib
