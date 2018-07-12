@@ -19,11 +19,8 @@
 #include "resources/routine.h"
 #include "resources/connection-routines.h"
 
-#if 0
-int EspCallback(ESP_Event_t, ESP_EventParams_t *);
-#endif
 
-volatile int sEsp;
+volatile esp_ll_t gEsp;
 char gConnectApn[32];
 char gConnectPassword[32];
 int gConnectFlag = 0;
@@ -102,13 +99,9 @@ void ReleaseAllAndDisconnect(void)
 
 void Connection_Task(void *parameters)
 {
-#if 0
-  ESP_Result_t espResult;
 
-  if (espOK != (espResult = ESP_Init(&sEsp, 115200, EspCallback)))
-  {
-    asm volatile ("nop");
-  }
+  esp_ll_init(&gEsp);
+#if 0
 #if 1
   if (espOK
       == (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
