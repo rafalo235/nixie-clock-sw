@@ -1,6 +1,6 @@
 /**
- * \file            esp_ll_template.h
- * \brief           Low-level communication implementation template file
+ * \file            esp_config_template.h
+ * \brief           Template config file
  */
 
 /*
@@ -30,30 +30,22 @@
  *
  * Author:          Tilen MAJERLE <tilen@majerle.eu>
  */
-#ifndef __ESP_LL_H
-#define __ESP_LL_H
+#ifndef __ESP_CONFIG_H
+#define __ESP_CONFIG_H
 
-#ifdef __cplusplus
-extern "C" {
-#endif /* __cplusplus */
-
-#include "esp/esp.h"
-
-/**
- * \ingroup         ESP_PORT
- * \defgroup        ESP_LL Low level communication
- * \brief           Low-level, platform dependant communication module
- * \{
- */
-    
-espr_t      esp_ll_init(esp_ll_t* ll, uint32_t baudrate);
- 
-/**
- * \}
+/*
+ * Rename this file to "esp_config.h" for your application
  */
 
-#ifdef __cplusplus
-}
-#endif /* __cplusplus */
+/* First include debug before any config changes */
+#include "esp/esp_debug.h"
 
-#endif /* __ESP_LL_H */
+/*
+ * Open "include/esp/esp_config_default.h" and 
+ * copy & replace here settings you want to change values
+ */
+
+/* After user configuration, call default config to merge config together */
+#include "esp/esp_config_default.h"
+
+#endif /* __ESP_CONFIG_H */

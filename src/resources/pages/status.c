@@ -15,6 +15,7 @@
 
 tHttpStatusCode StatusCallback(void * const conn)
 {
+#if 0
   tuCHttpServerState * const sm = conn;
   char buf[LOCAL_BUFFER_SIZE];
   ESP_ConnectedAP_t connected;
@@ -85,6 +86,7 @@ tHttpStatusCode StatusCallback(void * const conn)
   Http_HelperFlush(sm);
 
   Disconnect(&sEsp, Http_HelperGetContext(conn));
+#endif
 
   return HTTP_STATUS_OK;
 }

@@ -8,23 +8,24 @@
 #ifndef INC_RESOURCES_COMMON_H_
 #define INC_RESOURCES_COMMON_H_
 
-#include "esp8266.h"
+#include "esp/esp.h"
 #include "uchttpserver.h"
 
 #define SNTP_ADDRESS_LEN  32
 
-extern volatile ESP_t sEsp;
+extern volatile int sEsp;
 
-tuCHttpServerState * GetServer(ESP_CONN_t * ctx);
-void ReleaseServer(ESP_CONN_t * ctx);
+
+tuCHttpServerState * GetServer(int * ctx);
+void ReleaseServer(int * ctx);
 void ReleaseAllAndDisconnect(void);
-void Disconnect(volatile ESP_t* ESP, ESP_CONN_t* conn);
+void Disconnect(volatile int* ESP, int* conn);
 
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 
 void SNTP_Initialize(void);
-ESP_SNTP_t * SNTP_GetConfig(void);
+int * SNTP_GetConfig(void);
 
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value);

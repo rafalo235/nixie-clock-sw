@@ -19,11 +19,32 @@ FREERTOS_FILES := $(FREERTOS_SRC)/tasks.c \
  $(FREERTOS_SRC)/list.c \
  $(FREERTOS_SRC)/portable/GCC/ARM_CM3/port.c \
  $(FREERTOS_SRC)/portable/MemMang/heap_1.c
-ESP8266_AT_LIB_FILES := $(ESP8266_AT_LIB_SRC)/buffer.c \
- $(ESP8266_AT_LIB_SRC)/esp8266.c
+CMSIS_OS_FILES := $(CMSIS_OS_PATH)/cmsis_os.c \
+ $(CMSIS_OS_PATH)/cpu_utils.c
+ESP8266_AT_LIB_FILES := $(ESP8266_AT_LIB_SRC)/esp/esp_ap.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_buff.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_conn.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_debug.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_evt.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_hostname.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_input.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_int.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_mdns.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_mem.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_parser.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_pbuf.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_ping.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_sntp.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_sta.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_threads.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_timeout.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_unicode.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp_wps.c \
+ $(ESP8266_AT_LIB_SRC)/esp/esp.c
 UCHTTPSERVER_FILES := $(UCHTTPSERVER_SRC)/uchttpserver.c
 OBJ_FILES := $(patsubst %.c,%.o,$(patsubst src/%,obj/%,$(SRC_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(FREERTOS_FILES)))
+OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(CMSIS_OS_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(ESP8266_AT_LIB_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(UCHTTPSERVER_FILES)))
 
@@ -33,7 +54,8 @@ INC := -I./inc \
  -I./inc/port/uchttpserver \
  -I./third-party/freertos/FreeRTOS/Source/include \
  -I./third-party/freertos/FreeRTOS/Source/portable/GCC/ARM_CM3 \
- -I./third-party/esp8266-at-lib/00-ESP8266_LIBRARY \
+ -I./third-party/esp8266-at-lib/libs/FreeRTOS/CMSIS_RTOS \
+ -I./third-party/esp8266-at-lib/src/include \
  -I./third-party/uChttpserver/inc
 
 all : $(OBJ_FILES)

@@ -32,6 +32,7 @@ tHttpStatusCode NtpCallback(void * const conn)
 
 static void PostNtpCallback(void * const conn)
 {
+#if 0
   tuCHttpServerState * const sm = conn;
   const char * ntp1 = Http_HelperGetParameter(sm, "ntp1");
   const char * ntp2 = Http_HelperGetParameter(sm, "ntp2");
@@ -58,11 +59,13 @@ static void PostNtpCallback(void * const conn)
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
+#endif
 
 }
 
 static void GetNtpCallback(void * const conn)
 {
+#if 0
   tuCHttpServerState * const sm = conn;
 
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
@@ -88,4 +91,5 @@ static void GetNtpCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</body>");
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
+#endif
 }

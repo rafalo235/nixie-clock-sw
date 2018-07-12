@@ -11,10 +11,9 @@
 #include "drivers/usart/usart.h"
 #include "drivers/clock-source/clock-source.h"
 #include "stm32f103xb.h"
-#include "esp8266_ll.h"
 
 #define STACK_SIZE_CONTROL_TASK     (128)
-#define STACK_SIZE_CONNECTION_TASK  (896)
+#define STACK_SIZE_CONNECTION_TASK  (1024)
 
 void SystemInit(void);
 

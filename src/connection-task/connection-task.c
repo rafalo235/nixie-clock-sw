@@ -6,7 +6,7 @@
  */
 
 #include "connection-task/connection-task.h"
-#include "esp8266.h"
+#include "esp/esp.h"
 #include "drivers/usart/usart.h"
 #include "FreeRTOS.h"
 #include "task.h"
@@ -19,9 +19,11 @@
 #include "resources/routine.h"
 #include "resources/connection-routines.h"
 
+#if 0
 int EspCallback(ESP_Event_t, ESP_EventParams_t *);
+#endif
 
-volatile ESP_t sEsp;
+volatile int sEsp;
 char gConnectApn[32];
 char gConnectPassword[32];
 int gConnectFlag = 0;
@@ -30,11 +32,11 @@ int gDisconnectFlag = 0;
 #define NUM_CONNECTIONS 5
 
 tuCHttpServerState connection[NUM_CONNECTIONS];
-ESP_CONN_t * connectionPcb[NUM_CONNECTIONS] = {
+int * connectionPcb[NUM_CONNECTIONS] = {
     NULL, NULL, NULL, NULL, NULL
 };
 
-tuCHttpServerState * GetServer(ESP_CONN_t * ctx)
+tuCHttpServerState * GetServer(int * ctx)
 {
   tuCHttpServerState * result = NULL;
   int i = 0;
@@ -67,7 +69,7 @@ tuCHttpServerState * GetServer(ESP_CONN_t * ctx)
   return result;
 }
 
-void ReleaseServer(ESP_CONN_t * ctx)
+void ReleaseServer(int * ctx)
 {
   int i = 0;
 
@@ -89,7 +91,9 @@ void ReleaseAllAndDisconnect(void)
   {
     if (NULL != connectionPcb[i])
     {
+#if 0
       ESP_CONN_Close(&sEsp, connectionPcb[i], 1);
+#endif
       connectionPcb[i] = NULL;
     }
   }
@@ -98,7 +102,7 @@ void ReleaseAllAndDisconnect(void)
 
 void Connection_Task(void *parameters)
 {
-
+#if 0
   ESP_Result_t espResult;
 
   if (espOK != (espResult = ESP_Init(&sEsp, 115200, EspCallback)))
@@ -138,16 +142,19 @@ void Connection_Task(void *parameters)
   {
     asm volatile ("nop");
   }
+#endif
 
   Routine_Init(&gConnectionRoutine);
 
   while (1)
   {
     uint32_t tim;
+#if 0
     ESP_Update(&sEsp);
     ESP_ProcessCallbacks(&sEsp);
 
     Routine_ExecuteRoutine(&gConnectionRoutine);
+#endif
 
     // todo remove
     vTaskDelay(pdMS_TO_TICKS(10));
@@ -156,7 +163,7 @@ void Connection_Task(void *parameters)
 
 unsigned int Http_SendPort(void * const conn, const char * data,
     unsigned int length);
-
+#if 0
 int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
 {
   ESP_CONN_t* conn;
@@ -212,7 +219,9 @@ int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
 
   return 0;
 }
+#endif
 
+#if 0
 void vApplicationTickHook(void)
 {
   static uint16_t sCounter = pdMS_TO_TICKS(1);
@@ -226,3 +235,4 @@ void vApplicationTickHook(void)
     }
   }
 }
+#endif

@@ -7,15 +7,16 @@
 
 #include "port/uchttpserver/port.h"
 #include "uchttpserver.h"
-#include "esp8266.h"
+#include "esp/esp.h"
 
-extern volatile ESP_t sEsp;
+extern volatile int sEsp;
 
 unsigned int Http_SendPort(
     void * const  conn, const char * data, unsigned int length)
 {
   uint32_t bw;
 
+#if 0
   while (length)
     {
       ESP_Result_t result = ESP_CONN_Send(
@@ -29,5 +30,6 @@ unsigned int Http_SendPort(
       length -= bw;
       data += bw;
     }
+#endif
   return length;
 }

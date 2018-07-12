@@ -67,11 +67,11 @@ send_data(const void* data, uint16_t len) {
  * \return          espOK on success, member of \ref espr_t enumeration otherwise
  */
 espr_t
-esp_ll_init(esp_ll_t* ll, uint32_t baudrate) {
+esp_ll_init(esp_ll_t* ll) {
     /*
      * Step 1: Configure memory for dynamic allocations
      */
-    static uint8_t memory[0x10000];             /* Create memory for dynamic allocations with specific size */
+    static uint8_t memory[0x1000];             /* Create memory for dynamic allocations with specific size */
 
     /*
      * Create region(s) of memory.
@@ -95,7 +95,7 @@ esp_ll_init(esp_ll_t* ll, uint32_t baudrate) {
     /*
      * Step 3: Configure AT port to be able to send/receive data to/from ESP device
      */
-    configure_uart(baudrate);                   /* Initialize UART for communication */
+    //configure_uart(115200U);                   /* Initialize UART for communication */
     initialized = 1;
     return espOK;
 }

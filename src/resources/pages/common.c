@@ -25,11 +25,12 @@ void Connection_SetConnected(int connected)
   sIsConnected = connected;
 }
 
-static ESP_SNTP_t sSNTPConfig;
+static int sSNTPConfig;
 static char sSNTPAddress[3][SNTP_ADDRESS_LEN];
 
 void SNTP_Initialize(void)
 {
+#if 0
   sSNTPConfig.Addr[0] = &(sSNTPAddress[0][0]);
   sSNTPConfig.Addr[1] = &(sSNTPAddress[1][0]);
   sSNTPConfig.Addr[2] = &(sSNTPAddress[2][0]);
@@ -38,9 +39,10 @@ void SNTP_Initialize(void)
   {
     asm volatile ("nop");
   }
+#endif
 }
 
-ESP_SNTP_t * SNTP_GetConfig(void)
+int * SNTP_GetConfig(void)
 {
   return &sSNTPConfig;
 }
@@ -155,7 +157,7 @@ void Json_Separator(void * const conn)
   Http_HelperSendMessageBody(conn, ",");
 }
 
-void Disconnect(volatile ESP_t* esp, ESP_CONN_t* conn)
+void Disconnect(volatile int* esp, int* conn)
 {
 #if 0
   ESP_CONN_Close(esp, conn, 1);

@@ -9,7 +9,7 @@
 #include "resources/generated/html/header.h"
 #include "resources/common.h"
 #include "resources/connection-routines.h"
-#include "esp8266.h"
+#include "esp/esp.h"
 #include <string.h>
 
 static tConnectionCredentials sCredentials;
@@ -73,6 +73,7 @@ static void GetConnectCallback(void * const conn)
 
 static void PostConnectCallback(void * const conn)
 {
+#if 0
   tuCHttpServerState * const sm = conn;
   ESP_Result_t espResult;
   tHttpStatusCode status;
@@ -103,4 +104,5 @@ static void PostConnectCallback(void * const conn)
   Http_HelperFlush(sm);
 
   Disconnect(&sEsp, Http_HelperGetContext(conn));
+#endif
 }

@@ -11,6 +11,7 @@
 tHttpStatusCode AccessPointsCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
+#if 0
   ESP_Result_t espResult;
   uint16_t res;
   ESP_AP_t aps[16];
@@ -21,6 +22,7 @@ tHttpStatusCode AccessPointsCallback(void * const conn)
     {
       asm volatile ("nop");
     }
+
 
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
@@ -58,6 +60,7 @@ tHttpStatusCode AccessPointsCallback(void * const conn)
   Http_HelperFlush(sm);
 
   Disconnect(&sEsp, Http_HelperGetContext(conn));
+#endif
 
   return HTTP_STATUS_OK;
 }
