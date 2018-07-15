@@ -34,6 +34,10 @@
 #include "esp/esp.h"
 #include "esp/esp_mem.h"
 #include "esp/esp_input.h"
+#include "drivers/usart/usart.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "stm32f103xb.h"
 
 static uint8_t initialized = 0;
 
@@ -45,12 +49,16 @@ static uint8_t initialized = 0;
  */
 static uint16_t
 send_data(const void* data, uint16_t len) {
-    /*
-     * Implement send function here
-     */
-    
-    
-    return len;                                 /* Return number of bytes actually sent to AT port */
+  uint16_t sent = len;
+  while (0 < len)
+  {
+    len -= Usart_WriteCopy(data, len);
+    if (0 != len)
+    {
+      vTaskDelay(pdMS_TO_TICKS(1));
+    }
+  }
+  return sent;
 }
 
 /**
@@ -92,10 +100,16 @@ esp_ll_init(esp_ll_t* ll) {
         ll->send_fn = send_data;                /* Set callback function to send data */
     }
 
-    /*
-     * Step 3: Configure AT port to be able to send/receive data to/from ESP device
-     */
-    //configure_uart(115200U);                   /* Initialize UART for communication */
+    /* Hardware initialization */
+    RCC->APB2ENR |= RCC_APB2ENR_IOPAEN;
+    GPIOA->CRH = (GPIOA->CRH & ~(GPIO_CRH_CNF11 | GPIO_CRH_MODE11)) |
+        GPIO_CRH_MODE11_1;
+    /* Set standby high */
+    GPIOA->BSRR = GPIO_BSRR_BS11;
+
+    Usart_Write("AT+RST\r\n", 8);
+    vTaskDelay(pdMS_TO_TICKS(5000));
+
     initialized = 1;
     return espOK;
 }

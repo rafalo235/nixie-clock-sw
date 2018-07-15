@@ -18,9 +18,10 @@
 #include "resources/pages.h"
 #include "resources/routine.h"
 #include "resources/connection-routines.h"
+#include "system/esp_ll.h"
 
 
-volatile esp_ll_t gEsp;
+esp_ll_t gEsp;
 char gConnectApn[32];
 char gConnectPassword[32];
 int gConnectFlag = 0;
