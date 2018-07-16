@@ -17,7 +17,5 @@ tHttpStatusCode FaviconCallback(void * const conn)
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
 
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
-
   return HTTP_STATUS_OK;
 }

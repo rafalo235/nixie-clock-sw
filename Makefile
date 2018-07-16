@@ -18,7 +18,7 @@ FREERTOS_FILES := $(FREERTOS_SRC)/tasks.c \
  $(FREERTOS_SRC)/queue.c \
  $(FREERTOS_SRC)/list.c \
  $(FREERTOS_SRC)/portable/GCC/ARM_CM3/port.c \
- $(FREERTOS_SRC)/portable/MemMang/heap_1.c
+ $(FREERTOS_SRC)/portable/MemMang/heap_2.c
 CMSIS_OS_FILES := $(CMSIS_OS_PATH)/cmsis_os.c \
  $(CMSIS_OS_PATH)/cpu_utils.c
 ESP8266_AT_LIB_FILES := $(ESP8266_AT_LIB_SRC)/esp/esp_ap.c \

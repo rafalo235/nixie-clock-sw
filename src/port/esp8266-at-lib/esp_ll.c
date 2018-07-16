@@ -74,12 +74,13 @@ send_data(const void* data, uint16_t len) {
  * \param[in]       baudrate: Baudrate to use on AT port
  * \return          espOK on success, member of \ref espr_t enumeration otherwise
  */
+static uint8_t memory[0x2000];             /* Create memory for dynamic allocations with specific size */
+
 espr_t
 esp_ll_init(esp_ll_t* ll) {
     /*
      * Step 1: Configure memory for dynamic allocations
      */
-    static uint8_t memory[0x1000];             /* Create memory for dynamic allocations with specific size */
 
     /*
      * Create region(s) of memory.
@@ -106,11 +107,14 @@ esp_ll_init(esp_ll_t* ll) {
         GPIO_CRH_MODE11_1;
     /* Set standby high */
     GPIOA->BSRR = GPIO_BSRR_BS11;
-
+#if 0
     Usart_Write("AT+RST\r\n", 8);
     vTaskDelay(pdMS_TO_TICKS(5000));
+#endif
 
+    sReceiverEnabled = 1;
     initialized = 1;
+
     return espOK;
 }
 

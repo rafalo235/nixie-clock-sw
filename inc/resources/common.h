@@ -13,8 +13,6 @@
 
 #define SNTP_ADDRESS_LEN  32
 
-extern volatile int sEsp;
-
 
 tuCHttpServerState * GetServer(int * ctx);
 void ReleaseServer(int * ctx);

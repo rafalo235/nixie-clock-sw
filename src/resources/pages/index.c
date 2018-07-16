@@ -63,7 +63,5 @@ tHttpStatusCode IndexCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
 
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
-
   return HTTP_STATUS_OK;
 }

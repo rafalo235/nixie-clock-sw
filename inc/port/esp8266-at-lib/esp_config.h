@@ -33,17 +33,10 @@
 #ifndef __ESP_CONFIG_H
 #define __ESP_CONFIG_H
 
-/*
- * Rename this file to "esp_config.h" for your application
- */
-
 /* First include debug before any config changes */
 #include "esp/esp_debug.h"
 
-/*
- * Open "include/esp/esp_config_default.h" and 
- * copy & replace here settings you want to change values
- */
+#define ESP_CFG_SYS_PORT                    ESP_SYS_PORT_CMSIS_OS
 
 /* After user configuration, call default config to merge config together */
 #include "esp/esp_config_default.h"

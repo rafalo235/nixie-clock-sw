@@ -22,8 +22,6 @@ tHttpStatusCode ScriptCallback(void * const conn)
   Http_HelperSend(sm, script_js, script_js_size);
   Http_HelperFlush(sm);
 
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
-
   return HTTP_STATUS_OK;
 }
 

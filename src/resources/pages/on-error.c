@@ -19,6 +19,4 @@ void OnError(
   //Http_HelperSendHeaderLine(sm, "Connection", "close");
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
-
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
 }

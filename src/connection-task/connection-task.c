@@ -18,7 +18,9 @@
 #include "resources/pages.h"
 #include "resources/routine.h"
 #include "resources/connection-routines.h"
+#include "esp/esp.h"
 #include "system/esp_ll.h"
+#include "connection-task/server-port.h"
 
 
 esp_ll_t gEsp;
@@ -27,93 +29,30 @@ char gConnectPassword[32];
 int gConnectFlag = 0;
 int gDisconnectFlag = 0;
 
-#define NUM_CONNECTIONS 5
-
-tuCHttpServerState connection[NUM_CONNECTIONS];
-int * connectionPcb[NUM_CONNECTIONS] = {
-    NULL, NULL, NULL, NULL, NULL
-};
-
-tuCHttpServerState * GetServer(int * ctx)
-{
-  tuCHttpServerState * result = NULL;
-  int i = 0;
-
-  for (i = 0; i < NUM_CONNECTIONS; ++i)
-  {
-    if (connectionPcb[i] == ctx)
-    {
-      result = &(connection[i]);
-      break;
-    }
-  }
-  if (NULL == result)
-  {
-    for (i = 0; i < NUM_CONNECTIONS; ++i)
-    {
-      if (connectionPcb[i] == NULL)
-      {
-        result = &(connection[i]);
-        connectionPcb[i] = ctx;
-
-        Http_InitializeConnection(
-            result, &Http_SendPort, &OnError,
-            &resources, 10, ctx);
-        break;
-      }
-    }
-  }
-
-  return result;
-}
-
-void ReleaseServer(int * ctx)
-{
-  int i = 0;
-
-  for (i = 0; i < NUM_CONNECTIONS; ++i)
-  {
-    if (connectionPcb[i] == ctx)
-    {
-      connectionPcb[i] = NULL;
-      break;
-    }
-  }
-}
-
-void ReleaseAllAndDisconnect(void)
-{
-  int i;
-
-  for (i = 0; i < NUM_CONNECTIONS; ++i)
-  {
-    if (NULL != connectionPcb[i])
-    {
-#if 0
-      ESP_CONN_Close(&sEsp, connectionPcb[i], 1);
-#endif
-      connectionPcb[i] = NULL;
-    }
-  }
-
-}
+static espr_t
+Connection_Callback(esp_evt_t* evt);
 
 void Connection_Task(void *parameters)
 {
+  espr_t espResult;
 
-  esp_ll_init(&gEsp);
-#if 0
+  if ((espResult = esp_init(&Connection_Callback, 1)) == espOK) {
+    asm volatile ("nop");
+  }
+
 #if 1
-  if (espOK
-      == (espResult = ESP_STA_Connect(&sEsp, WIFI_NAME, WIFI_PASS, NULL, 0, 1)))
-  {
+  if ((espResult = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
+    esp_ip_t ip;
+    esp_sta_copy_ip(&ip, NULL, NULL);
     Connection_SetConnected(1);
-  } else
+  }
+  else
   {
     Connection_SetConnected(0);
   }
 #endif
 
+#if 0
   SNTP_Initialize();
 
 #if 0
@@ -155,78 +94,37 @@ void Connection_Task(void *parameters)
   }
 }
 
-unsigned int Http_SendPort(void * const conn, const char * data,
-    unsigned int length);
-#if 0
-int EspCallback(ESP_Event_t evt, ESP_EventParams_t* params)
+static espr_t
+Connection_Callback(esp_evt_t* evt)
 {
-  ESP_CONN_t* conn;
-  uint8_t* data;
-  tuCHttpServerState * server;
-
-  switch (evt)
-  { /* Check events */
-  case espEventIdle:
-    break;
-  case espEventConnActive:
-  {
-    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
-
-    server = GetServer(conn);
-    if (NULL == server)
-    {
-      ESP_CONN_Close(&sEsp, conn, 1);
-    }
-    break;
+  espr_t res;
+  switch (esp_evt_get_type(evt)) {
+      case ESP_EVT_INIT_FINISH: {
+          break;
+      }
+      case ESP_EVT_RESET_FINISH: {
+          break;
+      }
+      case ESP_EVT_RESET: {
+          break;
+      }
+      case ESP_EVT_WIFI_CONNECTED: {
+          /* Start server on port 80 and set callback for new connections */
+          if ((res = esp_set_server(1, 80, ESP_CFG_MAX_CONNS, 100, Server_Callback, 0)) == espOK) {
+              asm volatile ("nop");
+          }
+          break;
+      }
+      case ESP_EVT_WIFI_DISCONNECTED: {
+          /* Stop server on port 80, others parameters are don't care */
+          printf("Wifi disconnected\r\n");
+          if ((res = esp_set_server(0, 80, ESP_CFG_MAX_CONNS, 100, Server_Callback, 0)) == espOK) {
+            asm volatile ("nop");
+          }
+          break;
+      }
+      default: break;
   }
-  case espEventConnClosed:
-  {
-    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
-    ReleaseServer(conn);
-    break;
-  }
-  case espEventDataReceived:
-  {
-    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
-    data = (uint8_t *) params->CP2; /* Get data */
-
-    server = GetServer(conn);
-    if (NULL != server)
-    {
-      Http_Input(server, data, strlen(data));
-    } else
-    {
-      ESP_CONN_Close(&sEsp, conn, 1);
-    }
-    break;
-  }
-  case espEventDataSent:
-    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
-    break;
-  case espEventDataSentError:
-    conn = (ESP_CONN_t *) params->CP1; /* Get connection for event */
-    ESP_CONN_Close(&sEsp, conn, 1); /* fixme ? set connectionNumber */
-    break;
-  default:
-    break;
-  }
-
-  return 0;
+  ESP_UNUSED(res);
+  return espOK;
 }
-#endif
-
-#if 0
-void vApplicationTickHook(void)
-{
-  static uint16_t sCounter = pdMS_TO_TICKS(1);
-
-  if (sReceiverEnabled)
-  {
-    if (--sCounter == 0)
-    {
-      ESP_UpdateTime(&sEsp, 1);
-      sCounter = pdMS_TO_TICKS(1);
-    }
-  }
-}
-#endif

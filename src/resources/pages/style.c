@@ -22,7 +22,5 @@ tHttpStatusCode StyleCallback(void * const conn)
   Http_HelperSend(sm, style_css, style_css_size);
   Http_HelperFlush(sm);
 
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
-
   return HTTP_STATUS_OK;
 }
