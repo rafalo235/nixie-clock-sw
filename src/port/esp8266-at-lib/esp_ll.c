@@ -74,7 +74,7 @@ send_data(const void* data, uint16_t len) {
  * \param[in]       baudrate: Baudrate to use on AT port
  * \return          espOK on success, member of \ref espr_t enumeration otherwise
  */
-static uint8_t memory[0x2000];             /* Create memory for dynamic allocations with specific size */
+static uint8_t memory[0x2250];             /* Create memory for dynamic allocations with specific size */
 
 espr_t
 esp_ll_init(esp_ll_t* ll) {

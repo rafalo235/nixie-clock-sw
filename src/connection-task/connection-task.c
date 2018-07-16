@@ -110,7 +110,7 @@ Connection_Callback(esp_evt_t* evt)
       }
       case ESP_EVT_WIFI_CONNECTED: {
           /* Start server on port 80 and set callback for new connections */
-          if ((res = esp_set_server(1, 80, ESP_CFG_MAX_CONNS, 100, Server_Callback, 0)) == espOK) {
+          if ((res = esp_set_server(1, 80, ESP_CFG_MAX_CONNS, 100, &Server_Callback, 0)) == espOK) {
               asm volatile ("nop");
           }
           break;
@@ -118,7 +118,7 @@ Connection_Callback(esp_evt_t* evt)
       case ESP_EVT_WIFI_DISCONNECTED: {
           /* Stop server on port 80, others parameters are don't care */
           printf("Wifi disconnected\r\n");
-          if ((res = esp_set_server(0, 80, ESP_CFG_MAX_CONNS, 100, Server_Callback, 0)) == espOK) {
+          if ((res = esp_set_server(0, 80, ESP_CFG_MAX_CONNS, 100, &Server_Callback, 0)) == espOK) {
             asm volatile ("nop");
           }
           break;
