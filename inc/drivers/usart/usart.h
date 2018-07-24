@@ -30,6 +30,7 @@ struct TxData
 
 extern uint8_t sReceiverEnabled;
 extern QueueHandle_t txQueue;
+extern struct Dma gRxDma;
 extern struct Dma gTxDma;
 extern uint8_t gTxBuffer[USART_TX_BUFFER_LENGTH];
 extern uint16_t gTxEmpty;
@@ -37,10 +38,12 @@ extern uint16_t gTxToSend;
 extern uint16_t gTxCurrentTransferLength;
 
 void Usart_Initialize(void);
+void Usart_InitializeRead(void);
 void Usart_Write(const uint8_t* data, uint16_t length);
 uint16_t Usart_WriteCopy(const uint8_t *data,
 			 uint16_t length);
-tUsartResult Usart_Read(uint8_t *data, uint16_t length, uint16_t *result);
+tUsartResult
+Usart_Read(volatile uint8_t **data, uint16_t *result);
 
 void Usart1_OnTransmissionComplete(void);
 void Usart1_OnHalfTransmission(void);

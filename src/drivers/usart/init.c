@@ -53,11 +53,11 @@ static void InitializeController(void)
    * 19,5 BRR */
   USART1->BRR = 0x138;
 
-  USART1->CR3 |= USART_CR3_DMAT;
+  USART1->CR3 |= USART_CR3_DMAT | USART_CR3_DMAR;
 
   /* move just before transmitting receiving */
   USART1->CR1 |= USART_CR1_TE | USART_CR1_RE
-      | USART_CR1_TCIE | USART_CR1_RXNEIE;
+      | USART_CR1_TCIE; /*| USART_CR1_RXNEIE ;*/
 
   USART1->SR = 0;
 

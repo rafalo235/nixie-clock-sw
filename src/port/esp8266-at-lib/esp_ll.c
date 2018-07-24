@@ -38,6 +38,8 @@
 #include "FreeRTOS.h"
 #include "task.h"
 #include "stm32f103xb.h"
+#include "drivers/usart/usart.h"
+#include "connection-task/connection-task.h"
 
 static uint8_t initialized = 0;
 
@@ -74,7 +76,11 @@ send_data(const void* data, uint16_t len) {
  * \param[in]       baudrate: Baudrate to use on AT port
  * \return          espOK on success, member of \ref espr_t enumeration otherwise
  */
-static uint8_t memory[0x2250];             /* Create memory for dynamic allocations with specific size */
+static uint8_t memory[0x1500];             /* Create memory for dynamic allocations with specific size */
+
+#define STACK_SIZE_INPUT_TASK 256
+static StaticTask_t sInputTaskControl;
+static StackType_t sInputTaskStack[STACK_SIZE_INPUT_TASK];
 
 espr_t
 esp_ll_init(esp_ll_t* ll) {
@@ -107,6 +113,13 @@ esp_ll_init(esp_ll_t* ll) {
         GPIO_CRH_MODE11_1;
     /* Set standby high */
     GPIOA->BSRR = GPIO_BSRR_BS11;
+
+    Usart_InitializeRead();
+
+    xTaskCreateStatic(Input_Task, "InputTask",
+        STACK_SIZE_INPUT_TASK, NULL, 1, sInputTaskStack,
+        &sInputTaskControl);
+
 #if 0
     Usart_Write("AT+RST\r\n", 8);
     vTaskDelay(pdMS_TO_TICKS(5000));

@@ -10,4 +10,6 @@
 
 void Connection_Task(void *parameters);
 
+void Input_Task(void *parameters);
+
 #endif /* INC_CONNECTION_TASK_CONNECTION_TASK_H_ */
