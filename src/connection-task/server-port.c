@@ -19,6 +19,36 @@ int * connectionPcb[NUM_CONNECTIONS] = {
 
 espr_t Server_Callback(esp_evt_t* evt)
 {
+  esp_conn_p conn;
+
+  conn = esp_conn_get_from_evt(evt); /* Get connection handle from event */
+  switch (esp_evt_get_type(evt))
+  {
+  case ESP_EVT_CONN_ACTIVE:
+  { /* Connection just active */
+    int num = (int)esp_conn_getnum(conn);
+    asm volatile ("nop");
+    break;
+  }
+  case ESP_EVT_CONN_DATA_RECV:
+  { /* Connection data received */
+    esp_pbuf_p p;
+    p = esp_evt_conn_data_recv_get_buff(evt); /* Get received buffer */
+    if (p != NULL)
+    {
+      int num = (int)esp_conn_getnum(conn);
+      int len = (int) esp_pbuf_length(p, 1);
+      asm volatile ("nop");
+    }
+    break;
+  }
+  case ESP_EVT_CONN_CLOSED:
+  { /* Connection closed */
+    int num = (int)esp_conn_getnum(conn);
+    asm volatile ("nop");
+    break;
+  }
+  }
   return espOK;
 }
 

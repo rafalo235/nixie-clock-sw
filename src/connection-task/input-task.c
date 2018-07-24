@@ -37,6 +37,6 @@ void Input_Task(void *parameters)
     }
     while (0u != len);
 
-    vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(50));
+    vTaskDelayUntil(&xLastWakeTime, pdMS_TO_TICKS(35));
   }
 }
