@@ -9,7 +9,7 @@
 #include <string.h>
 #include "stm32f103xb.h"
 
-#define USART_RX_DMA_BUFFER_LENGTH  1024
+#define USART_RX_DMA_BUFFER_LENGTH  2048
 
 struct Dma gRxDma =
 {
