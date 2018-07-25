@@ -30,15 +30,33 @@
 #ifndef INC_CONNECTION_TASK_COMMAND_DISPATCHER_H_
 #define INC_CONNECTION_TASK_COMMAND_DISPATCHER_H_
 
-typedef enum Command
+#include "esp/esp.h"
+
+typedef enum CommandType
 {
-  COMMAND_CREATE_SERVER,
-  COMMAND_CLOSE_SERVER
-}tCommand;
+  COMMAND_START_SERVER,
+  COMMAND_STOP_SERVER,
+  COMMAND_CLOSE_SERVER_CONNECTION,
+  COMMAND_HANDLE_REQUEST
+}tCommandType;
+
+typedef struct Command
+{
+  tCommandType type;
+  void * parameter;
+} tCommand;
+
+typedef void (tCommandCallback)(tCommand * command);
 
 void Dispatcher_Init(void);
 
-void Dispatcher_Send(tCommand command);
+void Dispatcher_Send(tCommandType command, void * parameter);
+
+int Dispatcher_SetDataBuffer(const void * buffer, unsigned int length);
+
+unsigned int Dispatcher_GetDataBufferSize(void);
+
+const char * Dispatcher_GetDataBuffer(void);
 
 tCommand Dispatcher_Wait(void);
 

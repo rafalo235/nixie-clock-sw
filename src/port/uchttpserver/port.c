@@ -8,28 +8,28 @@
 #include "port/uchttpserver/port.h"
 #include "uchttpserver.h"
 #include "esp/esp.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 extern volatile int sEsp;
 
 unsigned int Http_SendPort(
     void * const  conn, const char * data, unsigned int length)
 {
-  uint32_t bw;
+  size_t bw;
 
-#if 0
   while (length)
+  {
+    espr_t result = esp_conn_send(
+        Http_HelperGetContext((tuCHttpServerState*)conn),
+        data, length, &bw, 1u);
+    if (espOK != result)
     {
-      ESP_Result_t result = ESP_CONN_Send(
-          &sEsp, Http_HelperGetContext((tuCHttpServerState*)conn),
-          data, length, &bw, 1);
-      if (espOK != result)
-      {
-        break;
-      }
-
-      length -= bw;
-      data += bw;
+      vTaskDelay(pdMS_TO_TICKS(5));
     }
-#endif
+    length -= bw;
+    data += bw;
+  }
+
   return length;
 }

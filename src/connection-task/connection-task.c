@@ -67,13 +67,25 @@ void Connection_Task(void *parameters)
     espr_t res;
     tCommand command = Dispatcher_Wait();
 
-    if (COMMAND_CREATE_SERVER == command)
+    if (COMMAND_START_SERVER == command.type)
     {
       if ((res = esp_set_server(1, 80, ESP_CFG_MAX_CONNS, 100, &Server_Callback, 1)) == espOK) {
           asm volatile ("nop");
       }
     }
-    else if (COMMAND_CLOSE_SERVER == command)
+    else if (COMMAND_HANDLE_REQUEST == command.type)
+    {
+      if (0u != Dispatcher_GetDataBufferSize())
+      {
+        Http_Input((tuCHttpServerState*)command.parameter,
+            Dispatcher_GetDataBuffer(), Dispatcher_GetDataBufferSize());
+      }
+    }
+    else if (COMMAND_CLOSE_SERVER_CONNECTION == command.type)
+    {
+      esp_conn_close((esp_conn_p)command.parameter, 1u);
+    }
+    else if (COMMAND_STOP_SERVER == command.type)
     {
       if ((res = esp_set_server(0, 80, ESP_CFG_MAX_CONNS, 100, &Server_Callback, 1)) == espOK) {
         asm volatile ("nop");
@@ -106,12 +118,12 @@ static espr_t Connection_Callback(esp_evt_t* evt)
   case ESP_EVT_WIFI_CONNECTED:
   {
     /* Start server on port 80 and set callback for new connections */
-    Dispatcher_Send(COMMAND_CREATE_SERVER);
+    Dispatcher_Send(COMMAND_START_SERVER, NULL);
     break;
   }
   case ESP_EVT_WIFI_DISCONNECTED:
   {
-    /* Stop server on port 80, others parameters are don't care */
+    Dispatcher_Send(COMMAND_STOP_SERVER, NULL);
     break;
   }
   default:

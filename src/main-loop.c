@@ -13,7 +13,7 @@
 #include "stm32f103xb.h"
 
 #define STACK_SIZE_CONTROL_TASK     (128)
-#define STACK_SIZE_CONNECTION_TASK  (128)
+#define STACK_SIZE_CONNECTION_TASK  (256)
 
 void SystemInit(void);
 

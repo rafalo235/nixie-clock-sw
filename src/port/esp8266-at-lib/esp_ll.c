@@ -52,9 +52,12 @@ static uint8_t initialized = 0;
 static uint16_t
 send_data(const void* data, uint16_t len) {
   uint16_t sent = len;
+  uint16_t result;
   while (0 < len)
   {
-    len -= Usart_WriteCopy(data, len);
+    result = Usart_WriteCopy(data, len);
+    len -= result;
+    data += result;
     if (0 != len)
     {
       vTaskDelay(pdMS_TO_TICKS(1));

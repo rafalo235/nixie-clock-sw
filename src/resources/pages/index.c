@@ -18,9 +18,11 @@ tHttpStatusCode IndexCallback(void * const conn)
   tConnectionRoutinesResults routineResult;
   int res;
 
+#if 0
   status =
       Routine_GetRoutineResult(&gConnectionRoutine, &res);
   routineResult = (tConnectionRoutinesResults)res;
+#endif
 
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
