@@ -20,6 +20,7 @@
 #include "resources/connection-routines.h"
 #include "esp/esp.h"
 #include "system/esp_ll.h"
+#include "esp/esp_netconn.h"
 #include "connection-task/server-port.h"
 #include "connection-task/command-dispatcher.h"
 
@@ -35,16 +36,17 @@ Connection_Callback(esp_evt_t* evt);
 
 void Connection_Task(void *parameters)
 {
-  espr_t espResult;
+  espr_t res;
+  esp_netconn_p server, client;
 
   Dispatcher_Init();
 
-  if ((espResult = esp_init(&Connection_Callback, 1)) == espOK) {
+  if ((res = esp_init(&Connection_Callback, 1)) == espOK) {
     asm volatile ("nop");
   }
 
 #if 1
-  if ((espResult = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
+  if ((res = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
     esp_ip_t ip;
     esp_sta_copy_ip(&ip, NULL, NULL);
     Connection_SetConnected(1);
@@ -60,41 +62,57 @@ void Connection_Task(void *parameters)
 
 #endif
 
-  Routine_Init(&gConnectionRoutine);
+  server = esp_netconn_new(ESP_NETCONN_TYPE_TCP);
+  if (NULL == server)
+  {
+    configASSERT(0); /* fixme remove asserts */
+  }
+  res = esp_netconn_bind(server, 80);
+  if (res == espOK)
+  {
+    configASSERT(0);
+  }
+  res = esp_netconn_listen(server);
+  if (res == espOK)
+  {
+    configASSERT(0);
+  }
 
   while (1)
   {
-    espr_t res;
-    tCommand command = Dispatcher_Wait();
+    res = esp_netconn_accept(server, &client);
+    if (res == espOK)
+    {
+      static tuCHttpServerState sServerState;
+      esp_pbuf_p pbuf, prev;
 
-    if (COMMAND_START_SERVER == command.type)
-    {
-      if ((res = esp_set_server(1, 80, ESP_CFG_MAX_CONNS, 100, &Server_Callback, 1)) == espOK) {
-          asm volatile ("nop");
-      }
-    }
-    else if (COMMAND_HANDLE_REQUEST == command.type)
-    {
-      if (0u != Dispatcher_GetDataBufferSize())
+      Http_InitializeConnection(
+          &sServerState, &Http_SendPort, &OnError,
+          &resources, 10, client);
+
+      do
       {
-        Http_Input((tuCHttpServerState*)command.parameter,
-            Dispatcher_GetDataBuffer(), Dispatcher_GetDataBufferSize());
-      }
-    }
-    else if (COMMAND_CLOSE_SERVER_CONNECTION == command.type)
-    {
-      esp_conn_close((esp_conn_p)command.parameter, 1u);
-    }
-    else if (COMMAND_STOP_SERVER == command.type)
-    {
-      if ((res = esp_set_server(0, 80, ESP_CFG_MAX_CONNS, 100, &Server_Callback, 1)) == espOK) {
-        asm volatile ("nop");
-      }
+        res = esp_netconn_receive(client, &pbuf);
+
+        if (espOK == res)
+        {
+          while (NULL != pbuf)
+          {
+            Http_Input(&sServerState, esp_pbuf_data(pbuf), esp_pbuf_length(pbuf, 0u));
+            prev = pbuf;
+            pbuf = esp_pbuf_unchain(prev);
+            esp_pbuf_free(prev);
+          }
+        }
+
+      } while (espOK == res);
+      /* After this loop connection is closed */
+
+      /* Make sure connection is closed ?todo is necessary */
+      esp_netconn_close(client);
+      esp_netconn_delete(client);
     }
 
-#if 0
-    Routine_ExecuteRoutine(&gConnectionRoutine);
-#endif
   }
 }
 

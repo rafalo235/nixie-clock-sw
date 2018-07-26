@@ -40,6 +40,8 @@
 
 #define ESP_CFG_SYS_PORT                    ESP_SYS_PORT_CMSIS_OS
 
+#define ESP_CFG_NETCONN                     1
+
 /* After user configuration, call default config to merge config together */
 #include "esp/esp_config_default.h"
 

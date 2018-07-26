@@ -40,7 +40,8 @@ ESP8266_AT_LIB_FILES := $(ESP8266_AT_LIB_SRC)/esp/esp_ap.c \
  $(ESP8266_AT_LIB_SRC)/esp/esp_timeout.c \
  $(ESP8266_AT_LIB_SRC)/esp/esp_unicode.c \
  $(ESP8266_AT_LIB_SRC)/esp/esp_wps.c \
- $(ESP8266_AT_LIB_SRC)/esp/esp.c
+ $(ESP8266_AT_LIB_SRC)/esp/esp.c \
+ $(ESP8266_AT_LIB_SRC)/api/esp_netconn.c
 UCHTTPSERVER_FILES := $(UCHTTPSERVER_SRC)/uchttpserver.c
 OBJ_FILES := $(patsubst %.c,%.o,$(patsubst src/%,obj/%,$(SRC_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(FREERTOS_FILES)))

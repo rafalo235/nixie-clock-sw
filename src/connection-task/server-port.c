@@ -14,7 +14,7 @@
 #include "connection-task/command-dispatcher.h"
 
 #define NUM_CONNECTIONS 5
-
+#if 0
 tuCHttpServerState connection[NUM_CONNECTIONS];
 esp_conn_p connectionPcb[NUM_CONNECTIONS] = {
     NULL, NULL, NULL, NULL, NULL
@@ -41,9 +41,6 @@ espr_t Server_Callback(esp_evt_t* evt)
 
     if (NULL != server)
     {
-      Http_InitializeConnection(
-          server, &Http_SendPort, &OnError,
-          &resources, 10, conn);
     }
     else
     {
@@ -132,3 +129,4 @@ void ReleaseServer(esp_conn_p conn)
     }
   }
 }
+#endif
