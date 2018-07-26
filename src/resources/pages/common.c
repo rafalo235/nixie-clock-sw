@@ -25,26 +25,14 @@ void Connection_SetConnected(int connected)
   sIsConnected = connected;
 }
 
-static int sSNTPConfig;
-static char sSNTPAddress[3][SNTP_ADDRESS_LEN];
+char sSNTPAddress[3][SNTP_ADDRESS_LEN];
 
 void SNTP_Initialize(void)
 {
-#if 0
-  sSNTPConfig.Addr[0] = &(sSNTPAddress[0][0]);
-  sSNTPConfig.Addr[1] = &(sSNTPAddress[1][0]);
-  sSNTPConfig.Addr[2] = &(sSNTPAddress[2][0]);
+  sSNTPAddress[0][0] = (char)0u;
+  sSNTPAddress[1][0] = (char)0u;
+  sSNTPAddress[2][0] = (char)0u;
 
-  if (espOK != ESP_SNTP_GetConfig(&sEsp, &sSNTPConfig, 1))
-  {
-    asm volatile ("nop");
-  }
-#endif
-}
-
-int * SNTP_GetConfig(void)
-{
-  return &sSNTPConfig;
 }
 
 void Page_SendInfoElement(

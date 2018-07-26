@@ -22,8 +22,8 @@ void Disconnect(volatile int* ESP, int* conn);
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 
+extern char sSNTPAddress[3][SNTP_ADDRESS_LEN];
 void SNTP_Initialize(void);
-int * SNTP_GetConfig(void);
 
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value);

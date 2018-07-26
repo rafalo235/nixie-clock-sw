@@ -56,10 +56,7 @@ void Connection_Task(void *parameters)
   }
 #endif
 
-#if 0
   SNTP_Initialize();
-
-#endif
 
   server = esp_netconn_new(ESP_NETCONN_TYPE_TCP);
   if (NULL == server)
