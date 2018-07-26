@@ -86,6 +86,8 @@ void Connection_Task(void *parameters)
           &sServerState, &Http_SendPort, &OnError,
           &resources, 10, client);
 
+      esp_netconn_set_receive_timeout(client, 500);
+
       do
       {
         res = esp_netconn_receive(client, &pbuf);
