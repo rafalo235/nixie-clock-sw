@@ -18,17 +18,20 @@ unsigned int Http_SendPort(
 {
   size_t bw;
 
-  while (length)
+  while (1)
   {
-    espr_t result = esp_conn_send(
-        Http_HelperGetContext((tuCHttpServerState*)conn),
-        data, length, &bw, 1u);
+    espr_t result = esp_netconn_write(
+        Http_HelperGetContext((tuCHttpServerState*) conn), data, length);
     if (espOK != result)
     {
       vTaskDelay(pdMS_TO_TICKS(5));
     }
-    length -= bw;
-    data += bw;
+    else
+    {
+      result = esp_netconn_flush(Http_HelperGetContext((tuCHttpServerState*) conn));
+      asm volatile ("nop");
+      break;
+    }
   }
 
   return length;

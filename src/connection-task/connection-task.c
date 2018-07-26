@@ -64,12 +64,12 @@ void Connection_Task(void *parameters)
     configASSERT(0); /* fixme remove asserts */
   }
   res = esp_netconn_bind(server, 80);
-  if (res == espOK)
+  if (res != espOK)
   {
     configASSERT(0);
   }
   res = esp_netconn_listen(server);
-  if (res == espOK)
+  if (res != espOK)
   {
     configASSERT(0);
   }
