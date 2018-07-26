@@ -7,22 +7,23 @@
 
 #include "resources/pages.h"
 #include "resources/common.h"
+#include "esp/esp.h"
+#include "esp/esp_sta.h"
+
+#define MAX_ACCESS_POINTS   16
+
+esp_ap_t sAps[MAX_ACCESS_POINTS];
 
 tHttpStatusCode AccessPointsCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
-#if 0
-  ESP_Result_t espResult;
-  uint16_t res;
-  ESP_AP_t aps[16];
-  ESP_AP_t * ptr = aps;
+  espr_t result;
+  size_t accessPointsNumber;
+  esp_ap_t * ptr = sAps;
 
   /* Fetch Access points */
-  if (espOK != (espResult = ESP_STA_ListAccessPoints(&sEsp, aps, 16, &res, 1)))
-    {
-      asm volatile ("nop");
-    }
-
+  result = esp_sta_list_ap(NULL, &sAps[0],
+  MAX_ACCESS_POINTS, &accessPointsNumber, 1u);
 
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
@@ -34,33 +35,30 @@ tHttpStatusCode AccessPointsCallback(void * const conn)
 
   Json_Attribute(conn, "acess_points");
   Json_OpenArray(conn);
-  while (res--)
+  while (accessPointsNumber--)
+  {
+    Json_OpenObject(conn);
+
+    Json_Attribute(conn, "value");
+    Json_Value(conn, ptr->ssid);
+
+    Json_Separator(conn);
+
+    Json_Attribute(conn, "display");
+    Json_Value(conn, ptr->ssid);
+
+    Json_CloseObject(conn);
+    if (0 != accessPointsNumber)
     {
-      Json_OpenObject(conn);
-
-      Json_Attribute(conn, "value");
-      Json_Value(conn, ptr->SSID);
-
       Json_Separator(conn);
-
-      Json_Attribute(conn, "display");
-      Json_Value(conn, ptr->SSID);
-
-      Json_CloseObject(conn);
-      if (0 != res)
-	{
-	  Json_Separator(conn);
-	}
-      ++ptr;
     }
+    ++ptr;
+  }
   Json_CloseArray(conn);
 
   Json_CloseObject(conn);
 
   Http_HelperFlush(sm);
-
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
-#endif
 
   return HTTP_STATUS_OK;
 }
