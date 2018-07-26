@@ -44,6 +44,8 @@
 
 #define ESP_CFG_NETCONN_RECEIVE_TIMEOUT     1
 
+#define ESP_CFG_SNTP                        1
+
 /* After user configuration, call default config to merge config together */
 #include "esp/esp_config_default.h"
 

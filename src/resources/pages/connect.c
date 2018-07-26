@@ -82,17 +82,7 @@ static void PostConnectCallback(void * const conn)
 
   if (NULL != apName && NULL != password && (!isConnected))
   {
-    result = esp_sta_join(apName, password, NULL, 0, 1);
-
-    if (espOK == result)
-    {
-      status = HTTP_STATUS_OK;
-      strncpy(&gConnectApn[0], apName, 32);
-    }
-    else
-    {
-      status = HTTP_FORBIDDEN;
-    }
+    status = HTTP_STATUS_OK;
   } else
   {
     status = HTTP_STATUS_NOT_FOUND; /* fixme */
@@ -106,4 +96,16 @@ static void PostConnectCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
 
   Http_HelperFlush(sm);
+
+  if (HTTP_STATUS_OK == status)
+  {
+    esp_netconn_flush(Http_HelperGetContext(sm));
+
+    result = esp_sta_join(apName, password, NULL, 0, 1);
+
+    if (espOK == result)
+    {
+      strncpy(&gConnectApn[0], apName, 32);
+    }
+  }
 }

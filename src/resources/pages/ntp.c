@@ -60,7 +60,6 @@ static void PostNtpCallback(void * const conn)
   Http_HelperSendHeader(sm);
   Http_HelperFlush(sm);
 #endif
-
 }
 
 static void GetNtpCallback(void * const conn)
