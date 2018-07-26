@@ -27,7 +27,7 @@ tHttpStatusCode IndexCallback(void * const conn)
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
-  //Http_HelperSendHeaderLine(sm, "Connection", "close");
+  //Http_HelperSetResponseHeader(sm, "Connection", "close");
   Http_HelperSendHeader(sm);
 
   /* Create and send content */

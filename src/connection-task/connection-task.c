@@ -99,6 +99,7 @@ void Connection_Task(void *parameters)
             pbuf = esp_pbuf_unchain(prev);
             esp_pbuf_free(prev);
           }
+          esp_netconn_flush(client);
         }
 
       } while (espOK == res);

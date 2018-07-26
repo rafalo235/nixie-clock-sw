@@ -17,6 +17,7 @@ unsigned int Http_SendPort(
     void * const  conn, const char * data, unsigned int length)
 {
   size_t bw;
+  static unsigned int sBytesSent = 0u;
 
   while (1)
   {
@@ -28,7 +29,12 @@ unsigned int Http_SendPort(
     }
     else
     {
-      result = esp_netconn_flush(Http_HelperGetContext((tuCHttpServerState*) conn));
+      sBytesSent += length;
+      if (sBytesSent >= ESP_CFG_CONN_MAX_DATA_LEN)
+      {
+        result = esp_netconn_flush(Http_HelperGetContext((tuCHttpServerState*) conn));
+        sBytesSent -= ESP_CFG_CONN_MAX_DATA_LEN;
+      }
       asm volatile ("nop");
       break;
     }
