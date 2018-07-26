@@ -13,12 +13,12 @@ tRoutine gConnectionRoutine;
 
 int ConnectToAccessPoint(void * param)
 {
+#if 0
   tConnectionCredentials * credentials = param;
   tConnectionRoutinesResults result;
 
   if (0 == Connection_IsConnected())
   {
-#if 0
     ESP_Result_t espResult;
     ReleaseAllAndDisconnect();
     if (espOK
@@ -41,31 +41,27 @@ int ConnectToAccessPoint(void * param)
       }
       Connection_SetConnected(0);
     }
-#endif
   }
   else
   {
     result = CONN_ROUTINE_WIFI_ALREADY_CONNECTED;
   }
 
-  return (int)result;
+#endif
+  return (int)0;
 }
 
 int DisconnectFromAccessPoint(void * param)
 {
   tConnectionRoutinesResults result;
 
-#if 0
   if (1 == Connection_IsConnected())
   {
-    ESP_Result_t espResult;
+    espr_t result;
 
-    ReleaseAllAndDisconnect();
-
-    if (espOK == (espResult = ESP_STA_Disconnect(&sEsp, 1)))
+    if (espOK == (result = esp_sta_quit(1u)))
     {
       result = CONN_ROUTINE_WIFI_DISCONNECTED;
-      Connection_SetConnected(0);
     }
     else
     {
@@ -76,7 +72,6 @@ int DisconnectFromAccessPoint(void * param)
   {
     result = CONN_ROUTINE_WIFI_NOT_CONNECTED;
   }
-#endif
 
   return (int)result;
 }

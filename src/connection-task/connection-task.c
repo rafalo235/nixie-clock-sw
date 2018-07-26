@@ -41,7 +41,9 @@ void Connection_Task(void *parameters)
     asm volatile ("nop");
   }
 
-#if 1
+  esp_sta_quit(1u);
+
+#if 0
   if ((res = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
     esp_ip_t ip;
     esp_sta_copy_ip(&ip, NULL, NULL);
@@ -74,6 +76,8 @@ void Connection_Task(void *parameters)
   {
     configASSERT(0);
   }
+
+  Routine_Init(&gConnectionRoutine);
 
   while (1)
   {
@@ -111,6 +115,8 @@ void Connection_Task(void *parameters)
       /* Make sure connection is closed ?todo is necessary */
       esp_netconn_close(client);
       esp_netconn_delete(client);
+
+      Routine_ExecuteRoutine(&gConnectionRoutine);
     }
 
   }

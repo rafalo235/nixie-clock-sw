@@ -33,12 +33,6 @@ typedef enum ConnectionRoutinesResults
   CONN_ROUTINE_SNTP_SYNCHRONIZATION_ERROR
 } tConnectionRoutinesResults;
 
-typedef struct ConnectionCredentials
-{
-  char apn[CONN_CRED_APN_LEN];
-  char password[CONN_CRED_PAS_LEN];
-} tConnectionCredentials;
-
 extern tRoutine gConnectionRoutine;
 
 const char * ResolveResultMessage(tConnectionRoutinesResults result);

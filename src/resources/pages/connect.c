@@ -12,10 +12,10 @@
 #include "esp/esp.h"
 #include <string.h>
 
-static tConnectionCredentials sCredentials;
-
 static void GetConnectCallback(void * const conn);
 static void PostConnectCallback(void * const conn);
+
+extern char gConnectApn[32];
 
 tHttpStatusCode ConnectCallback(void * const conn)
 {
@@ -73,22 +73,26 @@ static void GetConnectCallback(void * const conn)
 
 static void PostConnectCallback(void * const conn)
 {
-#if 0
   tuCHttpServerState * const sm = conn;
-  ESP_Result_t espResult;
+  espr_t result;
   tHttpStatusCode status;
   const char * apName = Http_HelperGetParameter(sm, "apn");
   const char * password = Http_HelperGetParameter(sm, "passwd");
+  uint8_t isConnected = esp_sta_is_joined();
 
-  if (NULL != apName && NULL != password)
+  if (NULL != apName && NULL != password && (!isConnected))
   {
-    status = HTTP_STATUS_OK;
+    result = esp_sta_join(apName, password, NULL, 0, 1);
 
-    strncpy(sCredentials.apn, apName, 32);
-    strncpy(sCredentials.password, password, 32);
-    Routine_CallRoutine(
-        &gConnectionRoutine, &ConnectToAccessPoint, &sCredentials);
-
+    if (espOK == result)
+    {
+      status = HTTP_STATUS_OK;
+      strncpy(&gConnectApn[0], apName, 32);
+    }
+    else
+    {
+      status = HTTP_FORBIDDEN;
+    }
   } else
   {
     status = HTTP_STATUS_NOT_FOUND; /* fixme */
@@ -102,7 +106,4 @@ static void PostConnectCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
 
   Http_HelperFlush(sm);
-
-  Disconnect(&sEsp, Http_HelperGetContext(conn));
-#endif
 }

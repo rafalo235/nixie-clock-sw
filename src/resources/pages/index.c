@@ -14,15 +14,14 @@
 tHttpStatusCode IndexCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
-  tRoutineStatus status;
+  tRoutineStatus status = ROUTINE_NOT_CALLED;
   tConnectionRoutinesResults routineResult;
   int res;
+  uint8_t isConnected = esp_sta_is_joined();
 
-#if 0
   status =
       Routine_GetRoutineResult(&gConnectionRoutine, &res);
   routineResult = (tConnectionRoutinesResults)res;
-#endif
 
   /* Send header */
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
@@ -35,7 +34,7 @@ tHttpStatusCode IndexCallback(void * const conn)
   Http_HelperSend(sm, header_html, header_html_size);
   Http_HelperSendMessageBody(sm, "<body>");
 
-  if (Connection_IsConnected())
+  if (isConnected)
     {
       Page_SendButton(conn, "Connection Status", "loadStatus()");
     }
