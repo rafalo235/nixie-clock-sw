@@ -21,8 +21,6 @@
 #include "esp/esp.h"
 #include "system/esp_ll.h"
 #include "esp/esp_netconn.h"
-#include "connection-task/server-port.h"
-#include "connection-task/command-dispatcher.h"
 
 
 esp_ll_t gEsp;
@@ -38,8 +36,6 @@ void Connection_Task(void *parameters)
 {
   espr_t res;
   esp_netconn_p server, client;
-
-  Dispatcher_Init();
 
   if ((res = esp_init(&Connection_Callback, 1)) == espOK) {
     asm volatile ("nop");
@@ -135,13 +131,10 @@ static espr_t Connection_Callback(esp_evt_t* evt)
   }
   case ESP_EVT_WIFI_CONNECTED:
   {
-    /* Start server on port 80 and set callback for new connections */
-    Dispatcher_Send(COMMAND_START_SERVER, NULL);
     break;
   }
   case ESP_EVT_WIFI_DISCONNECTED:
   {
-    Dispatcher_Send(COMMAND_STOP_SERVER, NULL);
     break;
   }
   default:
