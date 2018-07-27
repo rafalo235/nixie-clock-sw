@@ -12,16 +12,14 @@
 void IdleState(void *sm, tUtils_Signal sig)
 {
 	tControlContext *context = sm;
-	uint32_t tmp = 0;
+	tDatetime tmp;
 
 	switch (sig)
 	{
 	case CONTROL_ACTION_SECOND_TICK :
 	{
-		if (RTC_SUCCESS == Rtc_Read(&tmp))
-		{
-			DisplayWithPosition(tmp, context->position);
-		}
+	  Rtc_GetDatetime(&tmp);
+    DisplayWithPosition(&tmp, context->position);
 		break;
 	}
 	case CONTROL_ACTION_INCREMENT :
@@ -32,10 +30,8 @@ void IdleState(void *sm, tUtils_Signal sig)
 			context->position = 4;
 		}
 
-		if (RTC_SUCCESS == Rtc_Read(&tmp))
-		{
-			DisplayWithPosition(tmp, context->position);
-		}
+    Rtc_GetDatetime(&tmp);
+    DisplayWithPosition(&tmp, context->position);
 		break;
 	}
 	case CONTROL_ACTION_DECREMENT :
@@ -46,15 +42,12 @@ void IdleState(void *sm, tUtils_Signal sig)
 			context->position = 0;
 		}
 
-		if (RTC_SUCCESS == Rtc_Read(&tmp))
-		{
-			DisplayWithPosition(tmp, context->position);
-		}
+    Rtc_GetDatetime(&tmp);
+    DisplayWithPosition(&tmp, context->position);
 		break;
 	}
 	case CONTROL_ACTION_PRESS :
 	{
-
 		STATE_CHANGE(context, &SetTimeState);
 		break;
 	}

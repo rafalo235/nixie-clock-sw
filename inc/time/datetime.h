@@ -13,5 +13,8 @@
 
 typedef esp_datetime_t tDatetime;
 
+void Datetime_Increment(tDatetime * dt, uint32_t timestamp);
+
+void Datetime_Decrement(tDatetime * dt, uint32_t timestamp);
 
 #endif /* INC_TIME_DATETIME_H_ */

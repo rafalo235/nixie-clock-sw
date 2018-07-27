@@ -44,80 +44,54 @@ void Control_Task(void *parameters)
 	}
 }
 
-void DisplayWithPosition(uint32_t sec, int32_t position)
+void DisplayWithPosition(const tDatetime * t, int32_t position)
 {
-	tTime_DateTime t;
 
-	t = Time_GetUTCTime(sec, Time_GetEpoch());
 	if (0 == position)
 	{
-		Display_Print(t.minute, t.second);
+		Display_Print(t->minutes, t->seconds);
 	}
 	else if (1 == position)
 	{
-		Display_Print(t.hour, t.minute);
+		Display_Print(t->hours, t->minutes);
 	}
 	else if (2 == position)
 	{
-		Display_Print(t.day, t.hour);
+		Display_Print(t->day + 1, t->hours);
 	}
 	else if (3 == position)
 	{
-		Display_Print(t.month + 1, t.day);
+		Display_Print(t->month + 1, t->day + 1);
 	}
 	else if (4 == position)
 	{
-		Display_Print((uint8_t)(t.year / 100), (uint8_t)(t.year % 100));
+		Display_Print((uint8_t)(t->year / 100), (uint8_t)(t->year % 100));
 	}
 
 }
 
-uint32_t IncrementWithPosition(uint32_t sec, int32_t position)
+uint32_t GetPositionDelta(int32_t position)
 {
-	uint32_t t = sec;
-	if (0 == position)
-	{
-		++t;
-	}
-	else if (1 == position)
-	{
-		t += 60u;
-	}
-	else if (2 == position)
-	{
-		t += 3600u;
-	}
-	else if (3 == position)
-	{
-		t += 86400u;
-	}
-	else if (4 == position)
-	{
-		t += 31536000u;
-	}
-}
-
-uint32_t DecrementWithPosition(uint32_t sec, int32_t position)
-{
-	uint32_t t = sec;
-	if (0 == position)
-	{
-		--t;
-	}
-	else if (1 == position)
-	{
-		t -= 60u;
-	}
-	else if (2 == position)
-	{
-		t -= 3600u;
-	}
-	else if (3 == position)
-	{
-		t -= 86400u;
-	}
-	else if (4 == position)
-	{
-		t -= 31536000u;
-	}
+  uint32_t result = 0;
+  if (0 == position)
+  {
+    result = 1;
+  }
+  else if (1 == position)
+  {
+    result = 60u;
+  }
+  else if (2 == position)
+  {
+    result = 3600u;
+  }
+  else if (3 == position)
+  {
+    result = 86400u;
+  }
+  else if (4 == position)
+  {
+    result = 31536000u;
+  }
+  return result;
 }

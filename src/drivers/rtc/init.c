@@ -10,9 +10,53 @@
 static void InitializeClock(void);
 static void InitializeInterrupts(void);
 
+static int sInitialized = 0;
+
 void Rtc_Initialize(void)
 {
 	InitializeClock();
+	sInitialized = 1;
+}
+
+void Rtc_GetDatetime(tDatetime * dt)
+{
+  /* todo is padding need to be considered? */
+  uint16_t * dst = (uint16_t *)dt;
+  const uint16_t * src = (uint16_t *)&BKP->DR1;
+  size_t len = sizeof(tDatetime) / sizeof(uint16_t);
+
+  if (1 == sInitialized)
+  {
+    __disable_irq();
+
+    while (len--)
+    {
+      *dst = *src;
+
+    }
+    __enable_irq();
+  }
+}
+
+void Rtc_SetDatetime(const tDatetime * dt)
+{
+  /* todo is padding need to be considered? */
+  uint16_t * dst = (uint16_t *)&BKP->DR1;
+  const uint16_t * src = (uint16_t *)dt;
+  size_t len = sizeof(tDatetime) / sizeof(uint16_t);
+
+
+  if (1 == sInitialized)
+  {
+    __disable_irq();
+
+    while (len--)
+    {
+      *dst = *src;
+    }
+
+    __enable_irq();
+  }
 }
 
 static void InitializeClock(void)

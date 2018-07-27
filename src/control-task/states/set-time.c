@@ -17,23 +17,22 @@ void SetTimeState(void *sm, tUtils_Signal sig)
 	{
 	case UTILS_ENTER_STATE :
 	{
-		context->timeToSet = 0;
-		Rtc_Read(&(context->timeToSet));
-		DisplayWithPosition(context->timeToSet, context->position);
+	  Rtc_GetDatetime(&(context->timeToSet));
+    DisplayWithPosition(&(context->timeToSet), context->position);
 		break;
 	}
 	case CONTROL_ACTION_INCREMENT :
 	{
-		context->timeToSet =
-				IncrementWithPosition(context->timeToSet, context->position);
-		DisplayWithPosition(context->timeToSet, context->position);
+	  Datetime_Increment(
+	      &(context->timeToSet), GetPositionDelta(context->position));
+		DisplayWithPosition(&(context->timeToSet), context->position);
 		break;
 	}
 	case CONTROL_ACTION_DECREMENT :
 	{
-		context->timeToSet =
-				DecrementWithPosition(context->timeToSet, context->position);
-		DisplayWithPosition(context->timeToSet, context->position);
+    Datetime_Decrement(
+        &(context->timeToSet), GetPositionDelta(context->position));
+    DisplayWithPosition(&(context->timeToSet), context->position);
 		break;
 	}
 	case CONTROL_ACTION_PRESS :
@@ -43,7 +42,7 @@ void SetTimeState(void *sm, tUtils_Signal sig)
 	}
 	case UTILS_LEAVE_STATE :
 	{
-		Rtc_Write(context->timeToSet);
+	  Rtc_SetDatetime(&(context->timeToSet));
 		break;
 	}
 	default :

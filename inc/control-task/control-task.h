@@ -11,6 +11,7 @@
 #include "utils/state-machine-framework.h"
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "time/datetime.h"
 
 typedef enum ControlAction
 {
@@ -24,7 +25,7 @@ typedef struct ControlContext
 {
 	tUtilsStateMachine sm;
 	int32_t position;
-	uint32_t timeToSet;
+	tDatetime timeToSet;
 } tControlContext;
 
 extern QueueHandle_t gControlQueue;
@@ -32,8 +33,8 @@ extern QueueHandle_t gControlQueue;
 void Control_InitializeQueue(void);
 void Control_Task(void *parameters);
 
-void DisplayWithPosition(uint32_t sec, int32_t position);
-uint32_t IncrementWithPosition(uint32_t sec, int32_t position);
-uint32_t DecrementWithPosition(uint32_t sec, int32_t position);
+void DisplayWithPosition(const tDatetime * t, int32_t position);
+
+uint32_t GetPositionDelta(int32_t position);
 
 #endif /* INC_CONTROL_TASK_CONTROL_TASK_H_ */

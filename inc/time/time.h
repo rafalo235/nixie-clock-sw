@@ -27,10 +27,4 @@ typedef struct Time_DateTime {
 
 void RTC_IRQHandler(void);
 
-void Time_SetEpoch(const tTime_DateTime *);
-const tTime_DateTime* Time_GetEpoch(void);
-
-tTime_DateTime Time_GetUTCTime(
-		uint32_t timestamp, const tTime_DateTime *epoch);
-
 #endif /* INC_TIME_TIME_H_ */
