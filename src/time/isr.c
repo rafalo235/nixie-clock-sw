@@ -11,14 +11,24 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include <stdlib.h>
+#include "drivers/rtc/rtc.h"
+#include "time/datetime.h"
 
 void RTC_IRQHandler(void)
 {
 	const tControlAction action = CONTROL_ACTION_SECOND_TICK;
 	BaseType_t higherTaskPriority = pdFALSE;
+	tDatetime dt;
+	uint32_t tmp;
 
 	/* Clear pending interrupt */
 	RTC->CRL &= ~RTC_CRL_SECF;
+
+	Rtc_Read(&tmp);
+	Rtc_GetDatetime(&dt);
+
+	Datetime_Increment(&dt, tmp);
+	Rtc_Write(0u);
 
 	if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
 	{
