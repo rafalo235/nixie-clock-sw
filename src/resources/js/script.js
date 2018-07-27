@@ -44,6 +44,11 @@ function loadNtp()
 	location.href = "ntp.html";
 }
 
+function loadSynchronize()
+{
+	location.href = "synchronize";
+}
+
 function refreshConnect()
 {	
 	var xhr = new XMLHttpRequest();

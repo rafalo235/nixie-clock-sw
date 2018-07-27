@@ -43,7 +43,7 @@ tHttpStatusCode IndexCallback(void * const conn)
       Page_SendButton(conn, "Connect to AP", "loadConnect()");
     }
   Page_SendButton(conn, "Set NTP Setting", "loadNtp()");
-  Page_SendButton(conn, "Synchronize", "loadConnect()");
+  Page_SendButton(conn, "Synchronize", "loadSynchronize()");
   Page_SendButton(conn, "Set Time", "loadConnect()");
 
   if (ROUTINE_FINISHED == status)
