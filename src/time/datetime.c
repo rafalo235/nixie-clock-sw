@@ -13,12 +13,17 @@
 #define MINUTES_IN_HOUR   60
 #define HOURS_IN_DAY      24
 
-static void Datetime_UpdateTime(
+static void Datetime_IncrementTime(
     tDatetime * dt, uint32_t * timestamp, int * carry);
-static void Datetime_UpdateCalendar(tDatetime * dt);
+static void Datetime_IncrementDay(tDatetime * dt);
+static void Datetime_DecrementTime(
+    tDatetime * dt, uint32_t * timestamp, int * carry);
+static void Datetime_DecrementDay(tDatetime * dt);
 
 static uint32_t Datetime_IncrementTimeUnit(
     uint32_t unit, uint32_t * inc, uint32_t step, int * carry);
+static uint32_t Datetime_DecrementTimeUnit(
+    uint32_t unit, uint32_t * dec, uint32_t step, int * carry);
 
 static uint32_t Datetime_GetMonthDays(uint32_t month, int leap);
 static int Datetime_IsLeapYear(uint32_t year);
@@ -27,7 +32,7 @@ void Datetime_Increment(tDatetime * dt, uint32_t timestamp)
 {
   int carry = 0;
 
-  Datetime_UpdateTime(dt, &timestamp, &carry);
+  Datetime_IncrementTime(dt, &timestamp, &carry);
 
   timestamp += carry;
 
@@ -35,11 +40,25 @@ void Datetime_Increment(tDatetime * dt, uint32_t timestamp)
    * it should be considered to move it outside ISR */
   while (timestamp--)
   {
-    Datetime_UpdateCalendar(dt);
+    Datetime_IncrementDay(dt);
   }
 }
 
-static void Datetime_UpdateTime(
+void Datetime_Decrement(tDatetime * dt, uint32_t timestamp)
+{
+  int carry = 0;
+
+  Datetime_DecrementTime(dt, &timestamp, &carry);
+
+  timestamp += carry;
+
+  while (timestamp--)
+  {
+    Datetime_DecrementDay(dt);
+  }
+}
+
+static void Datetime_IncrementTime(
     tDatetime * dt, uint32_t * timestamp, int * carry)
 {
   dt->seconds = Datetime_IncrementTimeUnit(
@@ -52,7 +71,20 @@ static void Datetime_UpdateTime(
       dt->hours, timestamp, HOURS_IN_DAY, carry);
 }
 
-static void Datetime_UpdateCalendar(
+static void Datetime_DecrementTime(
+    tDatetime * dt, uint32_t * timestamp, int * carry)
+{
+  dt->seconds = Datetime_DecrementTimeUnit(
+      dt->seconds, timestamp, SECONDS_IN_MINUTE, carry);
+
+  dt->minutes = Datetime_DecrementTimeUnit(
+      dt->minutes, timestamp, MINUTES_IN_HOUR, carry);
+
+  dt->hours = Datetime_DecrementTimeUnit(
+      dt->hours, timestamp, HOURS_IN_DAY, carry);
+}
+
+static void Datetime_IncrementDay(
     tDatetime * dt)
 {
   int leap = Datetime_IsLeapYear(dt->year);
@@ -73,6 +105,31 @@ static void Datetime_UpdateCalendar(
   }
 }
 
+static void Datetime_DecrementDay(
+    tDatetime * dt)
+{
+  int leap = Datetime_IsLeapYear(dt->year);
+
+  if (dt->day > 0u)
+  {
+    --(dt->day);
+  }
+  else
+  {
+    if (dt->month > 0u)
+    {
+      --(dt->month);
+      dt->day = Datetime_GetMonthDays(dt->month, leap) - 1;
+    }
+    else
+    {
+      --(dt->year);
+      dt->month = 11u;
+      dt->day = 30u;
+    }
+  }
+}
+
 static uint32_t Datetime_IncrementTimeUnit(
     uint32_t unit, uint32_t * inc, uint32_t step, int * carry)
 {
@@ -87,7 +144,26 @@ static uint32_t Datetime_IncrementTimeUnit(
   {
     *carry = 0;
   }
+  return unit;
+}
 
+static uint32_t Datetime_DecrementTimeUnit(
+    uint32_t unit, uint32_t * dec, uint32_t step, int * carry)
+{
+  uint32_t delta = ((*dec % step) + *carry);
+
+  if (unit < delta)
+  {
+    unit = step - (delta - unit);
+    *carry = 1;
+  }
+  else
+  {
+    unit -= delta;
+    *carry = 0;
+  }
+
+  *dec /= step;
 }
 
 static uint32_t Datetime_GetMonthDays(uint32_t month, int leap)
