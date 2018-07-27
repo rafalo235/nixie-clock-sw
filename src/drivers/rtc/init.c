@@ -24,7 +24,7 @@ void Rtc_GetDatetime(tDatetime * dt)
 {
   /* todo is padding need to be considered? */
   uint16_t * dst = (uint16_t *)dt;
-  const uint16_t * src = (uint16_t *)&sDatetime; //&BKP->DR1;
+  const uint16_t * src = (uint16_t *)&BKP->DR1;
   size_t len = sizeof(tDatetime) / sizeof(uint16_t);
 
   if (1 == sInitialized)
@@ -35,7 +35,7 @@ void Rtc_GetDatetime(tDatetime * dt)
     {
       *dst = *src;
       ++dst;
-      ++src;
+      src += 2;
     }
     __enable_irq();
   }
@@ -44,7 +44,7 @@ void Rtc_GetDatetime(tDatetime * dt)
 void Rtc_SetDatetime(const tDatetime * dt)
 {
   /* todo is padding need to be considered? */
-  uint16_t * dst = (uint16_t *)&sDatetime; //&BKP->DR1;
+  uint16_t * dst = (uint16_t *)&BKP->DR1;
   const uint16_t * src = (uint16_t *)dt;
   size_t len = sizeof(tDatetime) / sizeof(uint16_t);
 
@@ -52,14 +52,16 @@ void Rtc_SetDatetime(const tDatetime * dt)
   if (1 == sInitialized)
   {
     __disable_irq();
+    PWR->CR |= PWR_CR_DBP;
 
     while (len--)
     {
       *dst = *src;
-      ++dst;
+      dst += 2;
       ++src;
     }
 
+    PWR->CR &= ~(PWR_CR_DBP);
     __enable_irq();
   }
 }
