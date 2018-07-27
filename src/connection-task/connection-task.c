@@ -41,9 +41,10 @@ void Connection_Task(void *parameters)
     asm volatile ("nop");
   }
 
-  esp_sta_quit(1u);
-
 #if 0
+  esp_sta_quit(1u);
+#endif
+
   if ((res = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
     esp_ip_t ip;
     esp_sta_copy_ip(&ip, NULL, NULL);
@@ -54,7 +55,6 @@ void Connection_Task(void *parameters)
   {
     Connection_SetConnected(0);
   }
-#endif
 
   SNTP_Initialize();
 
