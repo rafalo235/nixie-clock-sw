@@ -9,6 +9,7 @@
 #include "resources/common.h"
 #include "esp/esp.h"
 #include "esp/esp_sntp.h"
+#include "drivers/rtc/rtc.h"
 
 tHttpStatusCode SynchronizeCallback(void * const conn)
 {
@@ -17,6 +18,10 @@ tHttpStatusCode SynchronizeCallback(void * const conn)
   char buf[32];
 
   esp_sntp_gettime(&dt, 1u);
+
+  dt.date--;
+  dt.month--;
+  Rtc_SetDatetime(&dt);
 
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
