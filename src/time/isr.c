@@ -21,14 +21,16 @@ void RTC_IRQHandler(void)
 	tDatetime dt;
 	uint32_t tmp;
 
-	/* Clear pending interrupt */
-	RTC->CRL &= ~RTC_CRL_SECF;
-
 	Rtc_Read(&tmp);
 	Rtc_GetDatetime(&dt);
 
-	Datetime_Increment(&dt, tmp);
+	Datetime_Increment(&dt, 1u);
+
 	Rtc_Write(0u);
+	Rtc_SetDatetime(&dt);
+
+  /* Clear pending interrupt */
+  RTC->CRL &= ~RTC_CRL_SECF;
 
 	if (pdFALSE == xQueueIsQueueFullFromISR(gControlQueue))
 	{

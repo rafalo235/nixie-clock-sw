@@ -12,6 +12,8 @@ static void InitializeInterrupts(void);
 
 static int sInitialized = 0;
 
+tDatetime sDatetime;
+
 void Rtc_Initialize(void)
 {
 	InitializeClock();
@@ -22,7 +24,7 @@ void Rtc_GetDatetime(tDatetime * dt)
 {
   /* todo is padding need to be considered? */
   uint16_t * dst = (uint16_t *)dt;
-  const uint16_t * src = (uint16_t *)&BKP->DR1;
+  const uint16_t * src = (uint16_t *)&sDatetime; //&BKP->DR1;
   size_t len = sizeof(tDatetime) / sizeof(uint16_t);
 
   if (1 == sInitialized)
@@ -32,7 +34,8 @@ void Rtc_GetDatetime(tDatetime * dt)
     while (len--)
     {
       *dst = *src;
-
+      ++dst;
+      ++src;
     }
     __enable_irq();
   }
@@ -41,7 +44,7 @@ void Rtc_GetDatetime(tDatetime * dt)
 void Rtc_SetDatetime(const tDatetime * dt)
 {
   /* todo is padding need to be considered? */
-  uint16_t * dst = (uint16_t *)&BKP->DR1;
+  uint16_t * dst = (uint16_t *)&sDatetime; //&BKP->DR1;
   const uint16_t * src = (uint16_t *)dt;
   size_t len = sizeof(tDatetime) / sizeof(uint16_t);
 
@@ -53,6 +56,8 @@ void Rtc_SetDatetime(const tDatetime * dt)
     while (len--)
     {
       *dst = *src;
+      ++dst;
+      ++src;
     }
 
     __enable_irq();

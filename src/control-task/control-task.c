@@ -57,11 +57,11 @@ void DisplayWithPosition(const tDatetime * t, int32_t position)
 	}
 	else if (2 == position)
 	{
-		Display_Print(t->day + 1, t->hours);
+		Display_Print(t->date + 1, t->hours);
 	}
 	else if (3 == position)
 	{
-		Display_Print(t->month + 1, t->day + 1);
+		Display_Print(t->month + 1, t->date + 1);
 	}
 	else if (4 == position)
 	{

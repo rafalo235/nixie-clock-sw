@@ -90,13 +90,13 @@ static void Datetime_IncrementDay(
   int leap = Datetime_IsLeapYear(dt->year);
   uint32_t monthDays = Datetime_GetMonthDays(dt->month, leap);
 
-  if (dt->day < (monthDays - 1u))
+  if (dt->date < (monthDays - 1u))
   {
-    ++(dt->day);
+    ++(dt->date);
   }
   else
   {
-    dt->day = 0u;
+    dt->date = 0u;
     ++(dt->month);
     if (11u == dt->month)
     {
@@ -110,22 +110,22 @@ static void Datetime_DecrementDay(
 {
   int leap = Datetime_IsLeapYear(dt->year);
 
-  if (dt->day > 0u)
+  if (dt->date > 0u)
   {
-    --(dt->day);
+    --(dt->date);
   }
   else
   {
     if (dt->month > 0u)
     {
       --(dt->month);
-      dt->day = Datetime_GetMonthDays(dt->month, leap) - 1;
+      dt->date = Datetime_GetMonthDays(dt->month, leap) - 1;
     }
     else
     {
       --(dt->year);
       dt->month = 11u;
-      dt->day = 30u;
+      dt->date = 30u;
     }
   }
 }
