@@ -11,8 +11,27 @@
 #include "resources/routine.h"
 #include "resources/generated/html/header.h"
 
+char sSNTPAddress[3][SNTP_ADDRESS_LEN];
+int8_t sSNTPTimeZone = 0;
+
 static void PostNtpCallback(void * const conn);
 static void GetNtpCallback(void * const conn);
+
+int fast_atoi( const char * str )
+{
+    int val = 0;
+    int multiplier = 1;
+
+    if (*str == '-')
+    {
+      multiplier = -1;
+    }
+
+    while( *str ) {
+        val = val*10 + (*str++ - '0');
+    }
+    return val * multiplier;
+}
 
 tHttpStatusCode NtpCallback(void * const conn)
 {
@@ -36,6 +55,7 @@ static void PostNtpCallback(void * const conn)
   const char * ntp1 = Http_HelperGetParameter(sm, "ntp1");
   const char * ntp2 = Http_HelperGetParameter(sm, "ntp2");
   const char * ntp3 = Http_HelperGetParameter(sm, "ntp3");
+  const char * tz = Http_HelperGetParameter(sm, "tz");
   espr_t result;
 
   if (NULL != ntp1)
@@ -50,8 +70,12 @@ static void PostNtpCallback(void * const conn)
   {
     strncpy(sSNTPAddress[2], ntp3, SNTP_ADDRESS_LEN);
   }
+  if (NULL != tz)
+  {
+    sSNTPTimeZone = fast_atoi(tz);
+  }
 
-  result = esp_sntp_configure(1, 0, sSNTPAddress[0],
+  result = esp_sntp_configure(1, sSNTPTimeZone, sSNTPAddress[0],
       sSNTPAddress[1], sSNTPAddress[2], 1u);
 
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
@@ -62,6 +86,7 @@ static void PostNtpCallback(void * const conn)
 static void GetNtpCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
+  char buf[4];
 
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSetResponseHeader(sm, "Content-Type", "text/html");
@@ -77,6 +102,9 @@ static void GetNtpCallback(void * const conn)
       "SNTP Server no 2", sSNTPAddress[1]);
   Page_SendInput(conn, "ntp3",
       "SNTP Server no 3", sSNTPAddress[2]);
+  snprintf(buf, 4, "%d", sSNTPTimeZone);
+  Page_SendInput(conn, "tz",
+      "Time zone <-11,13>", buf);
 
   Page_SendButton(conn, "Setup", "setupSNTP()");
   Page_SendButton(conn, "Back", "loadIndex()");
@@ -85,3 +113,12 @@ static void GetNtpCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
 }
+
+void SNTP_Initialize(void)
+{
+  /* todo read eeprom */
+  sSNTPAddress[0][0] = (char)0u;
+  sSNTPAddress[1][0] = (char)0u;
+  sSNTPAddress[2][0] = (char)0u;
+}
+

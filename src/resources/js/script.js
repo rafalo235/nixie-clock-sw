@@ -46,7 +46,7 @@ function loadNtp()
 
 function loadSynchronize()
 {
-	location.href = "synchronize";
+	location.href = "synchronize.html";
 }
 
 function refreshConnect()

@@ -25,16 +25,6 @@ void Connection_SetConnected(int connected)
   sIsConnected = connected;
 }
 
-char sSNTPAddress[3][SNTP_ADDRESS_LEN];
-
-void SNTP_Initialize(void)
-{
-  sSNTPAddress[0][0] = (char)0u;
-  sSNTPAddress[1][0] = (char)0u;
-  sSNTPAddress[2][0] = (char)0u;
-
-}
-
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value)
 {
