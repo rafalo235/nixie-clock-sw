@@ -35,6 +35,8 @@ void Control_Task(void *parameters);
 
 void DisplayWithPosition(const tDatetime * t, int32_t position);
 
-uint32_t GetPositionDelta(int32_t position);
+void IncrementWithDelta(tDatetime * dt, int32_t position);
+
+void DecrementWithDelta(tDatetime * dt, int32_t position);
 
 #endif /* INC_CONTROL_TASK_CONTROL_TASK_H_ */

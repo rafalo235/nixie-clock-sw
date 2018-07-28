@@ -23,15 +23,13 @@ void SetTimeState(void *sm, tUtils_Signal sig)
 	}
 	case CONTROL_ACTION_INCREMENT :
 	{
-	  Datetime_Increment(
-	      &(context->timeToSet), GetPositionDelta(context->position));
+    IncrementWithDelta(&(context->timeToSet), context->position);
 		DisplayWithPosition(&(context->timeToSet), context->position);
 		break;
 	}
 	case CONTROL_ACTION_DECREMENT :
 	{
-    Datetime_Decrement(
-        &(context->timeToSet), GetPositionDelta(context->position));
+    DecrementWithDelta(&(context->timeToSet), context->position);
     DisplayWithPosition(&(context->timeToSet), context->position);
 		break;
 	}

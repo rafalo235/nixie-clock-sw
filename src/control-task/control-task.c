@@ -70,28 +70,60 @@ void DisplayWithPosition(const tDatetime * t, int32_t position)
 
 }
 
-uint32_t GetPositionDelta(int32_t position)
+void IncrementWithDelta(tDatetime * dt, int32_t position)
 {
-  uint32_t result = 0;
+  int carry = 0;
+  uint32_t delta;
   if (0 == position)
   {
-    result = 1;
+    delta = 1u;
+    Datetime_IncrementTime(dt, &delta, &carry);
   }
   else if (1 == position)
   {
-    result = 60u;
+    delta = 60u;
+    Datetime_IncrementTime(dt, &delta, &carry);
   }
   else if (2 == position)
   {
-    result = 3600u;
+    delta = 3600u;
+    Datetime_IncrementTime(dt, &delta, &carry);
   }
   else if (3 == position)
   {
-    result = 86400u;
+    Datetime_IncrementDay(dt);
   }
   else if (4 == position)
   {
-    result = 31536000u;
+    Datetime_IncrementYear(dt);
   }
-  return result;
+}
+
+void DecrementWithDelta(tDatetime * dt, int32_t position)
+{
+  int carry = 0;
+  uint32_t delta;
+  if (0 == position)
+  {
+    delta = 1u;
+    Datetime_DecrementTime(dt, &delta, &carry);
+  }
+  else if (1 == position)
+  {
+    delta = 60u;
+    Datetime_DecrementTime(dt, &delta, &carry);
+  }
+  else if (2 == position)
+  {
+    delta = 3600u;
+    Datetime_DecrementTime(dt, &delta, &carry);
+  }
+  else if (3 == position)
+  {
+    Datetime_DecrementDay(dt);
+  }
+  else if (4 == position)
+  {
+    Datetime_DecrementYear(dt);
+  }
 }

@@ -13,13 +13,6 @@
 #define MINUTES_IN_HOUR   60
 #define HOURS_IN_DAY      24
 
-static void Datetime_IncrementTime(
-    tDatetime * dt, uint32_t * timestamp, int * carry);
-static void Datetime_IncrementDay(tDatetime * dt);
-static void Datetime_DecrementTime(
-    tDatetime * dt, uint32_t * timestamp, int * carry);
-static void Datetime_DecrementDay(tDatetime * dt);
-
 static uint32_t Datetime_IncrementTimeUnit(
     uint32_t unit, uint32_t * inc, uint32_t step, int * carry);
 static uint32_t Datetime_DecrementTimeUnit(
@@ -58,7 +51,7 @@ void Datetime_Decrement(tDatetime * dt, uint32_t timestamp)
   }
 }
 
-static void Datetime_IncrementTime(
+void Datetime_IncrementTime(
     tDatetime * dt, uint32_t * timestamp, int * carry)
 {
   dt->seconds = Datetime_IncrementTimeUnit(
@@ -71,7 +64,7 @@ static void Datetime_IncrementTime(
       dt->hours, timestamp, HOURS_IN_DAY, carry);
 }
 
-static void Datetime_DecrementTime(
+void Datetime_DecrementTime(
     tDatetime * dt, uint32_t * timestamp, int * carry)
 {
   dt->seconds = Datetime_DecrementTimeUnit(
@@ -84,8 +77,7 @@ static void Datetime_DecrementTime(
       dt->hours, timestamp, HOURS_IN_DAY, carry);
 }
 
-static void Datetime_IncrementDay(
-    tDatetime * dt)
+void Datetime_IncrementDay(tDatetime * dt)
 {
   int leap = Datetime_IsLeapYear(dt->year);
   uint32_t monthDays = Datetime_GetMonthDays(dt->month, leap);
@@ -97,16 +89,26 @@ static void Datetime_IncrementDay(
   else
   {
     dt->date = 0u;
-    ++(dt->month);
-    if (11u == dt->month)
-    {
-      ++(dt->year);
-    }
+    Datetime_IncrementMonth(dt);
   }
 }
 
-static void Datetime_DecrementDay(
-    tDatetime * dt)
+void Datetime_IncrementMonth(tDatetime * dt)
+{
+  ++(dt->month);
+  if (12u == dt->month)
+  {
+    dt->month = 0u;
+    Datetime_IncrementYear(dt);
+  }
+}
+
+void Datetime_IncrementYear(tDatetime * dt)
+{
+  ++(dt->year);
+}
+
+void Datetime_DecrementDay(tDatetime * dt)
 {
   int leap = Datetime_IsLeapYear(dt->year);
 
@@ -116,18 +118,27 @@ static void Datetime_DecrementDay(
   }
   else
   {
-    if (dt->month > 0u)
-    {
-      --(dt->month);
-      dt->date = Datetime_GetMonthDays(dt->month, leap) - 1;
-    }
-    else
-    {
-      --(dt->year);
-      dt->month = 11u;
-      dt->date = 30u;
-    }
+    Datetime_DecrementMonth(dt);
+    dt->date = Datetime_GetMonthDays(dt->month, leap) - 1;
   }
+}
+
+void Datetime_DecrementMonth(tDatetime * dt)
+{
+  if (dt->month > 0u)
+  {
+    --(dt->month);
+  }
+  else
+  {
+    dt->month = 11u;
+    Datetime_DecrementYear(dt);
+  }
+}
+
+void Datetime_DecrementYear(tDatetime * dt)
+{
+  --(dt->year);
 }
 
 static uint32_t Datetime_IncrementTimeUnit(
