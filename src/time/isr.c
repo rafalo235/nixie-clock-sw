@@ -24,7 +24,7 @@ void RTC_IRQHandler(void)
 	Rtc_Read(&tmp);
 	Rtc_GetDatetime(&dt);
 
-	Datetime_Increment(&dt, 1u);
+	Datetime_Increment(&dt, tmp == 0u ? 1u : tmp);
 
 	Rtc_Write(0u);
 	Rtc_SetDatetime(&dt);

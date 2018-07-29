@@ -32,8 +32,10 @@ tHttpStatusCode SynchronizeCallback(void * const conn)
   Http_HelperSend(sm, header_html, header_html_size);
   Http_HelperSendMessageBody(sm, "<body>");
 
+  Http_HelperSendMessageBody(sm, "<div class=\"info\">");
   snprintf(buf, 32, "%u:%u:%u", dt.hours, dt.minutes, dt.seconds);
   Page_SendInfoElement(conn, "Time set to", buf);
+  Http_HelperSendMessageBody(sm, "</div>");
 
   Page_SendButton(conn, "Back", "loadIndex()");
 
