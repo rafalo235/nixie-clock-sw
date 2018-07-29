@@ -175,6 +175,8 @@ static uint32_t Datetime_DecrementTimeUnit(
   }
 
   *dec /= step;
+
+  return unit;
 }
 
 static uint32_t Datetime_GetMonthDays(uint32_t month, int leap)
