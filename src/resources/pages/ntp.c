@@ -104,7 +104,7 @@ static void GetNtpCallback(void * const conn)
       "SNTP Server no 3", sSNTPAddress[2]);
   snprintf(buf, 4, "%d", sSNTPTimeZone);
   Page_SendInput(conn, "tz",
-      "Time zone <-11,13>", buf);
+      "Time zone from -11 to 13", buf);
 
   Page_SendButton(conn, "Setup", "setupSNTP()");
   Page_SendButton(conn, "Back", "loadIndex()");

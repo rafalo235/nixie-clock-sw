@@ -113,8 +113,9 @@ function setupSNTP()
 	var ntp1 = document.getElementById("ntp1").value;
 	var ntp2 = document.getElementById("ntp2").value;
 	var ntp3 = document.getElementById("ntp3").value;
+	var tz = document.getElementById("tz").value;
 	sendPost("ntp.html", "ntp1=" + ntp1 + "&ntp2=" 
-		+ ntp2 + "&ntp3=" + ntp3,
+		+ ntp2 + "&ntp3=" + ntp3 + "&tz=" + tz,
 		loadIndex, loadIndex);
 }
 
