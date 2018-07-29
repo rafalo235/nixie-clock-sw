@@ -43,7 +43,7 @@
 #endif
 
 #ifndef HTTP_PARAMETERS_MAX
-#define HTTP_PARAMETERS_MAX (4)
+#define HTTP_PARAMETERS_MAX (6)
 #endif
 
 #endif /* UCHTTPOPTION_H_ */

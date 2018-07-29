@@ -19,5 +19,6 @@ const tResourceEntry resources[] =
 	{ STRING_WITH_LENGTH("/script.js"), &ScriptCallback },
 	{ STRING_WITH_LENGTH("/status.html"), &StatusCallback },
 	{ STRING_WITH_LENGTH("/style.css"), &StyleCallback },
-	{ STRING_WITH_LENGTH("/synchronize.html"), &SynchronizeCallback }
+	{ STRING_WITH_LENGTH("/synchronize.html"), &SynchronizeCallback },
+  { STRING_WITH_LENGTH("/time.html"), &TimeCallback }
     };

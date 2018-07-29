@@ -44,7 +44,7 @@ tHttpStatusCode IndexCallback(void * const conn)
     }
   Page_SendButton(conn, "Set NTP Setting", "loadNtp()");
   Page_SendButton(conn, "Synchronize", "loadSynchronize()");
-  Page_SendButton(conn, "Set Time", "loadConnect()");
+  Page_SendButton(conn, "Set Time", "loadTime()");
 
   if (ROUTINE_FINISHED == status)
   {

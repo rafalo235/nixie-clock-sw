@@ -49,6 +49,11 @@ function loadSynchronize()
 	location.href = "synchronize.html";
 }
 
+function loadTime()
+{
+	location.href = "time.html";
+}
+
 function refreshConnect()
 {	
 	var xhr = new XMLHttpRequest();
@@ -117,6 +122,21 @@ function setupSNTP()
 	sendPost("ntp.html", "ntp1=" + ntp1 + "&ntp2=" 
 		+ ntp2 + "&ntp3=" + ntp3 + "&tz=" + tz,
 		loadIndex, loadIndex);
+}
+
+function setupTime()
+{
+	var ye = document.getElementById("ye").value;
+	var mo = document.getElementById("mo").value;
+	var da = document.getElementById("da").value;
+	var ho = document.getElementById("ho").value;
+	var mi = document.getElementById("mi").value;
+	var se = document.getElementById("se").value;
+	sendPost("time.html", "ye=" + ye + "&mo=" 
+		+ mo + "&da=" + da + "&ho=" + ho
+		+ "&mi=" + mi + "&se=" + se,
+		loadIndex, loadIndex);
+
 }
 
 function sendPost(url, params, onOk, onError)

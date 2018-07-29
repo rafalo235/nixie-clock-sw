@@ -10,28 +10,13 @@
 #include "resources/connection-routines.h"
 #include "resources/routine.h"
 #include "resources/generated/html/header.h"
+#include "utils/utils.h"
 
 char sSNTPAddress[3][SNTP_ADDRESS_LEN];
 int8_t sSNTPTimeZone = 0;
 
 static void PostNtpCallback(void * const conn);
 static void GetNtpCallback(void * const conn);
-
-int fast_atoi( const char * str )
-{
-    int val = 0;
-    int multiplier = 1;
-
-    if (*str == '-')
-    {
-      multiplier = -1;
-    }
-
-    while( *str ) {
-        val = val*10 + (*str++ - '0');
-    }
-    return val * multiplier;
-}
 
 tHttpStatusCode NtpCallback(void * const conn)
 {

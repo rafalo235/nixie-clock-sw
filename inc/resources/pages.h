@@ -20,6 +20,7 @@ extern tHttpStatusCode ScriptCallback(void * const conn);
 extern tHttpStatusCode StatusCallback(void * const conn);
 extern tHttpStatusCode StyleCallback(void * const conn);
 extern tHttpStatusCode SynchronizeCallback(void * const conn);
+extern tHttpStatusCode TimeCallback(void * const conn);
 
 extern void OnError(
     void *const conn,
