@@ -16,7 +16,7 @@ tHttpStatusCode SynchronizeCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
   esp_datetime_t dt;
-  char buf[32];
+  char buf[24];
 
   esp_sntp_gettime(&dt, 1u);
 
@@ -33,7 +33,9 @@ tHttpStatusCode SynchronizeCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "<body>");
 
   Http_HelperSendMessageBody(sm, "<div class=\"info\">");
-  snprintf(buf, 32, "%u:%u:%u", dt.hours, dt.minutes, dt.seconds);
+  snprintf(buf, 24, "%04u.%02u.%02u %02u:%02u:%02u",
+      dt.year, dt.month + 1, dt.date + 1,
+      dt.hours, dt.minutes, dt.seconds);
   Page_SendInfoElement(conn, "Time set to", buf);
   Http_HelperSendMessageBody(sm, "</div>");
 

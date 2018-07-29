@@ -105,7 +105,7 @@ function connect()
 	var apn = e.options[e.selectedIndex].value;
 
 	sendPost("connect.html", "apn=" + apn + "&passwd=" + passwd,
-		loadIndex, loadIndex);
+		onConnectOk, onConnectError);
 }
 
 function setupSNTP()
