@@ -21,6 +21,7 @@
 #include "esp/esp.h"
 #include "system/esp_ll.h"
 #include "esp/esp_netconn.h"
+#include "control-task/control-task.h"
 
 
 esp_ll_t gEsp;
@@ -46,10 +47,12 @@ void Connection_Task(void *parameters)
 #endif
 
   if ((res = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
+    const tControlAction action = CONTROL_ACTION_SHOW_IP;
     esp_ip_t ip;
     esp_sta_copy_ip(&ip, NULL, NULL);
     strncpy(&gConnectApn[0], WIFI_NAME, 32);
     Connection_SetConnected(1);
+    xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
   }
   else
   {
@@ -137,6 +140,10 @@ static espr_t Connection_Callback(esp_evt_t* evt)
     break;
   }
   case ESP_EVT_WIFI_CONNECTED:
+  {
+    break;
+  }
+  case ESP_EVT_WIFI_GOT_IP:
   {
     break;
   }

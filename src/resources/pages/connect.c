@@ -11,6 +11,9 @@
 #include "resources/connection-routines.h"
 #include "esp/esp.h"
 #include <string.h>
+#include "control-task/control-task.h"
+#include "FreeRTOS.h"
+#include "task.h"
 
 static void GetConnectCallback(void * const conn);
 static void PostConnectCallback(void * const conn);
@@ -105,7 +108,9 @@ static void PostConnectCallback(void * const conn)
 
     if (espOK == result)
     {
+      const tControlAction action = CONTROL_ACTION_SHOW_IP;
       strncpy(&gConnectApn[0], apName, 32);
+      xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
     }
   }
 }

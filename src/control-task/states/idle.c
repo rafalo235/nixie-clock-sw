@@ -51,6 +51,11 @@ void IdleState(void *sm, tUtils_Signal sig)
 		STATE_CHANGE(context, &SetTimeState);
 		break;
 	}
+	case CONTROL_ACTION_SHOW_IP :
+	{
+    STATE_CHANGE(context, &ShowIpState);
+	  break;
+	}
 	default :
 		/* Ignore other signals */
 		break;

@@ -14,4 +14,6 @@ void IdleState(void *sm, tUtils_Signal sig);
 
 void SetTimeState(void *sm, tUtils_Signal sig);
 
+void ShowIpState(void *sm, tUtils_Signal sig);
+
 #endif /* INC_CONTROL_TASK_STATES_STATES_H_ */
