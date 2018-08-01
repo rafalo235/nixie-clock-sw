@@ -21,7 +21,7 @@ tHttpStatusCode StatusCallback(void * const conn)
 {
   tuCHttpServerState * const sm = conn;
   char buf[LOCAL_BUFFER_SIZE];
-  uint8_t isConnected = esp_sta_is_joined();
+  uint8_t isConnected = Connection_IsConnected();
   esp_mac_t smac;
   esp_ip_t sip, sgw, snm;
   esp_mac_t amac;

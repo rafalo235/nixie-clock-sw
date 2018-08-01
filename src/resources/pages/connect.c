@@ -80,7 +80,7 @@ static void PostConnectCallback(void * const conn)
   tHttpStatusCode status;
   const char * apName = Http_HelperGetParameter(sm, "apn");
   const char * password = Http_HelperGetParameter(sm, "passwd");
-  uint8_t isConnected = esp_sta_is_joined();
+  uint8_t isConnected = Connection_IsConnected();
 
   if (NULL != apName && NULL != password && (!isConnected))
   {

@@ -17,7 +17,7 @@ tHttpStatusCode IndexCallback(void * const conn)
   tRoutineStatus status = ROUTINE_NOT_CALLED;
   tConnectionRoutinesResults routineResult;
   int res;
-  uint8_t isConnected = esp_sta_is_joined();
+  uint8_t isConnected = Connection_IsConnected();
 
   status =
       Routine_GetRoutineResult(&gConnectionRoutine, &res);
