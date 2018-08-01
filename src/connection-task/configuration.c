@@ -15,8 +15,10 @@
 
 #define CONFIG_MAGIC  (0xDEADBEEFu)
 
-const tConfiguration * sSavedSettings =
+static const tConfiguration * sSavedSettings =
     (const tConfiguration *) CONFIG_ADDRESS;
+
+tConfiguration gConfigLocal;
 
 void Configuration_Init(void)
 {
@@ -60,7 +62,6 @@ void Configuration_Set(const tConfiguration * config)
     addr += 2;
     ++data;
   }
-
 
   FLASH_Lock();
 }

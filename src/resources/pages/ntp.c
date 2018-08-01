@@ -12,9 +12,6 @@
 #include "resources/generated/html/header.h"
 #include "utils/utils.h"
 
-char sSNTPAddress[3][SNTP_ADDRESS_LEN];
-int8_t sSNTPTimeZone = 0;
-
 static void PostNtpCallback(void * const conn);
 static void GetNtpCallback(void * const conn);
 
@@ -45,23 +42,25 @@ static void PostNtpCallback(void * const conn)
 
   if (NULL != ntp1)
   {
-    strncpy(sSNTPAddress[0], ntp1, SNTP_ADDRESS_LEN);
+    strncpy(gConfigLocal.sntp[0], ntp1, SNTP_ADDRESS_LEN);
   }
   if (NULL != ntp2)
   {
-    strncpy(sSNTPAddress[1], ntp2, SNTP_ADDRESS_LEN);
+    strncpy(gConfigLocal.sntp[1], ntp2, SNTP_ADDRESS_LEN);
   }
   if (NULL != ntp3)
   {
-    strncpy(sSNTPAddress[2], ntp3, SNTP_ADDRESS_LEN);
+    strncpy(gConfigLocal.sntp[2], ntp3, SNTP_ADDRESS_LEN);
   }
   if (NULL != tz)
   {
-    sSNTPTimeZone = fast_atoi(tz);
+    gConfigLocal.timezone = fast_atoi(tz);
   }
 
-  result = esp_sntp_configure(1, sSNTPTimeZone, sSNTPAddress[0],
-      sSNTPAddress[1], sSNTPAddress[2], 1u);
+  result = esp_sntp_configure(1, gConfigLocal.timezone, gConfigLocal.sntp[0],
+      gConfigLocal.sntp[1], gConfigLocal.sntp[2], 1u);
+
+  Configuration_Set(&gConfigLocal);
 
   Http_HelperSetResponseStatus(sm, HTTP_STATUS_OK);
   Http_HelperSendHeader(sm);
@@ -82,12 +81,12 @@ static void GetNtpCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "<body>");
 
   Page_SendInput(conn, "ntp1",
-      "SNTP Server no 1", sSNTPAddress[0]);
+      "SNTP Server no 1", gConfigLocal.sntp[0]);
   Page_SendInput(conn, "ntp2",
-      "SNTP Server no 2", sSNTPAddress[1]);
+      "SNTP Server no 2", gConfigLocal.sntp[1]);
   Page_SendInput(conn, "ntp3",
-      "SNTP Server no 3", sSNTPAddress[2]);
-  snprintf(buf, 4, "%d", sSNTPTimeZone);
+      "SNTP Server no 3", gConfigLocal.sntp[2]);
+  snprintf(buf, 4, "%d", gConfigLocal.timezone);
   Page_SendInput(conn, "tz",
       "Time zone from -11 to 13", buf);
 
@@ -97,13 +96,5 @@ static void GetNtpCallback(void * const conn)
   Http_HelperSendMessageBody(sm, "</body>");
   Http_HelperSendMessageBody(sm, "</html>");
   Http_HelperFlush(sm);
-}
-
-void SNTP_Initialize(void)
-{
-  /* todo read eeprom */
-  sSNTPAddress[0][0] = (char)0u;
-  sSNTPAddress[1][0] = (char)0u;
-  sSNTPAddress[2][0] = (char)0u;
 }
 

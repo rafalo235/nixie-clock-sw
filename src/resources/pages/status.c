@@ -13,10 +13,9 @@
 #include "esp/esp.h"
 #include "esp/esp_sta.h"
 #include "esp/esp_ap.h"
+#include "connection-task/configuration.h"
 
 #define LOCAL_BUFFER_SIZE	20
-
-extern char gConnectApn[32];
 
 tHttpStatusCode StatusCallback(void * const conn)
 {
@@ -50,7 +49,7 @@ tHttpStatusCode StatusCallback(void * const conn)
   /* Info elements */
   if (isConnected)
   {
-    Page_SendInfoElement(sm, "Access point", gConnectApn);
+    Page_SendInfoElement(sm, "Access point", gConfigLocal.apn);
 
     snprintf(buf, LOCAL_BUFFER_SIZE, "%u.%u.%u.%u", sip.ip[0], sip.ip[1],
         sip.ip[2], sip.ip[3]);

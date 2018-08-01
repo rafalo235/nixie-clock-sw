@@ -14,11 +14,10 @@
 #include "control-task/control-task.h"
 #include "FreeRTOS.h"
 #include "task.h"
+#include "connection-task/configuration.h"
 
 static void GetConnectCallback(void * const conn);
 static void PostConnectCallback(void * const conn);
-
-extern char gConnectApn[32];
 
 tHttpStatusCode ConnectCallback(void * const conn)
 {
@@ -109,8 +108,11 @@ static void PostConnectCallback(void * const conn)
     if (espOK == result)
     {
       const tControlAction action = CONTROL_ACTION_SHOW_IP;
-      strncpy(&gConnectApn[0], apName, 32);
+      strncpy(gConfigLocal.apn, apName, 32);
+      strncpy(gConfigLocal.password, password, 32);
       xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
+
+      Configuration_Set(&gConfigLocal);
     }
   }
 }

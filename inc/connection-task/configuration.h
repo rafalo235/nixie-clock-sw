@@ -25,4 +25,12 @@ typedef struct Configuration
   unsigned int magic;
 } tConfiguration;
 
+extern tConfiguration gConfigLocal;
+
+void Configuration_Init(void);
+
+int Configuration_Get(tConfiguration * config);
+
+void Configuration_Set(const tConfiguration * config);
+
 #endif /* INC_CONNECTION_TASK_CONFIGURATION_H_ */

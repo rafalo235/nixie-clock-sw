@@ -10,6 +10,7 @@
 
 #include "esp/esp.h"
 #include "uchttpserver.h"
+#include "connection-task/configuration.h"
 
 #define SNTP_ADDRESS_LEN  32
 
@@ -21,9 +22,6 @@ void Disconnect(volatile int* ESP, int* conn);
 
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
-
-extern char sSNTPAddress[3][SNTP_ADDRESS_LEN];
-void SNTP_Initialize(void);
 
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value);

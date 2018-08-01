@@ -22,13 +22,7 @@
 #include "system/esp_ll.h"
 #include "esp/esp_netconn.h"
 #include "control-task/control-task.h"
-
-
-esp_ll_t gEsp;
-char gConnectApn[32];
-char gConnectPassword[32];
-int gConnectFlag = 0;
-int gDisconnectFlag = 0;
+#include "connection-task/configuration.h"
 
 static espr_t
 Connection_Callback(esp_evt_t* evt);
@@ -42,24 +36,28 @@ void Connection_Task(void *parameters)
     asm volatile ("nop");
   }
 
-#if 0
-  esp_sta_quit(1u);
-#endif
+  Configuration_Init();
 
-  if ((res = esp_sta_join(WIFI_NAME, WIFI_PASS, NULL, 0, 1)) == espOK) {
-    const tControlAction action = CONTROL_ACTION_SHOW_IP;
-    esp_ip_t ip;
-    esp_sta_copy_ip(&ip, NULL, NULL);
-    strncpy(&gConnectApn[0], WIFI_NAME, 32);
-    Connection_SetConnected(1);
-    xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
+  if (Configuration_Get(&gConfigLocal))
+  {
+    if ((res = esp_sta_join(gConfigLocal.apn,
+        gConfigLocal.password, NULL, 0, 1)) == espOK)
+    {
+      const tControlAction action = CONTROL_ACTION_SHOW_IP;
+
+      Connection_SetConnected(1);
+
+      xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
+    }
+    else
+    {
+      Connection_SetConnected(0);
+    }
   }
   else
   {
     Connection_SetConnected(0);
   }
-
-  SNTP_Initialize();
 
   server = esp_netconn_new(ESP_NETCONN_TYPE_TCP);
   if (NULL == server)
