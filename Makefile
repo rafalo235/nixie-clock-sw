@@ -43,11 +43,13 @@ ESP8266_AT_LIB_FILES := $(ESP8266_AT_LIB_SRC)/esp/esp_ap.c \
  $(ESP8266_AT_LIB_SRC)/esp/esp.c \
  $(ESP8266_AT_LIB_SRC)/api/esp_netconn.c
 UCHTTPSERVER_FILES := $(UCHTTPSERVER_SRC)/uchttpserver.c
+STDPERIPH_FILES := $(STDPERIPH_PATH)/src/stm32f10x_flash.c
 OBJ_FILES := $(patsubst %.c,%.o,$(patsubst src/%,obj/%,$(SRC_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(FREERTOS_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(CMSIS_OS_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(ESP8266_AT_LIB_FILES)))
 OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(UCHTTPSERVER_FILES)))
+OBJ_FILES += $(patsubst %.c,%.o,$(patsubst third-party/%,obj/%,$(STDPERIPH_FILES)))
 
 INC := -I./inc \
  -I./inc/port/esp8266-at-lib \
@@ -57,7 +59,9 @@ INC := -I./inc \
  -I./third-party/freertos/FreeRTOS/Source/portable/GCC/ARM_CM3 \
  -I./third-party/esp8266-at-lib/libs/FreeRTOS/CMSIS_RTOS \
  -I./third-party/esp8266-at-lib/src/include \
- -I./third-party/uChttpserver/inc
+ -I./third-party/uChttpserver/inc \
+ -I./$(STDPERIPH_PATH)/inc \
+ -I./third-party/STM32F10x_StdPeriph_Lib_V3.5.0/Libraries/CMSIS/CM3/DeviceSupport/ST/STM32F10x
 
 all : $(OBJ_FILES)
 	@mkdir -p $(BIN)
