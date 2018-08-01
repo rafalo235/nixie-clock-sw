@@ -63,6 +63,12 @@ all : $(OBJ_FILES)
 	@mkdir -p $(BIN)
 	@echo "LD $(BIN)/nixie-clock-sw.elf"
 	@$(CC) $(LDFLAGS) $(OBJ_FILES) startup.s -o $(BIN)/$(APP).elf
+	@echo
+	@echo "---------- Details ----------"
+	@$(SIZE) -A -x $(BIN)/$(APP).elf
+	@echo "---------- Summary ----------"
+	@$(SIZE) $(BIN)/$(APP).elf
+	@echo
 
 resources : $(RESOURCE_C_FILES)
 
