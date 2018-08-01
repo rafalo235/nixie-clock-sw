@@ -42,13 +42,15 @@ int Configuration_Get(tConfiguration * config)
   return result;
 }
 
-void Configuration_Set(const tConfiguration * config)
+void Configuration_Set(tConfiguration * config)
 {
   unsigned int counter = sizeof(tConfiguration)/sizeof(uint16_t);
   const uint16_t * data = (const uint16_t *) config;
   uint32_t addr = CONFIG_ADDRESS;
 
   configASSERT(sizeof(tConfiguration) <= 1024);
+
+  config->magic = CONFIG_MAGIC;
 
   FLASH_Unlock();
 

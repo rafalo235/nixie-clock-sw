@@ -31,6 +31,6 @@ void Configuration_Init(void);
 
 int Configuration_Get(tConfiguration * config);
 
-void Configuration_Set(const tConfiguration * config);
+void Configuration_Set(tConfiguration * config);
 
 #endif /* INC_CONNECTION_TASK_CONFIGURATION_H_ */
