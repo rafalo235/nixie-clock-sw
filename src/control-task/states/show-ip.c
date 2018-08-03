@@ -35,7 +35,7 @@ void ShowIpState(void *sm, tUtils_Signal sig)
     if (2 == i++)
     {
       i = 0;
-      if (4 == (context->position++))
+      if (3 == (context->position++))
       {
         STATE_CHANGE(context, &IdleState);
       }
