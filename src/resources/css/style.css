@@ -57,7 +57,6 @@ select {
     background-color: #fefefe;
     margin: auto;
     padding: 5px;
-/*    border: 1px solid #888;*/
     width: 300px;
 }
 
@@ -85,4 +84,140 @@ select {
 	margin: auto;
 	color: rgba(0,0,0,0.8);
 	font-family: sans-serif;
+}
+
+@media only screen and (max-width: 600px) {
+
+	.info {
+		width: 580px;
+	}
+
+	.input {
+		width: 580px;
+	}
+
+	.button {
+		width: 580px;
+		height: 100px;
+	}
+
+	.combo {
+		width: 580px;
+	}
+
+	.modal-content {
+	    	width: 580px;
+	}
+
+	.popup-button {
+		width: 300px;
+		height: 60px;
+	}
+
+	.popup-button {
+		width: 300px;
+		height: 60px;
+	}
+}
+
+@media screen and (max-width: 991px) {
+
+	.info {
+		width: 970px;
+	}
+
+	.input {
+		width: 970px;
+	}
+
+	.button {
+		width: 970px;
+		height: 120px;
+	}
+
+	.combo {
+		width: 970px;
+	}
+
+	.modal-content {
+		width: 970px;
+	}
+
+	.popup-button {
+		width: 500px;
+		height: 90px;
+	}
+
+	.popup-button {
+		width: 500px;
+		height: 90px;
+	}
+}
+
+@media screen and (max-width: 767px) {
+
+	.info {
+		width: 747px;
+	}
+
+	.input {
+		width: 747px;
+	}
+
+	.button {
+		width: 747px;
+		height: 100px;
+	}
+
+	.combo {
+		width: 747px;
+	}
+
+	.modal-content {
+		width: 747px;
+	}
+
+	.popup-button {
+		width: 350px;
+		height: 60px;
+	}
+
+	.popup-button {
+		width: 350px;
+		height: 60px;
+	}
+}
+
+@media screen and (max-width: 479px) {
+
+	.info {
+		width: 459px;
+	}
+
+	.input {
+		width: 459px;
+	}
+
+	.button {
+		width: 459px;
+		height: 80px;
+	}
+
+	.combo {
+		width: 459px;
+	}
+
+	.modal-content {
+		width: 459px;
+	}
+
+	.popup-button {
+		width: 240px;
+		height: 50px;
+	}
+
+	.popup-button {
+		width: 240px;
+		height: 50px;
+	}
 }
