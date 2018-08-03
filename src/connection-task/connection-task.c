@@ -53,6 +53,10 @@ void Connection_Task(void *parameters)
     {
       Connection_SetConnected(0);
     }
+
+    /* Configure SNTP settings from flash */
+    esp_sntp_configure(1, gConfigLocal.timezone, gConfigLocal.sntp[0],
+        gConfigLocal.sntp[1], gConfigLocal.sntp[2], 1u);
   }
   else
   {
