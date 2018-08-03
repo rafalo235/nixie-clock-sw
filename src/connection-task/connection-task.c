@@ -129,7 +129,6 @@ static tConnectionResult Connection_RunServer(void)
           else
           {
             /* Server netconn is gone */
-            esp_netconn_close(server);
             esp_netconn_delete(server);
             break;
           }

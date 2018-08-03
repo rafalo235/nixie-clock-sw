@@ -113,6 +113,8 @@ static void PostConnectCallback(void * const conn)
       xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
 
       Configuration_Set(&gConfigLocal);
+
+      Connection_SetConnected(1);
     }
   }
 }

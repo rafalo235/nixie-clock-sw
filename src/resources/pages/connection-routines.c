@@ -67,6 +67,7 @@ int DisconnectFromAccessPoint(void * param)
     {
       result = CONN_ROUTINE_WIFI_DISCONNECTION_ERROR;
     }
+    Connection_SetConnected(0);
   }
   else
   {
