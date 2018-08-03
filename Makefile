@@ -7,11 +7,12 @@ include ./Makefile.conf
 ##
 # Convert resource files to C
 ##
-RESOURCE_FILES := $(shell find src -name "*.html" -o -name "*.js" -o -name "*.css")
+RESOURCE_FILES := $(shell find src -name "*.html" -o -name "*.js" -o -name "*.css" -o -name "*.ico")
 RESOURCE_C_FILES := $(patsubst %.css, %.c,\
 $(patsubst %.js,%.c,\
 $(patsubst %.html,%.c,\
-$(patsubst src/resources/%,src/resources/generated/%,$(RESOURCE_FILES)))))
+$(patsubst %.ico,%.c,\
+$(patsubst src/resources/%,src/resources/generated/%,$(RESOURCE_FILES))))))
 
 SRC_FILES := $(shell find src -name "*.c")
 FREERTOS_FILES := $(FREERTOS_SRC)/tasks.c \
@@ -105,6 +106,12 @@ src/resources/generated/js/%.c : src/resources/js/%.js
 	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst %.c,%.h,$(patsubst src/%,inc/%,$@)) -o $@ $<
 	
 src/resources/generated/css/%.c : src/resources/css/%.css
+	@echo "BIN2C $< -> $@"
+	@mkdir -p $(@D)
+	@mkdir -p $(patsubst src/%,inc/%,$(@D))
+	@bin2c -m -n $(subst .,_,$(<F)) -d $(patsubst %.c,%.h,$(patsubst src/%,inc/%,$@)) -o $@ $<
+	
+src/resources/generated/img/%.c : src/resources/img/%.ico
 	@echo "BIN2C $< -> $@"
 	@mkdir -p $(@D)
 	@mkdir -p $(patsubst src/%,inc/%,$(@D))
