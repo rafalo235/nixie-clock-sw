@@ -129,34 +129,30 @@ select {
 	}
 
 	.info {
-		width: 970px;
+		width: 961px;
 	}
 
 	.input {
-		width: 970px;
+		width: 961px;
 	}
 
 	.button {
-		width: 970px;
-		height: 120px;
+		width: 961px;
+		height: 100px;
+		padding-top: 30px;
 	}
 
 	.combo {
-		width: 970px;
+		width: 961px;
 	}
 
 	.modal-content {
-		width: 970px;
+		width: 961px;
 	}
 
 	.popup-button {
 		width: 500px;
-		height: 90px;
-	}
-
-	.popup-button {
-		width: 500px;
-		height: 90px;
+		height: 100px;
 	}
 }
 
