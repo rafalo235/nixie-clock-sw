@@ -44,6 +44,10 @@ void Connection_Task(void *parameters)
   espr_t res;
   tConnectionResult connResult;
 
+  /* On init mark explicitly that ESP is not connected
+   * flag will be updated in esp library callback */
+  Connection_SetConnected(0);
+
   if ((res = esp_init(&Connection_Callback, 1)) == espOK) {
     asm volatile ("nop");
   }
@@ -57,22 +61,12 @@ void Connection_Task(void *parameters)
     {
       const tControlAction action = CONTROL_ACTION_SHOW_IP;
 
-      Connection_SetConnected(1);
-
       xQueueSendToBack(gControlQueue, &action, portMAX_DELAY);
-    }
-    else
-    {
-      Connection_SetConnected(0);
     }
 
     /* Configure SNTP settings from flash */
     esp_sntp_configure(1, gConfigLocal.timezone, gConfigLocal.sntp[0],
         gConfigLocal.sntp[1], gConfigLocal.sntp[2], 1u);
-  }
-  else
-  {
-    Connection_SetConnected(0);
   }
 
   Routine_Init(&gConnectionRoutine);
@@ -186,28 +180,14 @@ static espr_t Connection_Callback(esp_evt_t* evt)
   espr_t res;
   switch (esp_evt_get_type(evt))
   {
-  case ESP_EVT_INIT_FINISH:
+  case ESP_EVT_WIFI_CONNECTED :
   {
+    Connection_SetConnected(1);
     break;
   }
-  case ESP_EVT_RESET_FINISH:
+  case ESP_EVT_WIFI_DISCONNECTED :
   {
-    break;
-  }
-  case ESP_EVT_RESET:
-  {
-    break;
-  }
-  case ESP_EVT_WIFI_CONNECTED:
-  {
-    break;
-  }
-  case ESP_EVT_WIFI_GOT_IP:
-  {
-    break;
-  }
-  case ESP_EVT_WIFI_DISCONNECTED:
-  {
+    Connection_SetConnected(0);
     break;
   }
   default:
