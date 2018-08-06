@@ -95,12 +95,12 @@ function displayError(textMessage)
 
 function onConnectOk()
 {
-	alert("OK");
+	alert("Connected to AP successfully - IP will appear on display");
 }
 
 function onConnectError()
 {
-	alert("ERROR");
+	alert("Connection ERROR - please check credentials");
 }
 
 function connect()
