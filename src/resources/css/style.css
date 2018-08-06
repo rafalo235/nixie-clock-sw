@@ -84,44 +84,6 @@ select {
 	color: rgba(0,0,0,0.8);
 }
 
-@media only screen and (max-width: 600px) {
-
-	html * {
-		font-size: 50px;
-	}
-
-	.info {
-		width: 580px;
-	}
-
-	.input {
-		width: 580px;
-	}
-
-	.button {
-		width: 580px;
-		height: 100px;
-	}
-
-	.combo {
-		width: 580px;
-	}
-
-	.modal-content {
-	    	width: 580px;
-	}
-
-	.popup-button {
-		width: 300px;
-		height: 60px;
-	}
-
-	.popup-button {
-		width: 300px;
-		height: 60px;
-	}
-}
-
 @media screen and (max-width: 991px) {
 
 	html * {
