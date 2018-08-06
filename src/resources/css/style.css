@@ -167,34 +167,30 @@ select {
 	}
 
 	.info {
-		width: 747px;
+		width: 737px;
 	}
 
 	.input {
-		width: 747px;
+		width: 737px;
 	}
 
 	.button {
-		width: 747px;
-		height: 100px;
+		width: 737px;
+		height: 80px;
+		padding-top: 25px;
 	}
 
 	.combo {
-		width: 747px;
+		width: 737px;
 	}
 
 	.modal-content {
-		width: 747px;
+		width: 737px;
 	}
 
 	.popup-button {
 		width: 350px;
-		height: 60px;
-	}
-
-	.popup-button {
-		width: 350px;
-		height: 60px;
+		height: 80px;
 	}
 }
 
