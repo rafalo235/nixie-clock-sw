@@ -62,8 +62,7 @@ select {
 
 .modal-content p {
 	margin: auto;
-    padding-bottom: 5px;
-	font-family: sans-serif;
+ 	padding-bottom: 5px;
 }
 
 .modal-content input {
@@ -83,10 +82,13 @@ select {
 	text-align: center;
 	margin: auto;
 	color: rgba(0,0,0,0.8);
-	font-family: sans-serif;
 }
 
 @media only screen and (max-width: 600px) {
+
+	html * {
+		font-size: 50px;
+	}
 
 	.info {
 		width: 580px;
@@ -122,6 +124,10 @@ select {
 
 @media screen and (max-width: 991px) {
 
+	html * {
+		font-size: 50px;
+	}
+
 	.info {
 		width: 970px;
 	}
@@ -155,6 +161,10 @@ select {
 }
 
 @media screen and (max-width: 767px) {
+
+	html * {
+		font-size: 40px;
+	}
 
 	.info {
 		width: 747px;
@@ -190,34 +200,34 @@ select {
 
 @media screen and (max-width: 479px) {
 
+	html * {
+		font-size: 40px;
+	}
+
 	.info {
-		width: 459px;
+		width: 449px;
 	}
 
 	.input {
-		width: 459px;
+		width: 449px;
 	}
 
 	.button {
-		width: 459px;
+		width: 449px;
 		height: 80px;
+		padding-top: 25px;
 	}
 
 	.combo {
-		width: 459px;
+		width: 449px;
 	}
 
 	.modal-content {
-		width: 459px;
+		width: 449px;
 	}
 
 	.popup-button {
 		width: 240px;
-		height: 50px;
-	}
-
-	.popup-button {
-		width: 240px;
-		height: 50px;
+		height: 80px;
 	}
 }
