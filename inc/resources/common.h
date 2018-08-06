@@ -23,6 +23,8 @@ void Disconnect(volatile int* ESP, int* conn);
 int Connection_IsConnected(void);
 void Connection_SetConnected(int connected);
 
+void Page_SendHtmlHeader(
+    void * const conn, const char * title);
 void Page_SendInfoElement(
     void * const conn, const char * label, const char * value);
 void Page_SendInput(

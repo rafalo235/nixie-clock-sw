@@ -9,7 +9,6 @@
 #include "resources/common.h"
 #include "resources/connection-routines.h"
 #include "resources/routine.h"
-#include "resources/generated/html/header.h"
 #include "utils/utils.h"
 
 static void PostNtpCallback(void * const conn);
@@ -77,7 +76,7 @@ static void GetNtpCallback(void * const conn)
   Http_HelperSendHeader(sm);
 
   Http_HelperSendMessageBody(sm, "<html>");
-  Http_HelperSend(sm, header_html, header_html_size);
+  Page_SendHtmlHeader(conn, "NTP Settings");
   Http_HelperSendMessageBody(sm, "<body>");
 
   Page_SendInput(conn, "ntp1",

@@ -11,6 +11,7 @@
 #include "resources/generated/html/errorpopup.h"
 #include "resources/generated/html/infoelement.h"
 #include "resources/generated/html/input.h"
+#include "resources/generated/html/header.h"
 #include "uchttpserver.h"
 
 static int sIsConnected = 0;
@@ -23,6 +24,16 @@ int Connection_IsConnected(void)
 void Connection_SetConnected(int connected)
 {
   sIsConnected = connected;
+}
+
+void Page_SendHtmlHeader(
+    void * const conn, const char * title)
+{
+  tuCHttpServerState * const sm = conn;
+  const void * parameters[] = {
+      (const void *)title
+  };
+  Http_HelperSendParametered(sm, header_html, header_html_size, parameters);
 }
 
 void Page_SendInfoElement(

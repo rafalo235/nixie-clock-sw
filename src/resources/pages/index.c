@@ -6,7 +6,6 @@
  */
 
 #include "resources/pages.h"
-#include "resources/generated/html/header.h"
 #include "resources/common.h"
 #include "resources/routine.h"
 #include "resources/connection-routines.h"
@@ -31,7 +30,7 @@ tHttpStatusCode IndexCallback(void * const conn)
 
   /* Create and send content */
   Http_HelperSendMessageBody(sm, "<html>");
-  Http_HelperSend(sm, header_html, header_html_size);
+  Page_SendHtmlHeader(conn, "Nixie Main Panel");
   Http_HelperSendMessageBody(sm, "<body>");
 
   if (isConnected)

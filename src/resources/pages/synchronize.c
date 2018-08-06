@@ -10,7 +10,6 @@
 #include "esp/esp.h"
 #include "esp/esp_sntp.h"
 #include "drivers/rtc/rtc.h"
-#include "resources/generated/html/header.h"
 
 tHttpStatusCode SynchronizeCallback(void * const conn)
 {
@@ -29,7 +28,7 @@ tHttpStatusCode SynchronizeCallback(void * const conn)
   Http_HelperSendHeader(sm);
 
   Http_HelperSendMessageBody(sm, "<html>");
-  Http_HelperSend(sm, header_html, header_html_size);
+  Page_SendHtmlHeader(conn, "NTP Synchronize Result");
   Http_HelperSendMessageBody(sm, "<body>");
 
   Http_HelperSendMessageBody(sm, "<div class=\"info\">");

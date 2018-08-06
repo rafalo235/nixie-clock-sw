@@ -6,7 +6,6 @@
  */
 
 #include "resources/pages.h"
-#include "resources/generated/html/header.h"
 #include "resources/common.h"
 #include "resources/connection-routines.h"
 #include "esp/esp.h"
@@ -50,7 +49,7 @@ static void GetConnectCallback(void * const conn)
 
   /* Create and send content */
   Http_HelperSendMessageBody(sm, "<html>");
-  Http_HelperSend(sm, header_html, header_html_size);
+  Page_SendHtmlHeader(conn, "Connect to AP");
   Http_HelperSendMessageBody(sm, "<body>");
 
   Http_HelperSendMessageBody(sm,

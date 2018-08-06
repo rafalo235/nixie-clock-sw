@@ -6,7 +6,6 @@
  */
 #include "resources/pages.h"
 #include "resources/common.h"
-#include "resources/generated/html/header.h"
 #include "time/datetime.h"
 #include "drivers/rtc/rtc.h"
 #include "utils/utils.h"
@@ -75,7 +74,7 @@ static void GetTimeCallback(void * const conn)
   Http_HelperSendHeader(sm);
 
   Http_HelperSendMessageBody(sm, "<html>");
-  Http_HelperSend(sm, header_html, header_html_size);
+  Page_SendHtmlHeader(conn, "Manual Time Setup");
   Http_HelperSendMessageBody(sm, "<body>");
 
   snprintf(buf, 5, "%04u", dt.year);
